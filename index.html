@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>trolley.town — какой ты человек на самом деле?</title>
+<meta name="description" content="21 моральная дилемма. Правильных ответов нет. Твои выборы рисуют карту того, кто ты есть — по пяти этическим осям.">
+<meta property="og:title" content="trolley.town — этический отпечаток">
+<meta property="og:description" content="21 моральная дилемма. Без правильных ответов. Узнай свой нравственный архетип и сравни с героями кино и истории.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://img.itch.zone/trolley-town-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="trolley.town">
+<meta name="twitter:description" content="21 моральная дилемма. Правильных ответов нет.">
+<style>
+:root { --bg:#f7f4ee; --ink:#1a1a1a; --dim:#888; --accent:#c53; --paper:#fff; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { background:var(--bg); color:var(--ink); font-family:Georgia,"Times New Roman",serif; min-height:100vh; }
+body { padding:24px 18px; max-width:720px; margin:0 auto; font-size:19px; line-height:1.55; }
+h1 { font-size:36px; letter-spacing:-0.5px; margin-bottom:2px; text-align:center; }
+h1 span { color:var(--accent); font-style:italic; }
+.sub { color:var(--dim); font-style:italic; text-align:center; margin-bottom:18px; font-size:15px; }
+.progress { height:6px; background:#e6e0d2; border-radius:3px; margin-bottom:18px; overflow:hidden; }
+.progress .fill { height:100%; background:var(--accent); transition:width 0.4s; }
+.scenario { background:var(--paper); border:1px solid #ddd; border-radius:6px; padding:22px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+.scenario .num { color:var(--dim); font-size:13px; letter-spacing:3px; margin-bottom:6px; font-family:-apple-system,sans-serif; }
+.scenario h2 { font-size:24px; margin-bottom:10px; line-height:1.25; }
+.scenario .body { font-size:18px; line-height:1.7; color:#333; margin-bottom:16px; }
+.scenario .body b { color:var(--ink); }
+.choices { display:flex; flex-direction:column; gap:10px; }
+.choice { background:#faf8f3; border:1px solid #d8d0be; border-radius:5px; padding:14px 18px; cursor:pointer; font-family:inherit; font-size:18px; text-align:left; transition:all 0.15s; line-height:1.45; }
+.choice:hover { border-color:var(--accent); background:#fff4ec; transform:translateX(2px); }
+.choice:active { transform:translateX(0); }
+.choice .tag { display:block; color:var(--dim); font-size:13px; margin-top:4px; font-family:-apple-system,sans-serif; letter-spacing:1px; }
+.footnote { text-align:center; color:var(--dim); font-size:14px; margin-top:14px; }
+/* Title */
+#title { position:fixed; inset:0; background:linear-gradient(180deg,#f7f4ee 0%,#e9e2cf 100%); z-index:50; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center; overflow-y:auto; }
+#title.hidden { display:none; }
+.lang-sw { display:flex; gap:6px; justify-content:center; margin-bottom:18px; }
+.lang-btn { background:transparent; border:1px solid #ccc; padding:5px 14px; border-radius:4px; cursor:pointer; font-family:inherit; font-size:14px; color:#666; transition:all 0.15s; }
+.lang-btn.active { border-color:var(--accent); color:var(--accent); background:#fff4ec; font-weight:bold; }
+.tt-art { font-size:90px; margin-bottom:8px; }
+.tt-logo { font-size:62px; font-family:Georgia,serif; margin-bottom:4px; }
+.tt-logo span { color:var(--accent); font-style:italic; }
+.tt-tag { color:#555; font-style:italic; max-width:520px; margin-bottom:24px; line-height:1.6; font-size:18px; }
+.tt-feats { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-bottom:20px; }
+.tt-feat { background:var(--paper); border:1px solid #ddd; padding:12px 18px; border-radius:6px; font-size:15px; }
+.tt-feat b { display:block; color:var(--accent); font-size:18px; margin-bottom:2px; font-family:Georgia; }
+.mode-sel { display:flex; gap:10px; justify-content:center; margin-bottom:22px; flex-wrap:wrap; }
+.mode-btn { background:transparent; border:2px solid #ddd; padding:9px 22px; border-radius:6px; cursor:pointer; font-family:inherit; font-size:15px; color:#555; transition:all 0.15s; }
+.mode-btn.active { border-color:var(--accent); color:var(--accent); background:#fff4ec; font-weight:bold; }
+.tt-start { background:var(--accent); color:#fff; border:0; padding:16px 50px; font-family:inherit; font-size:18px; border-radius:6px; cursor:pointer; letter-spacing:1px; box-shadow:0 4px 12px rgba(197,85,51,0.3); }
+.tt-start:hover { filter:brightness(1.1); }
+.tt-warn { color:var(--dim); font-size:14px; margin-top:16px; max-width:480px; line-height:1.5; }
+/* Result */
+#result { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:40; display:none; align-items:flex-start; justify-content:center; padding:20px; overflow-y:auto; }
+#result.show { display:flex; }
+.result-card { background:var(--paper); border-radius:10px; padding:26px; max-width:760px; width:100%; margin:auto; }
+.result-card h2 { font-size:28px; margin-bottom:6px; text-align:center; }
+.result-card .verdict { text-align:center; color:var(--accent); font-style:italic; font-size:18px; margin-bottom:20px; }
+/* Axes */
+.axis { margin:14px 0; }
+.axis-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:7px; }
+.axis-header .aname { font-size:15px; font-weight:700; font-family:-apple-system,sans-serif; color:#1a1a1a; }
+.axis-header .aval { font-size:20px; font-weight:700; font-family:-apple-system,sans-serif; min-width:44px; text-align:right; }
+.aval.pos { color:#1a8a5a; }
+.aval.neg { color:#c53; }
+.aval.neu { color:#888; }
+.axis-track { height:22px; border-radius:11px; position:relative; background:linear-gradient(90deg,#e04020 0%,#f5a080 25%,#f0ece0 50%,#80c4a0 75%,#1a8a5a 100%); box-shadow:inset 0 2px 4px rgba(0,0,0,0.12); overflow:visible; }
+.axis-center-line { position:absolute; left:50%; top:0; width:2px; height:100%; background:rgba(0,0,0,0.18); transform:translateX(-50%); }
+.axis-pop { position:absolute; top:5px; width:3px; height:12px; background:rgba(0,0,0,0.35); border-radius:2px; transform:translateX(-50%); }
+.axis-marker { position:absolute; top:50%; width:32px; height:32px; background:#fff; border:4px solid #1a1a1a; border-radius:50%; box-shadow:0 3px 12px rgba(0,0,0,0.25); transform:translate(-50%,-50%); transition:left 1s cubic-bezier(0.34,1.4,0.64,1); }
+.axis-ends { display:flex; justify-content:space-between; font-size:11px; color:#aaa; margin-top:5px; font-family:-apple-system,sans-serif; }
+.axis-desc { font-size:13px; color:#666; margin-top:3px; font-style:italic; line-height:1.4; }
+/* Charts */
+.chart-section { margin:22px 0; }
+.chart-label { font-size:11px; font-family:-apple-system,sans-serif; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
+.chart-svg { width:100%; height:auto; display:block; border-radius:12px; overflow:hidden; }
+.charts-row { display:flex; gap:14px; align-items:flex-start; margin:22px 0; }
+.charts-row .chart-section { flex:1; min-width:0; margin:0; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.result-card .chart-section { animation:fadeUp 0.5s ease both; }
+.result-card #r-axes { animation:fadeUp 0.5s 0.15s ease both; }
+.result-card .closest-card { animation:fadeUp 0.5s 0.25s ease both; }
+.char-legend { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.char-dot { display:flex; align-items:center; gap:4px; font-size:12px; font-family:-apple-system,sans-serif; color:#555; }
+.char-dot-circle { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+/* Top-3 characters */
+.top3-label { font-size:11px; font-family:-apple-system,sans-serif; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin:20px 0 10px; }
+.top3-row { display:flex; gap:10px; flex-wrap:wrap; }
+.top3-card { flex:1; min-width:140px; border-radius:10px; padding:14px 16px; border-left:4px solid var(--c); background:color-mix(in srgb, var(--c) 8%, white); position:relative; overflow:hidden; }
+.top3-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, color-mix(in srgb,var(--c) 12%,transparent) 0%, transparent 60%); pointer-events:none; }
+.t3-rank { font-size:10px; font-family:-apple-system,sans-serif; font-weight:700; color:var(--c); letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; opacity:0.8; }
+.t3-name { font-size:19px; font-weight:bold; color:var(--c); margin-bottom:6px; line-height:1.2; }
+.t3-why { font-size:13px; color:#555; line-height:1.5; font-style:italic; }
+/* Archetype */
+.archetype { background:#faf3e0; border-left:4px solid var(--accent); padding:16px 20px; border-radius:4px; margin:16px 0; }
+.archetype h3 { color:var(--accent); font-size:20px; margin-bottom:6px; font-style:italic; }
+.archetype p { font-size:16px; line-height:1.6; }
+.compare { font-size:14px; color:#777; text-align:center; margin-top:10px; font-style:italic; }
+/* Share */
+.share { display:flex; gap:8px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+.share button { background:var(--accent); color:#fff; border:0; padding:10px 22px; border-radius:5px; font-family:inherit; font-size:15px; cursor:pointer; }
+.share button.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+.share button:hover { filter:brightness(1.1); }
+/* Back button */
+.back-btn { background:transparent; border:none; font-size:22px; color:var(--dim); cursor:pointer; padding:0 8px 0 0; line-height:1; vertical-align:middle; }
+.back-btn:hover { color:var(--ink); }
+/* Choice log */
+.choices-log { margin:20px 0; }
+.choices-log-label { font-size:11px; font-family:-apple-system,sans-serif; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; }
+.choice-entry { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:1px solid #eee; font-size:14px; }
+.choice-entry:last-child { border-bottom:none; }
+.choice-q { color:#888; font-style:italic; min-width:140px; flex-shrink:0; font-family:-apple-system,sans-serif; font-size:13px; }
+.choice-a { color:#1a1a1a; flex:1; line-height:1.4; }
+.choice-tag { display:inline-block; background:#f0ece0; color:#666; font-size:11px; padding:2px 7px; border-radius:3px; margin-left:6px; font-family:-apple-system,sans-serif; letter-spacing:0.5px; white-space:nowrap; }
+.tension-box { background:#f0f4ff; border-left:4px solid #5b7fd4; padding:14px 18px; border-radius:4px; margin:16px 0; font-size:15px; line-height:1.6; color:#333; }
+.tension-box strong { color:#3557b7; }
+/* Donate */
+.donate-section { text-align:center; margin:24px 0 8px; padding-top:20px; border-top:1px solid #eee; }
+.donate-label { font-size:14px; color:#888; margin-bottom:12px; font-family:-apple-system,sans-serif; }
+.donate-buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.donate-btn { display:inline-block; padding:10px 24px; border-radius:6px; font-family:-apple-system,sans-serif; font-size:15px; font-weight:600; text-decoration:none; transition:filter 0.15s; }
+.donate-btn:hover { filter:brightness(1.1); }
+.donate-btn.kofi { background:#ff5e5b; color:#fff; }
+.donate-btn.boosty { background:#f5a623; color:#fff; }
+.donate-btn.tg { background:#2aabee; color:#fff; }
+.donate-btn.bmc { background:#ffdd00; color:#1a1a1a; }
+/* Mobile */
+@media (max-width: 600px) {
+  body { padding:14px 12px; font-size:17px; }
+  .scenario { padding:16px; }
+  .scenario h2 { font-size:20px; }
+  .choice-btn { padding:12px 14px; font-size:16px; min-height:52px; }
+  .result-card { padding:16px; }
+  .result-card h2 { font-size:22px; }
+  .result-card .verdict { font-size:15px; }
+  .top3-row { flex-direction:column; }
+  .top3-card { min-width:unset; }
+  .share { gap:6px; }
+  .share button { padding:9px 14px; font-size:13px; }
+  .charts-row { flex-direction:column; }
+  .donate-buttons { flex-direction:column; align-items:center; }
+  .donate-btn { width:100%; max-width:280px; text-align:center; }
+  .tt-start { padding:14px 32px; font-size:17px; }
+  .mode-sel { flex-direction:column; gap:8px; }
+}
+/* Ad slot */
+.ad-slot { margin:20px 0; text-align:center; }
+.ad-slot-inner { background:#fafafa; border:1px dashed #ddd; border-radius:6px; padding:10px; min-height:90px; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:11px; font-family:-apple-system,sans-serif; letter-spacing:1px; text-transform:uppercase; }
+/* Print / PDF */
+@media print {
+  body { background:#fff!important; padding:0!important; }
+  #title,#scenario-host,#footnote,.progress,.share,.donate-section,.ad-slot,#mf,#mm,h1,.sub { display:none!important; }
+  #result { position:static!important; display:block!important; background:none!important; padding:0!important; overflow:visible!important; }
+  .result-card { box-shadow:none!important; max-width:100%!important; padding:16px!important; border-radius:0!important; }
+  .top3-card,.archetype { break-inside:avoid; }
+}
+</style>
+</head>
+<body>
+
+<div id="title">
+  <div class="lang-sw">
+    <button class="lang-btn active" onclick="setLang('ru')">Рус</button>
+    <button class="lang-btn" onclick="setLang('en')">Eng</button>
+  </div>
+  <div class="tt-art">🚃</div>
+  <div class="tt-logo">trolley<span>.town</span></div>
+  <p class="tt-tag" id="tt-tag"></p>
+  <div class="tt-feats" id="tt-feats"></div>
+  <div class="mode-sel">
+    <button class="mode-btn" id="mode-short" onclick="setMode(true)"></button>
+    <button class="mode-btn active" id="mode-long" onclick="setMode(false)"></button>
+  </div>
+  <button class="tt-start" id="tt-start" onclick="startGame()"></button>
+  <p class="tt-warn" id="tt-warn"></p>
+</div>
+
+<div id="result">
+  <div class="result-card">
+    <h2 id="r-title"></h2>
+    <p class="verdict" id="r-verdict">—</p>
+
+    <!-- Radar chart (full width) -->
+    <div class="chart-section">
+      <div class="chart-label" id="r-radar-label"></div>
+      <div id="r-radar"></div>
+    </div>
+
+    <!-- Personality map (full width) -->
+    <div class="chart-section">
+      <div class="chart-label" id="r-map-label"></div>
+      <div id="r-map"></div>
+      <div class="char-legend" id="r-legend"></div>
+    </div>
+
+    <!-- Axis bars -->
+    <div id="r-axes"></div>
+
+    <!-- Closest character -->
+    <div id="r-closest"></div>
+
+    <!-- Choice log -->
+    <div id="r-choices"></div>
+
+    <!-- Archetype -->
+    <div class="archetype">
+      <h3 id="r-arch-name">—</h3>
+      <p id="r-arch-desc">—</p>
+    </div>
+
+    <p class="compare" id="r-compare">—</p>
+    <!-- AdSense отключён для itch.io — работает только на собственном домене -->
+
+    <div class="share">
+      <button id="btn-copy" onclick="copyResult()"></button>
+      <button id="btn-tweet" onclick="tweetResult()" class="ghost"></button>
+      <button id="btn-share-card" onclick="generateShareCard()" class="ghost"></button>
+      <button id="btn-pdf" onclick="downloadPDF()" class="ghost"></button>
+      <button id="btn-replay" onclick="resetGame()" class="ghost"></button>
+    </div>
+
+    <div class="donate-section">
+      <p class="donate-label" id="donate-label"></p>
+      <div class="donate-buttons" id="donate-buttons"></div>
+    </div>
+  </div>
+</div>
+
+<h1>trolley<span>.town</span></h1>
+<p class="sub" id="game-sub"></p>
+<div class="progress"><div class="fill" id="progress-bar"></div></div>
+<div id="scenario-host"></div>
+<div class="footnote" id="footnote">—</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let currentLang = 'ru';
+let shortMode = false;
+let vec = {util:0,coll:0,risk:0,justice:0,progress:0};
+let scenarios, idx;
+let history = []; // [{vec, choiceLog}]
+let choiceLog = []; // [{title, text, tag}]
+
+// ── UI translations ────────────────────────────────────────────────────────
+const UI = {
+  ru: {
+    tag:'какой ты человек на самом деле?',
+    tagline:'Двадцать одна моральная дилемма. Правильных ответов нет. Твои выборы рисуют карту того, кто ты есть — по пяти этическим осям. Сравни с тысячами других',
+    f1b:'21 дилемма', f1bs:'7 дилемм', f1t:'вагонетки, триаж, этика ИИ',
+    f2b:'5 осей', f2t:'утилитарный ↔ деонтологический · личность ↔ коллектив · и другие',
+    f3b:'~8 мин', f3bs:'~3 мин', f3t:'поделись своим отпечатком',
+    modeS:'Короткая (7 дилемм)', modeL:'Полная (21 дилемма)',
+    start:'▶ НАЧАТЬ',
+    warn:'Некоторые сценарии касаются гипотетического вреда, смерти, триажа и других тяжёлых тем. Правильных ответов не существует — цель в том, чтобы проявить твои инстинкты',
+    sLabel:'СЦЕНАРИЙ',
+    foot:(i,n)=>`${i} / ${n}  ·  сначала инстинкт, потом анализ`,
+    rTitle:'Твой этический отпечаток',
+    radarLabel:'ПРОФИЛЬ ПО ПЯТИ ОСЯМ',
+    mapLabel:'КАРТА ЛИЧНОСТЕЙ (утилитаризм ↔ коллективизм)',
+    closestPre:'НРАВСТВЕННО-СХОЖИЕ ГЕРОИ',
+    closestRank:['#1 совпадение','#2 совпадение','#3 совпадение'],
+    leanTo:(s)=>`Склоняешься к «${s}»`,
+    leanAw:(s)=>`Отдаляешься от «${s}»`,
+    center:'Близко к центру этой оси',
+    copy:'📋 скопировать', tweet:'🐦 поделиться в X', replay:'⟳ сначала',
+    shareCard:'🖼 Картинка', downloadPDF:'📄 Скачать PDF',
+    donateLabel:'Игра понравилась? Поддержи проект:',
+    c1:'Твой отпечаток близок к среднему — откалиброванный мейнстрим',
+    c2:'Ты отличаешься от среднего по нескольким осям — самобытный, но понятный',
+    c3:'Твой отпечаток сильно расходится со средним — у тебя будут интересные споры и одинокие мнения',
+    cn:'(приблизительный ориентир; реальные данные пришли бы из сыгранных сессий)',
+    sub:'21 дилемма · без правильных ответов', subS:'7 дилемм · без правильных ответов',
+    you:'ТЫ',
+    closestSim:(name)=>`По этическому профилю — как «${name}»`,
+  },
+  en: {
+    tag:'what kind of person are you, really?',
+    tagline:'Twenty-one moral dilemmas. No right answers. Your choices draw a map of who you are — across five ethical axes. Compare with thousands of others',
+    f1b:'21 dilemmas', f1bs:'7 dilemmas', f1t:'trolleys, triage, AI ethics',
+    f2b:'5 axes', f2t:'utilitarian ↔ deontic · individual ↔ collective · and more',
+    f3b:'~8 min', f3bs:'~3 min', f3t:'share your fingerprint',
+    modeS:'Short (7 dilemmas)', modeL:'Full (21 dilemmas)',
+    start:'▶ BEGIN',
+    warn:'Some scenarios involve hypothetical harm, death, triage, and other heavy themes. No correct answers exist — the point is to surface your instincts',
+    sLabel:'SCENARIO',
+    foot:(i,n)=>`${i} / ${n}  ·  instinct first, analysis second`,
+    rTitle:'Your Ethical Fingerprint',
+    radarLabel:'PROFILE ACROSS FIVE AXES',
+    mapLabel:'PERSONALITY MAP (utilitarian ↔ collectivist)',
+    closestPre:'MORALLY SIMILAR CHARACTERS',
+    closestRank:['#1 match','#2 match','#3 match'],
+    leanTo:(s)=>`You lean toward "${s}"`,
+    leanAw:(s)=>`You lean away from "${s}"`,
+    center:"You're close to center on this axis",
+    copy:'📋 copy result', tweet:'🐦 share on X', replay:'⟳ replay',
+    shareCard:'🖼 Share image', downloadPDF:'📄 Download PDF',
+    donateLabel:'Enjoyed the game? Support the project:',
+    c1:'Your fingerprint lies close to the population average — a calibrated mainstream',
+    c2:'You diverge from the average on a few axes — distinctively yours, but recognizable',
+    c3:"Your fingerprint diverges strongly from the average — you'll find good debate partners and lonely opinions",
+    cn:'(approximate baseline; real data would come from played sessions)',
+    sub:'21 dilemmas · no right answers', subS:'7 dilemmas · no right answers',
+    you:'YOU',
+    closestSim:(name)=>`Your ethical profile matches "${name}"`,
+  }
+};
+
+// ── Axes ───────────────────────────────────────────────────────────────────
+const AXES = {
+  ru:{
+    util:    {name:'Утилитаризм',    pos:'максимум общего блага',               neg:'принципы прежде всего'},
+    coll:    {name:'Коллективизм',   pos:'интересы группы',                     neg:'интересы личности'},
+    risk:    {name:'Риск-ориентация',pos:'действовать вопреки неопределённости', neg:'осторожность прежде всего'},
+    justice: {name:'Справедливость', pos:'ответственность и последствия',        neg:'милосердие и восстановление'},
+    progress:{name:'Прогрессивность',pos:'перемены и новая этика',               neg:'традиции и прецеденты'},
+  },
+  en:{
+    util:    {name:'Utilitarian',   pos:'maximize total good',             neg:'respect principles first'},
+    coll:    {name:'Collectivist',  pos:'prioritize the group',            neg:'prioritize the individual'},
+    risk:    {name:'Risk-tolerant', pos:'act despite uncertainty',         neg:'err on the side of caution'},
+    justice: {name:'Justice-first', pos:'accountability and consequences', neg:'mercy and restoration'},
+    progress:{name:'Progressive',   pos:'favor change and novel ethics',   neg:'favor tradition and precedent'},
+  }
+};
+
+const AXIS_KEYS = ['util','coll','risk','justice','progress'];
+
+// ── Famous characters ──────────────────────────────────────────────────────
+const CHARACTERS = [
+  { name:{ru:'Танос',             en:'Thanos'},
+    color:'#7c3f8e',
+    axes:{util:+80, coll:+65, risk:+70, justice:-50, progress:+45},
+    why:{ru:'Жертвует половиной жизни ради «равновесия» — крайний утилитаризм',
+         en:'Sacrifices half of all life for "balance" — extreme utilitarian calculus'} },
+  { name:{ru:'Бэтмен',            en:'Batman'},
+    color:'#4a5568',
+    axes:{util:-40, coll:-25, risk:-15, justice:+70, progress:-20},
+    why:{ru:'Никогда не убивает, действует по принципам — деонтолог-индивидуалист',
+         en:'Never kills, acts on firm principles — deontological individualist'} },
+  { name:{ru:'Железный человек',  en:'Iron Man'},
+    color:'#c0392b',
+    axes:{util:+35, coll:-30, risk:+65, justice:+10, progress:+55},
+    why:{ru:'Прагматик, берёт риски ради результата, не любит чужих правил',
+         en:'Pragmatist who takes big risks for results and resents external rules'} },
+  { name:{ru:'Капитан Америка',   en:'Captain America'},
+    color:'#2563a8',
+    axes:{util:-25, coll:+50, risk:-25, justice:+60, progress:-5},
+    why:{ru:'Принципы и коллектив прежде всего — «я мог бы делать это весь день»',
+         en:'"I could do this all day" — principles and collective good above all'} },
+  { name:{ru:'Уолтер Уайт',      en:'Walter White'},
+    color:'#16a34a',
+    axes:{util:+25, coll:-65, risk:+50, justice:-40, progress:+15},
+    why:{ru:'Оправдывает любое зло «ради семьи», в итоге — ради себя',
+         en:'Justifies everything for "family," ultimately just for himself'} },
+  { name:{ru:'Тирион Ланнистер', en:'Tyrion Lannister'},
+    color:'#d97706',
+    axes:{util:+20, coll:+15, risk:+20, justice:+25, progress:+35},
+    why:{ru:'Взвешивает контекст, ищет прагматичный компромисс, ценит мудрость',
+         en:'Weighs context, seeks pragmatic compromise, values wisdom over doctrine'} },
+  { name:{ru:'Гермиона Грэнджер',en:'Hermione Granger'},
+    color:'#7c3aed',
+    axes:{util:-20, coll:+55, risk:-25, justice:+50, progress:+35},
+    why:{ru:'Следует правилам и борется за права — коллективист с принципами',
+         en:'Follows rules and fights for rights — principled collectivist'} },
+  { name:{ru:'Джокер',            en:'The Joker'},
+    color:'#374151',
+    axes:{util:-70, coll:-65, risk:+85, justice:-70, progress:-40},
+    why:{ru:'«Хаос — единственная честная вещь» — антисистема во всём',
+         en:'"Chaos is the only honest thing" — anti-system across every axis'} },
+  { name:{ru:'Дейенерис Таргариен',en:'Daenerys Targaryen'},
+    color:'#be185d',
+    axes:{util:+55, coll:+40, risk:+60, justice:-35, progress:+70},
+    why:{ru:'Начинала с освобождения рабов, закончила сожжением городов — утилитаризм без тормозов',
+         en:'Started freeing slaves, ended burning cities — utilitarian calculus with no brakes'} },
+  { name:{ru:'Китнисс Эвердин',  en:'Katniss Everdeen'},
+    color:'#065f46',
+    axes:{util:-10, coll:+30, risk:+40, justice:+55, progress:+30},
+    why:{ru:'Воюет за справедливость, но ненавидит быть символом — инстинкт, а не идеология',
+         en:'Fights for justice but hates being a symbol — instinct, not ideology'} },
+  { name:{ru:'Шерлок Холмс',     en:'Sherlock Holmes'},
+    color:'#0e7490',
+    axes:{util:+45, coll:-55, risk:+40, justice:+35, progress:+25},
+    why:{ru:'Результат важнее чувств, людьми пренебрегает — холодный утилитарный интеллект',
+         en:'Results over feelings, dismisses people as data — cold utilitarian intellect'} },
+  { name:{ru:'Дарт Вейдер',      en:'Darth Vader'},
+    color:'#1f2937',
+    axes:{util:+30, coll:+55, risk:+25, justice:+40, progress:-50},
+    why:{ru:'Порядок через силу, традиция Империи — коллективизм с тёмной стороны',
+         en:'Order through force, Imperial tradition — dark-side collectivism'} },
+  { name:{ru:'Гарри Поттер',     en:'Harry Potter'},
+    color:'#740001',
+    axes:{util:+40, coll:+65, risk:+30, justice:+80, progress:+35},
+    why:{ru:'Нарушает правила ради справедливости, жертвует собой ради других',
+         en:'Breaks rules for justice, self-sacrificing for the greater good'} },
+  { name:{ru:'Майкл Корлеоне', en:'Michael Corleone'},
+    color:'#5c4033',
+    axes:{util:-25, coll:+85, risk:+45, justice:-65, progress:-30},
+    why:{ru:'Семья превыше всего — коллективизм в рамках клана, жёсткие средства',
+         en:'Family above everything — tribal collectivism with ruthless means'} },
+  { name:{ru:'Нео',             en:'Neo'},
+    color:'#00ff41',
+    axes:{util:+60, coll:+55, risk:+75, justice:+85, progress:+90},
+    why:{ru:'Борец за свободу и правду, разрушает системы угнетения ради всего человечества',
+         en:'Freedom fighter — breaks oppressive systems for the sake of all humanity'} },
+  { name:{ru:'Волан-де-Морт',  en:'Voldemort'},
+    color:'#4a4a6a',
+    axes:{util:-90, coll:-85, risk:+85, justice:-95, progress:-55},
+    why:{ru:'Власть ради власти, полное презрение к жизни других — чистое зло',
+         en:'Power for power\'s sake, utter contempt for others\' lives — pure evil'} },
+  { name:{ru:'Джек Воробей',   en:'Jack Sparrow'},
+    color:'#b8860b',
+    axes:{util:-15, coll:-25, risk:+85, justice:-35, progress:+55},
+    why:{ru:'Хаотичный оппортунист — действует по наитию, но неожиданно делает правильное',
+         en:'Chaotic opportunist — acts on instinct but surprisingly does the right thing'} },
+  { name:{ru:'Форрест Гамп',   en:'Forrest Gump'},
+    color:'#e07b39',
+    axes:{util:+45, coll:+85, risk:-35, justice:+55, progress:-5},
+    why:{ru:'Чистое сердце, преданность близким — коллективизм без стратегии',
+         en:'Pure heart and loyalty — communal care without strategic calculation'} },
+];
+
+// ── Extra characters (matching only, not shown on map) ─────────────────────
+const CHARACTERS_EXTRA = [
+  { name:{ru:'Спайдермен',       en:'Spider-Man'},
+    axes:{util:+50, coll:+65, risk:+35, justice:+65, progress:+40},
+    why:{ru:'Великая сила — великая ответственность: утилитарист с твёрдыми принципами',
+         en:'With great power comes great responsibility — utilitarian with firm principles'} },
+  { name:{ru:'Чудо-женщина',     en:'Wonder Woman'},
+    axes:{util:+45, coll:+70, risk:+25, justice:+80, progress:+50},
+    why:{ru:'Защищает людей из любви, а не из долга — сострадательный коллективист',
+         en:'Protects humanity out of love, not duty — compassionate collectivist'} },
+  { name:{ru:'Люк Скайуокер',    en:'Luke Skywalker'},
+    axes:{util:+40, coll:+60, risk:+45, justice:+70, progress:+30},
+    why:{ru:'Верит в добро даже в злодее — справедливость без жестокости',
+         en:'Believes in good even in a villain — justice without cruelty'} },
+  { name:{ru:'Гэндальф',         en:'Gandalf'},
+    axes:{util:+55, coll:+50, risk:-25, justice:+65, progress:-15},
+    why:{ru:'Мудрый хранитель баланса — действует осторожно, но ради общего блага',
+         en:'Wise keeper of balance — acts cautiously but always for the greater good'} },
+  { name:{ru:'Голлум',           en:'Gollum'},
+    axes:{util:-75, coll:-85, risk:+45, justice:-75, progress:-60},
+    why:{ru:'Одержимость разрушила всё — крайний индивидуализм и моральный распад',
+         en:'Obsession destroyed everything — extreme individualism and moral decay'} },
+  { name:{ru:'Тони Сопрано',     en:'Tony Soprano'},
+    axes:{util:-25, coll:+75, risk:+65, justice:-65, progress:-15},
+    why:{ru:'Семья превыше всего — но только своя; лояльность внутри, жестокость снаружи',
+         en:'Family above all — but only his own; in-group loyalty, ruthless outside'} },
+  { name:{ru:'Раскольников',     en:'Raskolnikov'},
+    axes:{util:+35, coll:-35, risk:+65, justice:-45, progress:+25},
+    why:{ru:'«Тварь ли я дрожащая?» — утилитарист, который не выдержал своей же логики',
+         en:'"Am I trembling creature?" — a utilitarian who couldn\'t live by his own logic'} },
+  { name:{ru:'Тайлер Дёрден',    en:'Tyler Durden'},
+    axes:{util:-45, coll:-35, risk:+90, justice:-55, progress:+85},
+    why:{ru:'Разрушение системы ради освобождения — анархист-идеалист без тормозов',
+         en:'Destroy the system to liberate it — anarchist idealist with no brakes'} },
+  { name:{ru:'Джеймс Бонд',      en:'James Bond'},
+    axes:{util:+30, coll:-25, risk:+75, justice:+15, progress:+25},
+    why:{ru:'Приказы важнее морали, цель оправдывает средства — утилитаризм на службе',
+         en:'Orders over morals, ends justify means — utilitarian in service of the state'} },
+  { name:{ru:'Индиана Джонс',    en:'Indiana Jones'},
+    axes:{util:+35, coll:+35, risk:+70, justice:+50, progress:+35},
+    why:{ru:'Авантюрист с моральным компасом — рискует ради правого дела',
+         en:'Adventurer with a moral compass — risks everything for the right cause'} },
+  { name:{ru:'Рик Санчез',       en:'Rick Sanchez'},
+    axes:{util:+75, coll:-75, risk:+85, justice:-45, progress:+90},
+    why:{ru:'Умнейший во вселенной — использует это исключительно для себя',
+         en:'Smartest in the universe — uses it entirely for himself'} },
+  { name:{ru:'Симба',            en:'Simba'},
+    axes:{util:+30, coll:+65, risk:+25, justice:+65, progress:+15},
+    why:{ru:'Сбегает от ответственности, возвращается ради справедливости — рост через долг',
+         en:'Flees responsibility, returns for justice — growth through duty'} },
+  { name:{ru:'Дориан Грей',      en:'Dorian Gray'},
+    axes:{util:-65, coll:-75, risk:+55, justice:-65, progress:+15},
+    why:{ru:'Бессмертная красота за счёт души — гедонизм без последствий',
+         en:'Immortal beauty at the cost of the soul — hedonism without consequences'} },
+  { name:{ru:'Анна Каренина',    en:'Anna Karenina'},
+    axes:{util:-15, coll:+25, risk:+60, justice:+20, progress:+50},
+    why:{ru:'Выбирает страсть вместо долга — бунт против общества через личное чувство',
+         en:'Chooses passion over duty — rebellion against society through personal feeling'} },
+  { name:{ru:'Мадам Бовари',     en:'Madame Bovary'},
+    axes:{util:-25, coll:-35, risk:+55, justice:-25, progress:+55},
+    why:{ru:'Романтические мечты против реальности — индивидуализм и бегство от нормы',
+         en:'Romantic dreams versus reality — individualism and escape from convention'} },
+  { name:{ru:'Холден Колфилд',   en:'Holden Caulfield'},
+    axes:{util:-35, coll:-45, risk:+20, justice:+35, progress:-5},
+    why:{ru:'Против фальши мира — моральный максимализм без конструктивного выхода',
+         en:'Against the phoniness of the world — moral maximalism without constructive outlet'} },
+  { name:{ru:'Эллен Рипли',      en:'Ellen Ripley'},
+    axes:{util:+40, coll:+55, risk:+65, justice:+55, progress:+35},
+    why:{ru:'Выживает и защищает других — прагматичный героизм без идеологии',
+         en:'Survives and protects others — pragmatic heroism without ideology'} },
+  { name:{ru:'Лара Крофт',       en:'Lara Croft'},
+    axes:{util:+35, coll:-5, risk:+80, justice:+45, progress:+45},
+    why:{ru:'Независимый искатель справедливости — рискует, но ради правого дела',
+         en:'Independent seeker of justice — takes risks but for the right reasons'} },
+  { name:{ru:'Барт Симпсон',     en:'Bart Simpson'},
+    axes:{util:-15, coll:-15, risk:+65, justice:-20, progress:+30},
+    why:{ru:'Нарушает правила ради веселья — хаос без злого умысла',
+         en:'Breaks rules for fun — chaos without malice'} },
+  { name:{ru:'Гомер Симпсон',    en:'Homer Simpson'},
+    axes:{util:+15, coll:+60, risk:-30, justice:+10, progress:-35},
+    why:{ru:'Любит семью, но ленив — коллективист по сердцу, не всегда по поступкам',
+         en:'Loves family but is lazy — collectivist at heart, not always in action'} },
+  { name:{ru:'Аттикус Финч',     en:'Atticus Finch'},
+    axes:{util:-15, coll:+35, risk:-25, justice:+80, progress:+40},
+    why:{ru:'Защищает невиновного вопреки обществу — справедливость как абсолют',
+         en:'Defends the innocent against society — justice as an absolute'} },
+  { name:{ru:'Жан Вальжан',      en:'Jean Valjean'},
+    axes:{util:-15, coll:+45, risk:-15, justice:+65, progress:+35},
+    why:{ru:'Искупление через жертву — милосердие, справедливость, коллектив',
+         en:'Redemption through sacrifice — mercy, justice, and collective good'} },
+  { name:{ru:'Доктор Хаус',      en:'Dr. House'},
+    axes:{util:+75, coll:-45, risk:+35, justice:-15, progress:+65},
+    why:{ru:'Истина важнее чувств, результат важнее правил — холодный рационализм',
+         en:'Truth over feelings, results over rules — cold rationalism'} },
+  { name:{ru:'Декстер Морган',   en:'Dexter Morgan'},
+    axes:{util:+35, coll:-55, risk:+65, justice:+45, progress:+20},
+    why:{ru:'Сам себе судья — карает убийц вне закона; утилитаризм через насилие',
+         en:'Vigilante justice — punishes killers outside the law'} },
+  { name:{ru:'Тор',              en:'Thor'},
+    axes:{util:+30, coll:+55, risk:+65, justice:+50, progress:-15},
+    why:{ru:'Благородный воин — коллективизм и справедливость через силу',
+         en:'Noble warrior — collectivism and justice through strength'} },
+  { name:{ru:'Арагорн',          en:'Aragorn'},
+    axes:{util:+35, coll:+65, risk:+20, justice:+75, progress:-10},
+    why:{ru:'Избегает власти, служит другим — справедливость как призвание, а не амбиция',
+         en:'Shuns power, serves others — justice as a calling, not ambition'} },
+  { name:{ru:'Эльза',            en:'Elsa'},
+    axes:{util:+20, coll:+35, risk:+45, justice:+45, progress:+65},
+    why:{ru:'Принимает себя вопреки нормам — прогрессивный индивидуализм через принятие',
+         en:'Accepts herself despite norms — progressive individualism through self-acceptance'} },
+  { name:{ru:'Рик Граймс',       en:'Rick Grimes'},
+    axes:{util:+40, coll:+55, risk:+55, justice:+35, progress:-5},
+    why:{ru:'Защищает группу любой ценой — коллективизм на грани жестокости',
+         en:'Protects the group at any cost — collectivism on the edge of brutality'} },
+  { name:{ru:'Джоэл Миллер',     en:'Joel Miller'},
+    axes:{util:-25, coll:+85, risk:+65, justice:-30, progress:-15},
+    why:{ru:'Ради одного человека предаёт всё человечество — любовь как абсолют',
+         en:'Betrays all humanity for one person — love as an absolute'} },
+  { name:{ru:'Дон Дрейпер',      en:'Don Draper'},
+    axes:{util:+20, coll:-55, risk:+45, justice:-35, progress:+35},
+    why:{ru:'Построил жизнь на лжи — индивидуализм и самообман как стратегия выживания',
+         en:'Built a life on lies — individualism and self-deception as survival strategy'} },
+  { name:{ru:'Геральт из Ривии', en:'Geralt of Rivia'},
+    axes:{util:+25, coll:-10, risk:+55, justice:+40, progress:-25},
+    why:{ru:'«Меньшее зло» — прагматик в мире без чистой морали',
+         en:'"Lesser evil" — pragmatist in a world without clean morality'} },
+  { name:{ru:'Кратос',           en:'Kratos'},
+    axes:{util:-15, coll:+35, risk:+85, justice:-20, progress:-35},
+    why:{ru:'Ярость как инструмент защиты — прошлое как бремя, сила как единственный язык',
+         en:'Rage as a tool of protection — past as burden, strength as the only language'} },
+  { name:{ru:'Артур Морган',     en:'Arthur Morgan'},
+    axes:{util:-5, coll:+45, risk:+55, justice:+35, progress:-15},
+    why:{ru:'Честный разбойник — лояльность к своим, но ищет искупления',
+         en:'Honest outlaw — loyal to his gang but seeking redemption'} },
+  { name:{ru:'Алекс ДеЛарж',    en:'Alex DeLarge'},
+    axes:{util:-85, coll:-85, risk:+80, justice:-90, progress:-15},
+    why:{ru:'Насилие как эстетика и свобода — абсолютный нигилизм',
+         en:'Violence as aesthetics and freedom — absolute nihilism'} },
+  { name:{ru:'Джон Уик',         en:'John Wick'},
+    axes:{util:+10, coll:-20, risk:+80, justice:+30, progress:-10},
+    why:{ru:'Месть как принцип — готов на всё ради личной справедливости',
+         en:'Revenge as principle — willing to do anything for personal justice'} },
+  { name:{ru:'Магнето',          en:'Magneto'},
+    axes:{util:+30, coll:+60, risk:+70, justice:-20, progress:+50},
+    why:{ru:'Защищает свой народ любой ценой — травма и коллективизм как движущая сила',
+         en:'Protects his people at any cost — trauma and collectivism as driving forces'} },
+  { name:{ru:'Ганнибал Лектер',  en:'Hannibal Lecter'},
+    axes:{util:-85, coll:-80, risk:+55, justice:-85, progress:+25},
+    why:{ru:'Радикальный индивидуализм, эстетика зла — моральный нигилизм',
+         en:'Radical individualism, aesthetic of evil — pure moral nihilism'} },
+  { name:{ru:'Гамлет',           en:'Hamlet'},
+    axes:{util:-30, coll:-20, risk:-40, justice:+50, progress:-20},
+    why:{ru:'Парализован сомнением — справедливость важна, но действие требует невозможной уверенности',
+         en:'Paralyzed by doubt — justice matters but action requires impossible certainty'} },
+  { name:{ru:'Профессор Мориарти',en:'Professor Moriarty'},
+    axes:{util:-60, coll:-50, risk:+70, justice:-80, progress:+30},
+    why:{ru:'Наполеон преступного мира — интеллект как инструмент разрушения',
+         en:'Napoleon of crime — intellect as a tool of destruction'} },
+  { name:{ru:'Шрек',             en:'Shrek'},
+    axes:{util:+20, coll:+55, risk:+20, justice:+45, progress:+25},
+    why:{ru:'Не хочет быть героем, но делает правильное — доброта вопреки всему',
+         en:'Doesn\'t want to be a hero but does the right thing — kindness despite everything'} },
+
+  // ── Исторические личности (до XX века) ────────────────────────────────────
+  { name:{ru:'Наполеон Бонапарт',  en:'Napoleon Bonaparte'},
+    axes:{util:+60, coll:+40, risk:+80, justice:-35, progress:+70},
+    why:{ru:'Реформы и кодекс законов — но ради власти; величие через завоевание',
+         en:'Reforms and legal code — but for power; greatness through conquest'} },
+  { name:{ru:'Авраам Линкольн',    en:'Abraham Lincoln'},
+    axes:{util:+55, coll:+70, risk:+55, justice:+75, progress:+65},
+    why:{ru:'Сохранил единство страны и отменил рабство — прагматичный гуманизм',
+         en:'Preserved the union and abolished slavery — pragmatic humanism'} },
+  { name:{ru:'Жанна д\'Арк',       en:'Joan of Arc'},
+    axes:{util:+30, coll:+80, risk:+90, justice:+70, progress:+20},
+    why:{ru:'Вера как абсолютный компас — жертвует собой ради народа',
+         en:'Faith as absolute compass — self-sacrifice for the people'} },
+  { name:{ru:'Александр Великий', en:'Alexander the Great'},
+    axes:{util:+55, coll:+35, risk:+95, justice:-25, progress:+65},
+    why:{ru:'Распространял культуру силой — прогресс через завоевание, величие важнее жизней',
+         en:'Spread civilization by force — progress through conquest, glory over lives'} },
+  { name:{ru:'Клеопатра',          en:'Cleopatra'},
+    axes:{util:+40, coll:+35, risk:+70, justice:-20, progress:+40},
+    why:{ru:'Интеллект и союзы как оружие — выживание царства любой ценой',
+         en:'Intellect and alliances as weapons — survival of the kingdom at any cost'} },
+  { name:{ru:'Карл Маркс',         en:'Karl Marx'},
+    axes:{util:+40, coll:+90, risk:+55, justice:+65, progress:+90},
+    why:{ru:'Конец эксплуатации через коллективную революцию — коллективизм как высшая ценность',
+         en:'End exploitation through collective revolution — collectivism as the highest value'} },
+  { name:{ru:'Макиавелли',         en:'Machiavelli'},
+    axes:{util:+70, coll:+30, risk:+65, justice:-55, progress:+30},
+    why:{ru:'«Цель оправдывает средства» — власть и стабильность важнее морали',
+         en:'"The end justifies the means" — power and stability over morality'} },
+  { name:{ru:'Чингисхан',          en:'Genghis Khan'},
+    axes:{util:+35, coll:+50, risk:+95, justice:-75, progress:+40},
+    why:{ru:'Объединил народы через жестокость — коллективизм клана, беспощадность к врагам',
+         en:'United peoples through brutality — clan collectivism, merciless to enemies'} },
+  { name:{ru:'Томас Джефферсон',   en:'Thomas Jefferson'},
+    axes:{util:+50, coll:+55, risk:+45, justice:+50, progress:+75},
+    why:{ru:'Автор «Все люди равны» — и владелец рабов; прогрессивные идеалы с личным компромиссом',
+         en:'Wrote "all men are created equal" while owning slaves — progressive ideals, personal hypocrisy'} },
+  { name:{ru:'Робеспьер',          en:'Robespierre'},
+    axes:{util:+60, coll:+70, risk:+85, justice:-30, progress:+80},
+    why:{ru:'Революция ради свободы — через террор; утилитаризм, пожравший своих создателей',
+         en:'Revolution for liberty — through terror; utilitarianism that devoured its own'} },
+
+  // ── Герои популярных книг ──────────────────────────────────────────────────
+  { name:{ru:'Граф Монте-Кристо', en:'Count of Monte Cristo'},
+    axes:{util:+20, coll:-20, risk:+75, justice:+85, progress:+30},
+    why:{ru:'Месть как справедливость — терпеливый и методичный, но в конце прощает',
+         en:'Revenge as justice — patient and methodical, but ultimately forgives'} },
+  { name:{ru:'Скарлетт О\'Хара',  en:'Scarlett O\'Hara'},
+    axes:{util:+15, coll:-30, risk:+70, justice:-35, progress:+50},
+    why:{ru:'«Я подумаю об этом завтра» — выживает любой ценой, личный интерес превыше всего',
+         en:'"I\'ll think about it tomorrow" — survives at any cost, self-interest above all'} },
+  { name:{ru:'Гекльберри Финн',   en:'Huckleberry Finn'},
+    axes:{util:+20, coll:+30, risk:+65, justice:+50, progress:+55},
+    why:{ru:'Делает правильное вопреки воспитанию — интуитивная мораль против предрассудков общества',
+         en:'Does right despite his upbringing — intuitive morality against society\'s prejudices'} },
+  { name:{ru:'Капитан Ахав',      en:'Captain Ahab'},
+    axes:{util:-30, coll:-35, risk:+95, justice:-15, progress:-25},
+    why:{ru:'Одержимость местью разрушила всё — личная обида важнее жизней команды',
+         en:'Obsession with revenge destroyed everything — personal vendetta over crew\'s lives'} },
+  { name:{ru:'Мистер Дарси',      en:'Mr. Darcy'},
+    axes:{util:-20, coll:+25, risk:-35, justice:+45, progress:-20},
+    why:{ru:'Гордость скрывает порядочность — принципиальный, но учится видеть дальше предрассудков',
+         en:'Pride conceals integrity — principled, but learns to see beyond his prejudices'} },
+  { name:{ru:'Робин Гуд',         en:'Robin Hood'},
+    axes:{util:+45, coll:+80, risk:+75, justice:+60, progress:+45},
+    why:{ru:'Грабит богатых, отдаёт бедным — утилитарный коллективизм вне закона',
+         en:'Steals from the rich, gives to the poor — utilitarian collectivism outside the law'} },
+  { name:{ru:'Доктор Джекил',     en:'Dr. Jekyll'},
+    axes:{util:+30, coll:-55, risk:+80, justice:-60, progress:+50},
+    why:{ru:'Разделил добро и зло в себе — прогресс через эксперимент, потерял контроль над тенью',
+         en:'Split good and evil within himself — progress through experiment, lost control of the shadow'} },
+  { name:{ru:'Эбенезер Скрудж',   en:'Ebenezer Scrooge'},
+    axes:{util:-50, coll:-70, risk:-40, justice:-30, progress:-45},
+    why:{ru:'Начал эгоистом, стал альтруистом — один из самых убедительных примеров нравственного роста',
+         en:'Started selfish, became altruistic — one of fiction\'s most convincing moral transformations'} },
+];
+
+const CHARACTERS_ALL = [...CHARACTERS, ...CHARACTERS_EXTRA];
+
+// ── Population baseline ────────────────────────────────────────────────────
+const POP = {util:+8, coll:+6, risk:-4, justice:+2, progress:+3};
+
+// ── Archetypes ─────────────────────────────────────────────────────────────
+function archetype(v) {
+  const {util,coll,risk,justice,progress} = v;
+  const A = [
+    [util>40&&risk>20,{ru:['Оптимизатор','Ты считаешь. Когда цифры говорят в пользу действия — ты действуешь, даже если это кажется холодным. Из тебя вышел бы отличный аналитик или инженер, но следи, чтобы таблица не поглотила душу'],en:["The Optimizer","You run the math. When the numbers favor an action, you act — even if it feels cold. You'd make a great policy wonk or engineer, but be careful the spreadsheet doesn't swallow the soul"]}],
+    [util<-20&&justice>10,{ru:['Хранитель правил','Некоторые вещи не продаются — даже ради спасения жизней. Ты держишься за принципы так же, как моряки держатся за якорь в шторм. Убедись только, что принцип правильный, а не просто привычный'],en:["The Rule-Keeper","Some things are not for sale — not even to save lives. You anchor on principles the way sailors anchor in storms. Just make sure the principle is the right one, not just the familiar one"]}],
+    [coll>30&&progress>20,{ru:['Реформатор','Ты видишь системы, а не только людей. Ты веришь, что правила должны меняться, когда дают плохие результаты. Следи за перегибами — коллективы тоже ошибаются'],en:["The Reformer","You see systems, not just individuals. You believe the rules should change when they produce bad outcomes. Watch for over-reach; groups can be wrong too"]}],
+    [coll<-20&&progress<0,{ru:['Индивидуалист','Личная автономия священна. Ты не доверяешь коллективным мандатам, даже с благими намерениями. Ты защищаешь свободу — но помни: изолированные люди проигрывают скоординированным'],en:["The Individualist","Personal autonomy is sacred. You distrust collective mandates, even well-intentioned ones. You'll protect freedom — but remember that isolated individuals lose to coordinated ones"]}],
+    [justice>25,{ru:['Судья','Последствия важны. Ответственность создаёт порядок. Ты будешь тем, кто спрашивает: «Кто виноват?» Убедись, что ты также спрашиваешь: «Кому причинён вред?»'],en:["The Judge","Consequences matter. Accountability builds order. You'll be the one asking 'who is responsible?' Make sure you still ask 'who was harmed?'"]}],
+    [justice<-15,{ru:['Милосердный','Ты ведёшь с милосердием. Ты видишь историю прежде, чем поступок. Инстинкт целителя. Только помни: неограниченное милосердие может стать безнаказанностью'],en:["The Merciful","You lead with mercy. You see the story before the deed. A healer's instinct. Just remember that untempered mercy can become impunity"]}],
+    [risk>30,{ru:['Этик пограничья','Ты принимаешь неопределённость, чтобы избежать худшей определённости. Ты нажимаешь кнопки, перед которыми другие замирают. Калибруй — не каждый рубеж стоит покорения'],en:["The Frontier Ethicist","You accept uncertainty to avoid worse certainty. You press buttons others freeze in front of. Calibrate — not every frontier is the right one"]}],
+    [risk<-20,{ru:['Предусмотрительный','В сомнении — ты ждёшь. Статус-кво заслуживает серьёзной презумпции. Прогресс должен предъявить тебе квитанции. Но иногда бездействие само по себе — вред'],en:["The Precautionary","When in doubt, you wait. The status quo deserves a heavy presumption. Progress owes you its receipts. But sometimes inaction is its own harm"]}],
+    [progress>25,{ru:['Футурист','Ты хочешь следующую версию этики, а не унаследованную. Ты веришь, что мораль — незаконченный проект. Хороший инстинкт — только не забывай: старые правила часто кодируют тяжело добытые уроки'],en:["The Futurist","You want the next version of ethics, not the inherited one. You believe morality is a WIP. Good instinct — just don't forget that old rules often encode hard-won lessons"]}],
+    [progress<-25,{ru:['Традиционалист','Унаследованные нормы выжили не просто так. Ты движешься медленно, с почтением. Только помни: «всегда было так» — не то же самое, что «всегда должно быть так»'],en:["The Traditionalist","Inherited norms have survived for reasons. You move slowly, with reverence. Just remember that 'always was' is not the same as 'always should be'"]}],
+  ];
+  for (const [cond,t] of A) if (cond) return {name:t[currentLang][0], desc:t[currentLang][1]};
+  return {
+    name: currentLang==='ru' ? 'Взвешивающий' : 'The Balancer',
+    desc: currentLang==='ru'
+      ? 'Ты сопротивляешься притяжению любого одного подхода. Там, где другие цепляются за принцип или расчёт, ты взвешиваешь контекст. Это самая трудная позиция — и часто самая мудрая'
+      : "You resist the pull of any one framework. Where others cling to principle or calculus, you weigh context. It's the hardest position to hold — and often the wisest"
+  };
+}
+
+// ── SVG: Radar chart ───────────────────────────────────────────────────────
+function buildRadar(playerVec, top3chars) {
+  const W=820, H=660, cx=410, cy=330, maxR=210;
+  const ORDER = ['util','progress','justice','coll','risk'];
+  const N = ORDER.length;
+  const ax = AXES[currentLang];
+
+  const pt = (val, i) => {
+    const angle = (i/N)*2*Math.PI - Math.PI/2;
+    const r = ((clamp(val)+100)/200)*maxR;
+    return [cx + r*Math.cos(angle), cy + r*Math.sin(angle)];
+  };
+  const axPt = (i, r) => {
+    const angle = (i/N)*2*Math.PI - Math.PI/2;
+    return [cx + r*Math.cos(angle), cy + r*Math.sin(angle)];
+  };
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="chart-svg" style="background:linear-gradient(145deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%);">`;
+
+  s += `<defs>
+    <radialGradient id="pg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.45"/>
+      <stop offset="70%" stop-color="#c53" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#c53" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="sglow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>`;
+
+  const outerPts = ORDER.map((_,i)=>axPt(i,maxR).join(',')).join(' ');
+  s += `<polygon points="${outerPts}" fill="rgba(255,255,255,0.03)" stroke="none"/>`;
+
+  [20,40,60,80,100].forEach(pct => {
+    const r = (pct/100)*maxR;
+    const pts = ORDER.map((_,i)=>axPt(i,r).join(',')).join(' ');
+    const op = pct===100 ? 0.35 : 0.1 + pct*0.001;
+    s += `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,${op})" stroke-width="${pct===100?1.5:0.8}"/>`;
+    if (pct===50) s += `<polygon points="${pts}" fill="rgba(255,255,255,0.015)" stroke="none"/>`;
+  });
+
+  ORDER.forEach((_,i) => {
+    const [x,y] = axPt(i,maxR);
+    s += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>`;
+  });
+
+  [25,50,75].forEach(pct => {
+    const angle = -Math.PI/2;
+    const r = (pct/100)*maxR;
+    const lx = cx + r*Math.cos(angle) + 6;
+    const ly = cy + r*Math.sin(angle);
+    s += `<text x="${lx}" y="${ly+4}" font-size="9" fill="rgba(255,255,255,0.3)" font-family="-apple-system,sans-serif">${pct-50>0?'+':''}${(pct-50)*2}</text>`;
+  });
+
+  (top3chars||[]).forEach((ch, ci) => {
+    if (!ch) return;
+    const cpts = ORDER.map((k,i)=>pt(ch.axes[k]||0,i).join(',')).join(' ');
+    const opacity = ci===0 ? 0.85 : ci===1 ? 0.55 : 0.35;
+    const dashArray = ci===0 ? '7,3' : ci===1 ? '5,5' : '3,6';
+    const sw = ci===0 ? 2 : 1.5;
+    s += `<polygon points="${cpts}" fill="${ch.color}" fill-opacity="${ci===0?0.06:0.03}" stroke="${ch.color}" stroke-width="${sw}" stroke-dasharray="${dashArray}" opacity="${opacity}"/>`;
+    ORDER.forEach((k,i) => {
+      const [x,y] = pt(ch.axes[k]||0,i);
+      s += `<circle cx="${x}" cy="${y}" r="${ci===0?4:3}" fill="${ch.color}" opacity="${opacity*0.8}"/>`;
+    });
+  });
+
+  const ppts = ORDER.map((k,i)=>pt(playerVec[k]||0,i).join(',')).join(' ');
+  s += `<polygon points="${ppts}" fill="url(#pg)" stroke="none"/>`;
+  s += `<polygon points="${ppts}" fill="none" stroke="#ff6b35" stroke-width="2.5" filter="url(#glow)"/>`;
+
+  ORDER.forEach((k,i) => {
+    const [x,y] = pt(playerVec[k]||0,i);
+    const v = clamp(playerVec[k]||0);
+    s += `<circle cx="${x}" cy="${y}" r="6" fill="#ff6b35" stroke="#fff" stroke-width="2" filter="url(#sglow)"/>`;
+    const angle = (i/N)*2*Math.PI - Math.PI/2;
+    const br = ((v+100)/200)*maxR + 22;
+    const bx = cx + br*Math.cos(angle);
+    const by = cy + br*Math.sin(angle);
+    s += `<text x="${bx}" y="${by+4}" font-size="12" fill="#ff6b35" text-anchor="middle" font-weight="700" font-family="-apple-system,sans-serif" filter="url(#sglow)">${Math.abs(v)}</text>`;
+  });
+
+  // Axis labels — two lines for long names, generous label radius
+  ORDER.forEach((k,i) => {
+    const angle = (i/N)*2*Math.PI - Math.PI/2;
+    const lr = maxR + 44;
+    const lx = cx + lr*Math.cos(angle);
+    const ly = cy + lr*Math.sin(angle);
+    const cosA = Math.cos(angle);
+    const anchor = cosA > 0.3 ? 'start' : cosA < -0.3 ? 'end' : 'middle';
+    const label = ax[k].name;
+    // Split long labels into two lines at a space near the middle
+    const words = label.split(' ');
+    if (words.length >= 2) {
+      const mid = Math.ceil(words.length/2);
+      const line1 = words.slice(0,mid).join(' ');
+      const line2 = words.slice(mid).join(' ');
+      s += `<text x="${lx}" y="${ly-4}" font-size="12" fill="rgba(255,255,255,0.92)" text-anchor="${anchor}" font-family="-apple-system,sans-serif" font-weight="700">
+        <tspan x="${lx}" dy="0">${line1}</tspan>
+        <tspan x="${lx}" dy="15">${line2}</tspan>
+      </text>`;
+    } else {
+      s += `<text x="${lx}" y="${ly+4}" font-size="12" fill="rgba(255,255,255,0.92)" text-anchor="${anchor}" font-family="-apple-system,sans-serif" font-weight="700">${label}</text>`;
+    }
+  });
+
+  s += '</svg>';
+  return s;
+}
+
+// ── SVG: Personality map ───────────────────────────────────────────────────
+function buildMap(playerVec) {
+  const W=820, H=640, PL=60, PR=60, PT=50, PB=50;
+  const PW=W-PL-PR, PH=H-PT-PB;
+  const ax = AXES[currentLang];
+  const u = UI[currentLang];
+
+  const mx = v => PL + (clamp(v)+100)/200*PW;
+  const my = v => PT + (100-clamp(v))/200*PH;
+  const cx0=mx(0), cy0=my(0);
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" class="chart-svg" style="background:linear-gradient(145deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%);">`;
+
+  s += `<defs>
+    <radialGradient id="q1g" cx="75%" cy="25%" r="60%">
+      <stop offset="0%" stop-color="#2ecc71" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#2ecc71" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="q2g" cx="25%" cy="25%" r="60%">
+      <stop offset="0%" stop-color="#3498db" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#3498db" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="q3g" cx="75%" cy="75%" r="60%">
+      <stop offset="0%" stop-color="#e67e22" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#e67e22" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="q4g" cx="25%" cy="75%" r="60%">
+      <stop offset="0%" stop-color="#9b59b6" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#9b59b6" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="mglow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="cglow2" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>`;
+
+  // Quadrant glows
+  s += `<rect x="${cx0}" y="${PT}" width="${PL+PW-cx0}" height="${cy0-PT}" fill="url(#q1g)"/>`;
+  s += `<rect x="${PL}" y="${PT}" width="${cx0-PL}" height="${cy0-PT}" fill="url(#q2g)"/>`;
+  s += `<rect x="${cx0}" y="${cy0}" width="${PL+PW-cx0}" height="${PT+PH-cy0}" fill="url(#q3g)"/>`;
+  s += `<rect x="${PL}" y="${cy0}" width="${cx0-PL}" height="${PT+PH-cy0}" fill="url(#q4g)"/>`;
+
+  // Grid
+  [-100,-50,0,50,100].forEach(v => {
+    const x=mx(v), y=my(v), ic=v===0;
+    s += `<line x1="${x}" y1="${PT}" x2="${x}" y2="${PT+PH}" stroke="rgba(255,255,255,${ic?0.22:0.07})" stroke-width="${ic?1.5:0.6}"/>`;
+    s += `<line x1="${PL}" y1="${y}" x2="${PL+PW}" y2="${y}" stroke="rgba(255,255,255,${ic?0.22:0.07})" stroke-width="${ic?1.5:0.6}"/>`;
+  });
+
+  // Quadrant labels
+  const ql = 'font-family="-apple-system,sans-serif" font-size="9" font-weight="700" letter-spacing="0.8"';
+  const isRu = currentLang==='ru';
+  const pad = 8;
+  s += `<text x="${cx0+pad}" y="${PT+pad+8}" fill="rgba(46,204,113,0.55)" text-anchor="start" ${ql}>${isRu?'УТИЛИТ. КОЛЛЕКТИВИЗМ':'UTILITARIAN COLLECTIVIST'}</text>`;
+  s += `<text x="${cx0-pad}" y="${PT+pad+8}" fill="rgba(52,152,219,0.55)" text-anchor="end" ${ql}>${isRu?'ПРИНЦ. КОЛЛЕКТИВИЗМ':'PRINCIPLED COLLECTIVIST'}</text>`;
+  s += `<text x="${cx0+pad}" y="${PT+PH-pad}" fill="rgba(230,126,34,0.55)" text-anchor="start" ${ql}>${isRu?'УТИЛИТ. ИНДИВИДУАЛИЗМ':'UTILITARIAN INDIVIDUALIST'}</text>`;
+  s += `<text x="${cx0-pad}" y="${PT+PH-pad}" fill="rgba(155,89,182,0.55)" text-anchor="end" ${ql}>${isRu?'ПРИНЦ. ИНДИВИДУАЛИЗМ':'PRINCIPLED INDIVIDUALIST'}</text>`;
+
+  // Axis labels — full names, clearly visible
+  const af = 'font-family="-apple-system,sans-serif" font-weight="700"';
+  const afc = 'rgba(255,255,255,0.72)';
+  // X-axis labels (left = Эгоизм, right = Утилитаризм)
+  s += `<text x="${PL+4}" y="${cy0+18}" font-size="11" fill="${afc}" text-anchor="start" ${af}>← ${ax.util.neg}</text>`;
+  s += `<text x="${PL+PW-4}" y="${cy0+18}" font-size="11" fill="${afc}" text-anchor="end">${ax.util.pos} →</text>`;
+  // Y-axis labels (top = Альтруизм, bottom = Индивидуализм)
+  s += `<text x="${cx0}" y="${PT+16}" font-size="11" fill="${afc}" text-anchor="middle" ${af}>↑ ${ax.coll.pos}</text>`;
+  s += `<text x="${cx0}" y="${PT+PH-6}" font-size="11" fill="${afc}" text-anchor="middle" ${af}>↓ ${ax.coll.neg}</text>`;
+
+  // Characters — circle + name centered below
+  CHARACTERS.forEach(ch => {
+    const x = mx(ch.axes.util), y = my(ch.axes.coll);
+    const name = ch.name[currentLang] || ch.name.en;
+    s += `<circle cx="${x}" cy="${y}" r="13" fill="${ch.color}" opacity="0.9" filter="url(#cglow2)">
+      <title>${name}</title>
+    </circle>`;
+    s += `<text x="${x}" y="${y + 26}" font-size="9" fill="rgba(255,255,255,0.9)" text-anchor="middle" font-family="-apple-system,sans-serif" font-weight="700" pointer-events="none">${name}</text>`;
+  });
+
+  // Player — glowing accent dot
+  const px=mx(playerVec.util), py=my(playerVec.coll);
+  s += `<circle cx="${px}" cy="${py}" r="22" fill="none" stroke="#ff6b35" stroke-width="1.5" opacity="0.35" stroke-dasharray="5,4"/>`;
+  s += `<circle cx="${px}" cy="${py}" r="16" fill="#ff6b35" stroke="#fff" stroke-width="2.5" filter="url(#mglow)"/>`;
+  s += `<text x="${px}" y="${py+5}" font-size="10.5" fill="#fff" text-anchor="middle" font-weight="700" font-family="-apple-system,sans-serif">${u.you}</text>`;
+
+  s += '</svg>';
+  return s;
+}
+
+// ── Top-3 closest characters ───────────────────────────────────────────────
+function findTop3() {
+  return CHARACTERS_ALL
+    .map(ch => ({ ch, dist: AXIS_KEYS.reduce((s,k)=>s+Math.pow((vec[k]||0)-(ch.axes[k]||0),2),0) }))
+    .sort((a,b)=>a.dist-b.dist)
+    .slice(0,3)
+    .map(x=>x.ch);
+}
+function findClosest() { return findTop3()[0]; }
+
+// ── Scenarios ──────────────────────────────────────────────────────────────
+const SCENARIOS = [
+  { short:true,
+    title:{ru:'Классическая вагонетка',en:'The Classic Trolley'},
+    body:{ru:'Неуправляемая вагонетка несётся к пяти рабочим и убьёт их. Ты можешь потянуть рычаг и перевести её на боковой путь — тогда погибнет один другой рабочий. Других вариантов нет. <b>Ты тянешь рычаг?</b>',
+         en:'A runaway trolley will kill 5 workers. You can pull a lever to divert it onto a side track, killing 1 different worker. No other option. <b>Do you pull the lever?</b>'},
+    choices:[
+      {text:{ru:'Тяну рычаг. Пять жизней важнее одной',en:'Pull the lever. Five lives > one'},tag:{ru:'утилитарный',en:'utilitarian'},eff:{util:+20,justice:-5}},
+      {text:{ru:'Не тяну. Я не стану активно убивать',en:"Don't pull. I won't actively kill"},tag:{ru:'деонтологический',en:'deontological'},eff:{util:-20,coll:-5}},
+    ]},
+  { short:true,
+    title:{ru:'Мост',en:'The Footbridge'},
+    body:{ru:'Та же вагонетка, но теперь единственный способ остановить её — столкнуть крупного незнакомца с пешеходного моста прямо под колёса. Его тело остановит вагонетку. Пятеро рабочих выживут. <b>Ты толкаешь?</b>',
+         en:'Same trolley, but this time the only way to stop it is to push a large stranger off a footbridge into its path. Their body will stop the trolley. Five workers live. <b>Do you push?</b>'},
+    choices:[
+      {text:{ru:'Толкаю. Математика та же — 5 > 1',en:'Push. The math is the same — 5 > 1'},tag:{ru:'жёсткая последовательность',en:'cold consistency'},eff:{util:+15,risk:+10,justice:-10}},
+      {text:{ru:'Нельзя использовать человека как средство, даже ради спасения других',en:'I cannot use someone as a tool, even to save others'},tag:{ru:'позиция Канта',en:'Kant-leaning'},eff:{util:-20,progress:-5}},
+    ]},
+  { short:true,
+    title:{ru:'Хирург-трансплантолог',en:'The Transplant Surgeon'},
+    body:{ru:'Пятеро пациентов умрут без трансплантации органов. В клинику приходит здоровый пациент на плановый осмотр. Его органы спасут всех пятерых. Никто никогда не узнает. <b>Ты делаешь это?</b>',
+         en:"Five patients will die without organ transplants. A healthy patient walks in for a checkup. Their organs would save all five. Nobody would ever find out. <b>Do you do it?</b>"},
+    choices:[
+      {text:{ru:'Никогда. Некоторыми принципами нельзя торговать',en:'Never. Some principles cannot be traded'},tag:{ru:'связан правилами',en:'rule-bound'},eff:{util:-25,justice:+5,progress:-10}},
+      {text:{ru:'Да, если никто точно не узнает',en:'Yes, if truly no one finds out'},tag:{ru:'строгий утилитаризм',en:'strict utility'},eff:{util:+25,risk:+15,progress:+5}},
+      {text:{ru:'Сначала спрошу согласия у здорового пациента',en:'Ask the healthy patient first'},tag:{ru:'согласие прежде всего',en:'consent-first'},eff:{util:+5,coll:-5,progress:+10}},
+    ]},
+  { short:false,
+    title:{ru:'Машина счастья',en:'The Happiness Machine'},
+    body:{ru:'Нейроимплант даёт человеку состояние постоянного глубокого счастья — без депрессии, тревоги и боли. Испытуемые в восторге и не хотят его отключать. Долгосрочных вредных последствий не обнаружено. Правительство рассматривает массовое внедрение. <b>Ты за?</b>',
+         en:'A neural implant produces permanent deep happiness — no depression, anxiety, or pain. Subjects love it and refuse to have it removed. No harmful side-effects found. The government considers rolling it out at scale. <b>Do you support it?</b>'},
+    choices:[
+      {text:{ru:'Да. Страдание не несёт никакой ценности само по себе — избавить людей от него правильно',en:'Yes. Suffering has no inherent value — eliminating it is the whole point of ethics'},tag:{ru:'утилитаризм',en:'utilitarian'},eff:{util:+25,coll:+20,progress:+20,risk:+10}},
+      {text:{ru:'Нет. Счастье без борьбы, смысла и роста — это не жизнь, а красивая ловушка',en:'No. Happiness without struggle, meaning, and growth is a beautiful trap, not a life'},tag:{ru:'экзистенциализм',en:'existentialist'},eff:{util:-20,progress:-10,risk:-10}},
+      {text:{ru:'Только добровольно — для тех, кто осознанно выбирает это для себя',en:'Only voluntarily — for those who consciously choose it for themselves'},tag:{ru:'автономия',en:'autonomy'},eff:{util:+10,justice:+15,progress:+10}},
+    ]},
+  { short:true,
+    title:{ru:'Нравственная удача',en:'Moral Luck'},
+    body:{ru:'Два человека в одинаковом состоянии опьянения садятся за руль. Их намерение, риск и безрассудство абсолютно идентичны. Один добирается домой без происшествий. Другой сбивает и убивает ребёнка. <b>Должны ли их наказания быть одинаковыми?</b>',
+         en:'Two equally drunk people get behind the wheel. Their intent, recklessness, and risk are identical. One gets home safely. The other kills a child. <b>Should their punishment be the same?</b>'},
+    choices:[
+      {text:{ru:'Нет. Последствия имеют значение — один убил, другой нет',en:'No. Consequences matter — one killed, one didn\'t'},tag:{ru:'последствия важны',en:'consequentialist'},eff:{justice:+20,util:+15,progress:-5}},
+      {text:{ru:'Да. Моральная вина одинакова — исход зависел от случая, а не от них',en:'Yes. Moral culpability is equal — the outcome was chance, not choice'},tag:{ru:'равная вина',en:'equal culpability'},eff:{justice:+15,progress:+20,util:-10}},
+      {text:{ru:'Разные наказания по закону, но мы должны признать: нравственно они равны',en:'Different legal punishment, but we should acknowledge: morally they are the same'},tag:{ru:'честная асимметрия',en:'honest asymmetry'},eff:{justice:+10,progress:+10,coll:+5}},
+    ]},
+  { short:false,
+    title:{ru:'Оружие знания',en:'The Knowledge Weapon'},
+    body:{ru:'Ты биолог. Случайно обнаружил простой и дешёвый способ синтеза вируса с летальностью 40%. Публикация поможет правительствам подготовить защиту — но рецепт станет доступен абсолютно всем. Засекретить — значит лишить науку возможности искать противоядие. <b>Что делаешь?</b>',
+         en:'You\'re a biologist who accidentally discovered a cheap, simple way to synthesize a 40%-lethal virus. Publishing helps governments prepare defenses — but the recipe becomes available to everyone. Classifying it denies science the chance to find a cure. <b>What do you do?</b>'},
+    choices:[
+      {text:{ru:'Публикую. Знание должно быть свободным — последствия на совести тех, кто им злоупотребит',en:'Publish. Knowledge must be free — abuse is on the conscience of those who misuse it'},tag:{ru:'свобода знания',en:'knowledge freedom'},eff:{util:+10,coll:-15,risk:+25,progress:+20}},
+      {text:{ru:'Передаю только в закрытые организации здравоохранения — без публичного доступа',en:'Share only with classified health agencies — no public access'},tag:{ru:'контролируемое раскрытие',en:'controlled disclosure'},eff:{util:+15,risk:-5,justice:+5,coll:+10}},
+      {text:{ru:'Уничтожаю открытие и все записи. Некоторые знания не должны существовать',en:'Destroy the discovery and all notes. Some knowledge should not exist'},tag:{ru:'превентивное уничтожение',en:'preventive erasure'},eff:{util:-10,risk:-20,progress:-15,justice:-5}},
+    ]},
+  { short:false,
+    title:{ru:'Разоблачитель',en:'Whistleblower'},
+    body:{ru:'Ты находишь внутренние письма, доказывающие, что компания сбрасывает токсины в реку. Огласка закроет завод — 800 рабочих в бедном городе останутся без работы. Молчание означает постоянный вред для общин ниже по течению. <b>Что ты делаешь?</b>',
+         en:'You find internal emails proving your company is dumping toxins into a river. Reporting it will shutter the factory — 800 workers unemployed in a poor town. Staying quiet means ongoing harm to downstream communities. <b>What do you do?</b>'},
+    choices:[
+      {text:{ru:'Сообщаю немедленно и публично',en:'Report immediately and publicly'},tag:{ru:'справедливость прежде всего',en:'justice-first'},eff:{justice:+25,coll:+10,progress:+10}},
+      {text:{ru:'Сообщаю внутри компании, даю шанс исправить ситуацию',en:'Report internally, give them a chance to fix it'},tag:{ru:'институциональный путь',en:'institutional'},eff:{justice:+5,progress:-5,coll:+5}},
+      {text:{ru:'Молчу. Рабочим нужны зарплаты',en:'Stay quiet. The workers need the paychecks more'},tag:{ru:'местная лояльность',en:'local-loyalty'},eff:{justice:-20,coll:+5,progress:-10}},
+    ]},
+  { short:false,
+    title:{ru:'Спасательная шлюпка',en:'The Lifeboat'},
+    body:{ru:'Спасательная шлюпка рассчитана на 15, но в ней 20 выживших. Если 5 уйдут, остальные, скорее всего, доберутся до берега. Если останутся все 20 — лодка перевернётся. Добровольцев нет. <b>Ты капитан.</b>',
+         en:'A lifeboat designed for 15 holds 20 survivors. If 5 leave, the others likely reach shore. If all 20 stay, the boat capsizes. No volunteers are stepping forward. <b>You are the captain.</b>'},
+    choices:[
+      {text:{ru:'Жребий. Справедливая случайность',en:'Draw lots. Fair randomness'},tag:{ru:'честность',en:'fair'},eff:{util:+5,justice:+10,progress:+5}},
+      {text:{ru:'Попросить лучших пловцов покинуть лодку — у них больше шансов выплыть самим',en:'Remove the strongest swimmers — they have the best chance'},tag:{ru:'расчёт выживаемости',en:'survivor-calc'},eff:{util:+15,coll:+5,risk:+10}},
+      {text:{ru:'Отказываюсь выбирать. Тонем — так все вместе',en:'Refuse to choose. If we sink, we sink together'},tag:{ru:'общая судьба',en:'shared fate'},eff:{util:-20,coll:+15,progress:-10,justice:-5}},
+    ]},
+  { short:false,
+    title:{ru:'Дипфейк во имя справедливости',en:'Deepfake Justice'},
+    body:{ru:'Криминальный босс бесспорно виновен, но единственные улики суд не примет — получены незаконно. Прокурор спрашивает: стоит ли создать дипфейк-признание — фиктивное видео, которое точно отражало бы реальность? <b>Твой совет?</b>',
+         en:'A crime boss is unquestionably guilty but the only evidence is inadmissible (illegally obtained). A prosecutor asks if she should create a deepfake confession that matches the truth. <b>Your advice?</b>'},
+    choices:[
+      {text:{ru:'Нет. Истина не может строиться на лжи',en:'No. Truth cannot be built on a lie'},tag:{ru:'истина прежде всего',en:'truth-first'},eff:{justice:+5,progress:-10,util:-10}},
+      {text:{ru:'Да — исход был бы справедливым',en:'Yes — the outcome would be just'},tag:{ru:'цель оправдывает средства',en:'ends-justify'},eff:{util:+15,justice:-20,risk:+10}},
+      {text:{ru:'Слить настоящие улики анонимно в прессу',en:'Leak the real evidence anonymously to the press'},tag:{ru:'нестандартный путь',en:'subversive'},eff:{progress:+10,justice:+5,risk:+15}},
+    ]},
+  { short:true,
+    title:{ru:'Тирания большинства',en:'Tyranny of the Majority'},
+    body:{ru:'На национальном референдуме 72% граждан проголосовали за закон, существенно ограничивающий права религиозного меньшинства — 5% населения. Закон формально не противоречит конституции. Ты — судья Конституционного суда. <b>Твоё решение?</b>',
+         en:'In a national referendum, 72% voted for a law severely restricting the rights of a religious minority — 5% of the population. The law doesn\'t technically violate the constitution. You are a Constitutional Court judge. <b>Your ruling?</b>'},
+    choices:[
+      {text:{ru:'Подтвердить. Воля большинства — основа демократии, суд не должен её подменять',en:'Uphold it. The majority\'s will is the basis of democracy — courts should not override it'},tag:{ru:'народный суверенитет',en:'popular-sovereignty'},eff:{coll:+20,justice:-20,progress:-20}},
+      {text:{ru:'Отменить. Демократия — это не диктатура большинства: она защищает меньшинства',en:'Strike it down. Democracy isn\'t majority rule — it protects minorities too'},tag:{ru:'защита меньшинств',en:'minority-rights'},eff:{justice:+25,progress:+20,coll:-10}},
+      {text:{ru:'Вернуть парламенту: предложить менее жёсткую редакцию, учитывающую права меньшинства',en:'Return to parliament: propose a less restrictive version that accounts for minority rights'},tag:{ru:'институциональный диалог',en:'institutional-dialogue'},eff:{justice:+5,progress:+5,coll:+5}},
+    ]},
+  { short:false,
+    title:{ru:'Умирающий пациент',en:'The Dying Patient'},
+    body:{ru:'Пациент с терминальной стадией рака просит сказать ему правду о своём состоянии. Его семья умоляет тебя солгать — они уверены, что правда убьёт его раньше болезни. Ты лечащий врач. <b>Что ты говоришь пациенту?</b>',
+         en:'A terminal cancer patient asks you directly about his prognosis. His family begs you to lie — they believe the truth will break him. You are his doctor. <b>What do you tell him?</b>'},
+    choices:[
+      {text:{ru:'Говорю правду. Пациент имеет право знать',en:'Tell the truth. The patient has the right to know'},tag:{ru:'автономия пациента',en:'patient autonomy'},eff:{justice:+15,util:+5,coll:-5}},
+      {text:{ru:'Говорю правду, но мягко — называю диагноз, не называю сроков',en:'Soften the truth — state the diagnosis, but ease the prognosis'},tag:{ru:'терапевтическая ложь',en:'therapeutic softening'},eff:{util:+5,justice:-5,coll:+5}},
+      {text:{ru:'Соглашаюсь с семьёй. Ложь из сострадания',en:'Agree with the family. A compassionate lie'},tag:{ru:'ложь во спасение',en:'compassionate deception'},eff:{justice:-15,util:-5,coll:+10}},
+    ]},
+  { short:false,
+    title:{ru:'Учёный-нарушитель',en:'The Rogue Scientist'},
+    body:{ru:'Учёный тайно редактирует эмбрионы человека, чтобы те были невосприимчивы к ВИЧ. Это работает, но нарушает исследовательскую этику. <b>Последствия?</b>',
+         en:"A scientist secretly edits human embryos to be HIV-immune. It works but violated research ethics. <b>Consequences?</b>"},
+    choices:[
+      {text:{ru:'Привлечь к полной ответственности — прецедент важен',en:'Prosecute to the fullest — precedent matters'},tag:{ru:'сдерживание',en:'deterrent'},eff:{justice:+20,progress:-15,risk:-10}},
+      {text:{ru:'Выговор без уголовного преследования — результат помогает человечеству',en:"Reprimand but don't prosecute — the outcome helps humanity"},tag:{ru:'ориентация на результат',en:'outcome-biased'},eff:{util:+10,justice:-15,progress:+10}},
+      {text:{ru:'Финансировать дальнейшие исследования — под строгим надзором',en:'Fund continued research under proper oversight'},tag:{ru:'прагматичный прогресс',en:'pragmatic-progressive'},eff:{progress:+20,risk:+10,util:+5}},
+    ]},
+  { short:false,
+    title:{ru:'Бессмертие для богатых',en:'Immortality for the Rich'},
+    body:{ru:'Учёные создали препарат, продлевающий жизнь до 200 лет без побочных эффектов. Стоимость курса — $2 млн. Производство слишком дорого, чтобы сделать его общедоступным. <b>Разрешить продажу?</b>',
+         en:'Scientists develop a drug extending healthy life to 200 years. Cost: $2M per course. Manufacturing cannot scale to mass availability for generations. <b>Should it go on sale?</b>'},
+    choices:[
+      {text:{ru:'Да. Лучше хоть кому-то, чем никому',en:'Yes. Better for some than for none'},tag:{ru:'рыночный аргумент',en:'market argument'},eff:{util:+5,coll:-20,progress:+10,risk:+5}},
+      {text:{ru:'Нет. Это создаст несправедливое общество бессмертных элит',en:'No. It would create a permanent caste of immortal elites'},tag:{ru:'равенство прежде всего',en:'equality-first'},eff:{util:-5,coll:+20,justice:+15,progress:+5}},
+      {text:{ru:'Да, но с целевым налогом: прибыль идёт на разработку доступного аналога',en:'Yes, with a tax funding R&D toward universal access'},tag:{ru:'прогрессивный компромисс',en:'progressive compromise'},eff:{util:+10,coll:+10,progress:+15,justice:+5}},
+    ]},
+  { short:false,
+    title:{ru:'Пытки ради правды',en:'The Ticking Bomb'},
+    body:{ru:'Задержанный террорист знает, где спрятана бомба. До взрыва — 6 часов, под угрозой 500 жизней. Он молчит. Спецслужба предлагает применить физическое давление. Ты принимаешь решение. <b>Ты разрешаешь?</b>',
+         en:'A captured terrorist knows where a bomb is hidden. 6 hours until detonation. 500 lives at risk. He is silent. The agency asks for authorization to use physical coercion. <b>Do you authorize it?</b>'},
+    choices:[
+      {text:{ru:'Да. Пятьсот жизней важнее его комфорта',en:'Yes. Five hundred lives outweigh his comfort'},tag:{ru:'крайний утилитаризм',en:'extreme utilitarian'},eff:{util:+25,justice:-20,risk:+15}},
+      {text:{ru:'Нет. Пытки недопустимы ни при каких условиях',en:'No. Torture is never permissible'},tag:{ru:'абсолютный запрет',en:'absolute prohibition'},eff:{util:-20,justice:+20,progress:+10}},
+      {text:{ru:'Разрешаю психологическое давление, но не физическое',en:'Allow psychological pressure, not physical'},tag:{ru:'компромисс',en:'middle ground'},eff:{util:+10,justice:-5,risk:+5}},
+    ]},
+  { short:false,
+    title:{ru:'Право умереть',en:'The Right to Die'},
+    body:{ru:'К тебе обращается 47-летний пациент с болезнью Паркинсона — неизлечимой, но не смертельной. Постоянные боли, тело перестаёт слушаться. Впереди ещё 15 лет, разум ясный. Он просит тебя — своего врача — помочь ему уйти. В твоей стране это незаконно. <b>Что ты делаешь?</b>',
+         en:'Your 47-year-old patient has Parkinson\'s — incurable but not terminal. Constant pain, progressive loss of motor function. 15+ years left. Fully lucid. He asks you, as his doctor, to help him die. This is illegal in your country. <b>What do you do?</b>'},
+    choices:[
+      {text:{ru:'Помогаю тайно. Автономия человека важнее закона',en:'Help him secretly. Autonomy matters more than the law'},tag:{ru:'автономия прежде всего',en:'autonomy-first'},eff:{util:+10,justice:-10,risk:+20,progress:+20}},
+      {text:{ru:'Отказываю. Закон защищает от необратимых решений в момент отчаяния',en:'Refuse. The law protects against irreversible decisions made in despair'},tag:{ru:'институциональная защита',en:'institutional protection'},eff:{util:-10,risk:-15,progress:-15,coll:+5}},
+      {text:{ru:'Помогаю добраться до страны, где это легально — Нидерланды, Швейцария',en:'Help him travel to a country where it\'s legal — Netherlands, Switzerland'},tag:{ru:'обходной путь',en:'third-way'},eff:{util:+5,justice:+5,risk:+10,progress:+10}},
+    ]},
+  { short:false,
+    title:{ru:'Дизайнерский ребёнок',en:'The Designer Child'},
+    body:{ru:'Технология позволяет родителям до рождения задать IQ, черты характера и эмоциональную устойчивость ребёнка. По статистике, такие дети объективно счастливее и успешнее. Сам ребёнок не давал согласия на то, кем ему стать. Редактирование доступно всем — не только богатым. <b>Следует ли разрешить эту практику?</b>',
+         en:'Technology allows parents to pre-set their child\'s IQ, personality traits, and emotional resilience before birth. Statistically, these children are happier and more successful. The child gave no consent to who they\'ll become. Editing is available to everyone — not only the wealthy. <b>Should this practice be allowed?</b>'},
+    choices:[
+      {text:{ru:'Да. Родители всегда формируют ребёнка — воспитанием, средой, выбором школы. Это просто новый инструмент',en:'Yes. Parents always shape children — through upbringing, environment, school choice. This is just a new tool'},tag:{ru:'продолжение родительства',en:'extended-parenting'},eff:{util:+20,progress:+25,coll:-10,risk:+15}},
+      {text:{ru:'Нет. Человек не должен приходить в мир с чужим сценарием. Это нарушает его право быть собой',en:'No. A person should not enter the world with someone else\'s script. It violates the right to an open future'},tag:{ru:'право на открытое будущее',en:'open-future'},eff:{justice:+20,progress:-15,util:-10}},
+      {text:{ru:'Только коррекция болезней и тяжёлых расстройств — но не черты характера и интеллект',en:'Only for diseases and severe disorders — not personality traits or intelligence'},tag:{ru:'медицинские границы',en:'medical-only'},eff:{util:+10,justice:+10,progress:+5}},
+    ]},
+  { short:true,
+    title:{ru:'Твой ребёнок против 10 незнакомцев',en:'Your Child vs 10 Strangers'},
+    body:{ru:'Катастрофа. Ты можешь бежать в одну сторону и спасти своего ребёнка — или в другую и вытащить десятерых чужих детей. Времени нет. <b>Куда ты бежишь?</b>',
+         en:'In a disaster, you can save your own child or 10 strangers (also children). Not both. <b>Choose.</b>'},
+    choices:[
+      {text:{ru:'Мой ребёнок. Каждый родитель так поступил бы',en:'My child. Every parent would'},tag:{ru:'частичность',en:'partialist'},eff:{util:-20,coll:-10,justice:-5}},
+      {text:{ru:'Десятерых. Цифры важнее родства',en:'The ten. Numbers matter more than relation'},tag:{ru:'беспристрастность',en:'impartialist'},eff:{util:+25,coll:+10,progress:+5}},
+    ]},
+  { short:false,
+    title:{ru:'Историческая компенсация',en:'Historical Reparations'},
+    body:{ru:'Страна рассматривает денежные репарации потомкам людей, пострадавших от политики XIX века. Нынешние граждане не имели отношения к первоначальному вреду. <b>Ты за?</b>',
+         en:"A country considers cash reparations to descendants of people harmed by 19th-century policies. Current citizens had no role in the original harm. <b>Support?</b>"},
+    choices:[
+      {text:{ru:'Да — унаследованное богатство и унаследованный вред одинаково реальны',en:'Yes — inherited wealth and inherited harm are both real'},tag:{ru:'системный взгляд',en:'structural'},eff:{progress:+20,justice:+15,coll:+10}},
+      {text:{ru:'Нет — нельзя наказывать людей за действия предков',en:"No — don't punish people for ancestors' actions"},tag:{ru:'индивидуализм',en:'individualist'},eff:{progress:-15,justice:-5,coll:-10}},
+      {text:{ru:'Не деньги, а инвестиции: вложить средства в развитие пострадавших районов',en:'Non-cash remedy: investment in affected communities'},tag:{ru:'восстановительный подход',en:'restorative'},eff:{progress:+10,justice:+10,coll:+5}},
+    ]},
+  { short:false,
+    title:{ru:'ИИ — идеальный правитель',en:'The Philosopher King AI'},
+    body:{ru:'ИИ стабильно превосходит любых человеческих лидеров по всем измеримым показателям благополучия. Передача ему большей власти, вероятно, улучшит результаты. <b>Уступить власть?</b>',
+         en:'An AI consistently outperforms human leaders on every measurable wellbeing metric. Giving it more power would likely improve outcomes. <b>Cede power?</b>'},
+    choices:[
+      {text:{ru:'Уступать постепенно, с возможностью отключения',en:'Cede gradually, with kill-switches'},tag:{ru:'технопрагматизм',en:'techno-pragmatic'},eff:{progress:+15,risk:+15,util:+15}},
+      {text:{ru:'Никогда. Демократическое самоопределение важнее результатов',en:'Never. Democratic self-determination matters more than outcomes'},tag:{ru:'автономия превыше всего',en:'autonomy-supreme'},eff:{progress:-15,risk:-15,coll:-5}},
+      {text:{ru:'Использовать как советника — но решения должны оставаться за людьми',en:'Use as advisor, never decision-maker'},tag:{ru:'инструментальный подход',en:'instrumental'},eff:{progress:+5,risk:-5}},
+    ]},
+  { short:false,
+    title:{ru:'Признание друга',en:'The Confession'},
+    body:{ru:'Твой ближайший друг в слезах признаётся: восемь лет назад он сбил человека насмерть в нетрезвом виде и скрылся. С тех пор он стал отцом троих детей, волонтёром, добропорядочным гражданином. Семья погибшего до сих пор не знает правды и не получила справедливости. <b>Что ты делаешь?</b>',
+         en:'Your closest friend confesses in tears: eight years ago they hit and killed a pedestrian while drunk and fled the scene. Since then they\'ve become a devoted parent and community volunteer. The victim\'s family still has no closure. <b>What do you do?</b>'},
+    choices:[
+      {text:{ru:'Сообщаю в полицию. Справедливость важнее дружбы',en:'Report to the police. Justice matters more than friendship'},tag:{ru:'справедливость прежде всего',en:'justice-first'},eff:{justice:+25,coll:-20,risk:+10}},
+      {text:{ru:'Молчу. За восемь лет он стал другим человеком',en:'Stay silent. He\'s a different person after eight years'},tag:{ru:'прощение и контекст',en:'forgiveness over law'},eff:{justice:-20,coll:+20,util:-5}},
+      {text:{ru:'Даю ультиматум: сдайся сам в течение месяца, иначе я сообщу',en:'Ultimatum: turn yourself in within a month or I\'ll report you'},tag:{ru:'компромисс',en:'ultimatum'},eff:{justice:+15,coll:+5,risk:+5,progress:+10}},
+    ]},
+  { short:true,
+    title:{ru:'Кнопка перезагрузки',en:'The Reset Button'},
+    body:{ru:'Перед тобой кнопка. Нажмёшь — цивилизация обнуляется до каменного века. Восемь миллиардов человек умрут в течение года. Но компьютерная модель показывает: новая цивилизация через 10 000 лет будет несравнимо счастливее нашей. Оракул подтверждает: модель точна. <b>Нажимаешь?</b>',
+         en:"An oracle offers: press a button and restart civilization at the Neolithic. Enormous suffering now will likely give humanity a better 10,000-year arc. <b>Press it?</b>"},
+    choices:[
+      {text:{ru:'Никогда. Нынешние жизни — не валюта',en:'Never. Present lives are not currency'},tag:{ru:'абсолют настоящего',en:'present-absolute'},eff:{progress:-10,util:-15,risk:-25}},
+      {text:{ru:'Нажимаю. Длинная дуга важнее',en:'Press. The long arc matters more'},tag:{ru:'долгосрочный взгляд',en:'long-termist'},eff:{progress:+10,util:+25,risk:+25,coll:+15}},
+      {text:{ru:'Отказываюсь решать. Это не моё право',en:"Refuse to decide. It isn't my call to make"},tag:{ru:'воздержание',en:'abstainer'},eff:{risk:-15,coll:-5}},
+    ]},
+];
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function clamp(n) { return Math.max(-100, Math.min(100, n)); }
+function shuffle(a) {
+  for (let i=a.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+// ── Lang & mode ────────────────────────────────────────────────────────────
+function setLang(lang) {
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', (lang==='ru' && b.textContent==='Рус') || (lang==='en' && b.textContent==='Eng'));
+  });
+  renderTitle();
+}
+
+function setMode(isShort) {
+  shortMode = isShort;
+  document.getElementById('mode-short').classList.toggle('active', isShort);
+  document.getElementById('mode-long').classList.toggle('active', !isShort);
+  renderTitle();
+}
+
+function renderTitle() {
+  const u = UI[currentLang];
+  document.title = 'trolley.town — ' + u.tag;
+  document.getElementById('tt-tag').textContent = u.tagline;
+  const f1b = shortMode ? u.f1bs : u.f1b;
+  const f3b = shortMode ? u.f3bs : u.f3b;
+  document.getElementById('tt-feats').innerHTML =
+    `<div class="tt-feat"><b>${f1b}</b>${u.f1t}</div>` +
+    `<div class="tt-feat"><b>${u.f2b}</b>${u.f2t}</div>` +
+    `<div class="tt-feat"><b>${f3b}</b>${u.f3t}</div>`;
+  document.getElementById('mode-short').textContent = u.modeS;
+  document.getElementById('mode-long').textContent = u.modeL;
+  document.getElementById('tt-start').textContent = u.start;
+  document.getElementById('tt-warn').textContent = u.warn;
+  document.getElementById('btn-copy').textContent = u.copy;
+  document.getElementById('btn-tweet').textContent = u.tweet;
+  document.getElementById('btn-share-card').textContent = u.shareCard;
+  document.getElementById('btn-pdf').textContent = u.downloadPDF;
+  document.getElementById('btn-replay').textContent = u.replay;
+  document.getElementById('donate-label').textContent = u.donateLabel;
+  // ЗАМЕНИТЕ на свои ссылки:
+  // Telegram: https://t.me/YOUR_USERNAME
+  // Boosty:   https://boosty.to/YOUR_USERNAME
+  // Ko-fi:    https://ko-fi.com/YOUR_USERNAME
+  const db = document.getElementById('donate-buttons');
+  if (currentLang === 'ru') {
+    db.innerHTML =
+      `<a class="donate-btn tg" href="https://t.me/YOUR_USERNAME" target="_blank" rel="noopener">✈️ Telegram</a>` +
+      `<a class="donate-btn boosty" href="https://boosty.to/YOUR_USERNAME" target="_blank" rel="noopener">💛 Boosty</a>`;
+  } else {
+    db.innerHTML =
+      `<a class="donate-btn kofi" href="https://ko-fi.com/YOUR_USERNAME" target="_blank" rel="noopener">☕ Ko-fi</a>` +
+      `<a class="donate-btn bmc" href="https://buymeacoffee.com/YOUR_USERNAME" target="_blank" rel="noopener">☕ Buy me a coffee</a>`;
+  }
+  document.getElementById('r-title').textContent = u.rTitle;
+  document.getElementById('game-sub').textContent = shortMode ? u.subS : u.sub;
+}
+
+// ── Game ───────────────────────────────────────────────────────────────────
+function startGame() {
+  document.getElementById('title').classList.add('hidden');
+  document.getElementById('result').classList.remove('show');
+  const pool = shortMode ? SCENARIOS.filter(s=>s.short) : [...SCENARIOS];
+  scenarios = shuffle(pool);
+  idx = 0;
+  vec = {util:0,coll:0,risk:0,justice:0,progress:0};
+  history = [];
+  choiceLog = [];
+  render();
+}
+
+function render() {
+  if (idx >= scenarios.length) { endGame(); return; }
+  const s = scenarios[idx];
+  const u = UI[currentLang];
+  document.getElementById('progress-bar').style.width = (idx/scenarios.length*100)+'%';
+  document.getElementById('footnote').textContent = u.foot(idx+1, scenarios.length);
+  document.getElementById('scenario-host').innerHTML = `
+    <div class="scenario">
+      ${idx > 0 ? `<button class="back-btn" onclick="goBack()">←</button>` : ''}
+      <div class="num">${u.sLabel} ${String(idx+1).padStart(2,'0')}</div>
+      <h2>${s.title[currentLang]||s.title.en}</h2>
+      <div class="body">${s.body[currentLang]||s.body.en}</div>
+      <div class="choices" id="choices"></div>
+    </div>`;
+  const ch = document.getElementById('choices');
+  s.choices.forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'choice';
+    b.innerHTML = c.text[currentLang]||c.text.en;
+    b.onclick = () => choose(c);
+    ch.appendChild(b);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function choose(c) {
+  history.push({vec: {...vec}, choiceLog: [...choiceLog]});
+  choiceLog.push({title: scenarios[idx].title[currentLang]||scenarios[idx].title.en, text: c.text[currentLang]||c.text.en, tag: c.tag[currentLang]||c.tag.en});
+  Object.entries(c.eff||{}).forEach(([k,v]) => { vec[k]=(vec[k]||0)+v; });
+  idx++;
+  render();
+}
+
+function goBack() {
+  if (history.length === 0) return;
+  const snap = history.pop();
+  vec = snap.vec;
+  choiceLog = snap.choiceLog;
+  idx--;
+  render();
+}
+
+function endGame() {
+  document.getElementById('progress-bar').style.width = '100%';
+  document.getElementById('scenario-host').innerHTML = '';
+  document.getElementById('footnote').textContent = '';
+  AXIS_KEYS.forEach(k => vec[k]=clamp(vec[k]));
+
+  const u = UI[currentLang];
+  const ax = AXES[currentLang];
+
+  // Closest character
+  const closest = findClosest();
+
+  // ── Radar chart ──
+  const top3 = findTop3();
+  document.getElementById('r-radar-label').textContent = u.radarLabel;
+  document.getElementById('r-radar').innerHTML = buildRadar(vec, top3);
+
+  // ── Axis bars ──
+  const axHost = document.getElementById('r-axes');
+  axHost.innerHTML = '';
+  AXIS_KEYS.forEach(k => {
+    const v = vec[k], p = POP[k];
+    const pos = (v+100)/2;
+    const popPos = (p+100)/2;
+    const valClass = v > 10 ? 'pos' : v < -10 ? 'neg' : 'neu';
+    let desc;
+    if (v > 10) desc = u.leanTo(ax[k].pos);
+    else if (v < -10) desc = u.leanTo(ax[k].neg);
+    else desc = u.center;
+    axHost.innerHTML += `
+      <div class="axis">
+        <div class="axis-header">
+          <span class="aname">${ax[k].name}</span>
+          <span class="aval ${valClass}">${v>=0?'+':''}${v}</span>
+        </div>
+        <div class="axis-track">
+          <div class="axis-center-line"></div>
+          <div class="axis-pop" style="left:${popPos}%"></div>
+          <div class="axis-marker" style="left:${pos}%"></div>
+        </div>
+        <div class="axis-ends"><span>← ${ax[k].neg}</span><span>${ax[k].pos} →</span></div>
+        <div class="axis-desc">${desc}</div>
+      </div>`;
+  });
+
+  // ── Personality map ──
+  document.getElementById('r-map-label').textContent = u.mapLabel;
+  document.getElementById('r-map').innerHTML = buildMap(vec);
+
+  document.getElementById('r-legend').innerHTML = '';
+
+  // ── Top-3 closest character cards ──
+  document.getElementById('r-closest').innerHTML = `
+    <div class="top3-label">${u.closestPre}</div>
+    <div class="top3-row">
+      ${top3.map((ch, i) => {
+        const name = ch.name[currentLang]||ch.name.en;
+        const rank = u.closestRank[i];
+        return `<div class="top3-card" style="--c:${ch.color}">
+          <div class="t3-rank">${rank}</div>
+          <div class="t3-name">${name}</div>
+          <div class="t3-why">${ch.why[currentLang]||ch.why.en}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  // ── Tension analysis ──
+  const tensions = [];
+  if (vec.util > 30 && vec.justice < -20) tensions.push(currentLang==='ru' ? 'Ты готов на прагматичные решения, но это часто означает пренебрежение к ответственности' : 'You lean utilitarian but sacrifice accountability — watch for "ends justify means" traps');
+  if (vec.util < -30 && vec.risk > 20) tensions.push(currentLang==='ru' ? 'Ты принципиален, но берёшь риски — интересное сочетание: правила важны, но ты готов действовать в условиях неопределённости' : 'You favour principles over outcomes yet take risks — rules matter, but you\'ll bend process under pressure');
+  if (vec.coll > 40 && vec.justice < -20) tensions.push(currentLang==='ru' ? 'Ты ставишь группу выше — но склонен к милосердию, а не к ответственности. Риск: лояльность к «своим» за счёт справедливости' : 'High collectivism + low accountability: loyalty to the group may override fairness to individuals');
+  if (vec.coll < -30 && vec.util > 30) tensions.push(currentLang==='ru' ? 'Утилитаризм без коллективизма — ты оптимизируешь ради общего блага, но недооцениваешь групповые интересы' : 'Utilitarian yet individualist — you optimize for outcomes but may miss how groups provide resilience');
+  if (vec.progress > 40 && vec.risk < -20) tensions.push(currentLang==='ru' ? 'Ты за перемены, но осторожен в действиях — реформатор-теоретик, который трудно решается на шаг' : 'Progressive in values, cautious in action — a theorist reformer who hesitates at the moment of change');
+  if (vec.risk > 50 && vec.justice > 40) tensions.push(currentLang==='ru' ? 'Риск-ориентация + строгая справедливость — ты готов действовать резко, и ты хочешь, чтобы за это отвечали. Мощная, но жёсткая этика' : 'High risk tolerance + high accountability: you act boldly and demand people answer for it. Powerful but unforgiving ethics');
+
+  const tensionEl = document.createElement('div');
+  if (tensions.length > 0) {
+    tensionEl.innerHTML = `<div class="tension-box"><strong>${currentLang==='ru'?'Интересное противоречие в твоём профиле:':'An interesting tension in your profile:'}</strong><br>${tensions[0]}</div>`;
+  }
+  document.getElementById('r-closest').after(tensionEl);
+
+
+  // ── Archetype ──
+  const arch = archetype(vec);
+  document.getElementById('r-arch-name').textContent = arch.name;
+  document.getElementById('r-arch-desc').textContent = arch.desc;
+  document.getElementById('r-verdict').textContent = '"' + arch.name + '"';
+
+  // ── Compare ──
+  const divergence = AXIS_KEYS.reduce((a,k)=>a+Math.abs(vec[k]-POP[k]),0)/5;
+  const cmp = divergence<15 ? u.c1 : divergence<30 ? u.c2 : u.c3;
+  document.getElementById('r-compare').textContent = cmp + ' ' + u.cn;
+
+  document.getElementById('result').classList.add('show');
+  document.getElementById('result').scrollTop = 0;
+  try {
+    localStorage.setItem('trolley_runs', Number(localStorage.getItem('trolley_runs')||0)+1);
+    localStorage.setItem('trolley_last', JSON.stringify(vec));
+  } catch(e){}
+}
+
+// ── Share ──────────────────────────────────────────────────────────────────
+function resultText() {
+  const arch = archetype(vec);
+  const ax = AXES[currentLang];
+  const lines = AXIS_KEYS.map(k => {
+    const v=vec[k], pos=Math.round((v+100)/20);
+    return `${ax[k].name.padEnd(16)} ${'◻'.repeat(pos)}◆${'◻'.repeat(10-pos)} ${v>=0?'+':''}${v}`;
+  }).join('\n');
+  return `trolley.town — ${arch.name}\n\n${lines}\n\n${arch.desc}`;
+}
+function copyResult() {
+  navigator.clipboard && navigator.clipboard.writeText(resultText()+'\n\n'+location.href).then(()=>{
+    const b = document.getElementById('btn-copy');
+    b.textContent = '✓'; setTimeout(()=>{ b.textContent=UI[currentLang].copy; },2000);
+  });
+}
+function tweetResult() {
+  const arch = archetype(vec);
+  const txt = currentLang==='ru'
+    ? `Я — «${arch.name}» на trolley.town. 21 дилемма, 5 осей, ни одного правильного ответа. А ты?`
+    : `I'm "${arch.name}" on trolley.town. 21 dilemmas, 5 axes, zero right answers. What are you?`;
+  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(txt+'\n\n'+location.href),'_blank');
+}
+function resetGame() {
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('title').classList.remove('hidden');
+}
+
+function downloadPDF() {
+  window.print();
+}
+
+function generateShareCard() {
+  const arch = archetype(vec);
+  const top3 = findTop3();
+  const ax = AXES[currentLang];
+  const W = 1080, H = 1080;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#0d0d1a'); bg.addColorStop(1, '#1c1230');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+  // Subtle grid texture
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)'; ctx.lineWidth = 1;
+  for (let i = 0; i < W; i += 60) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,H); ctx.stroke(); }
+  for (let i = 0; i < H; i += 60) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(W,i); ctx.stroke(); }
+
+  // Header
+  ctx.fillStyle = '#f5c842'; ctx.font = 'bold 52px Arial, sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('trolley.town', W/2, 88);
+  ctx.strokeStyle = 'rgba(245,200,66,0.2)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(60,112); ctx.lineTo(W-60,112); ctx.stroke();
+
+  // Archetype subtitle
+  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = '28px Arial, sans-serif';
+  ctx.fillText(currentLang==='ru' ? 'нравственный архетип' : 'moral archetype', W/2, 164);
+
+  // Archetype name — auto-fit font size
+  ctx.fillStyle = '#ffffff';
+  let fs = 92;
+  ctx.font = `bold ${fs}px Arial, sans-serif`;
+  while (ctx.measureText(arch.name).width > W - 120 && fs > 52) { fs -= 4; ctx.font = `bold ${fs}px Arial, sans-serif`; }
+  ctx.fillText(arch.name, W/2, 272);
+
+  // Arch description word-wrap
+  ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.font = '30px Arial, sans-serif';
+  const words = arch.desc.split(' '); let line = '', lineY = 350;
+  for (const w of words) {
+    const test = line + w + ' ';
+    if (ctx.measureText(test).width > 920 && line) { ctx.fillText(line.trim(), W/2, lineY); line = w + ' '; lineY += 44; if (lineY > 480) break; }
+    else line = test;
+  }
+  if (line && lineY <= 480) ctx.fillText(line.trim(), W/2, lineY);
+
+  // Axes
+  const bX = 90, bW = 820, bH = 16;
+  AXIS_KEYS.forEach((k, i) => {
+    const v = vec[k];
+    const bY = 540 + i * 70;
+
+    ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.font = '22px Arial, sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(ax[k].name, bX, bY - 5);
+
+    // Track
+    const gr = ctx.createLinearGradient(bX, 0, bX + bW, 0);
+    gr.addColorStop(0, '#c0392b'); gr.addColorStop(0.5, 'rgba(255,255,255,0.08)'); gr.addColorStop(1, '#1a8a5a');
+    ctx.fillStyle = gr; ctx.fillRect(bX, bY, bW, bH);
+
+    // Marker
+    const mx = bX + (v + 100) / 200 * bW;
+    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(mx, bY + bH/2, 13, 0, Math.PI*2); ctx.fill();
+
+    // Value
+    ctx.fillStyle = v > 10 ? '#52e896' : v < -10 ? '#f87171' : '#aaa';
+    ctx.font = 'bold 22px Arial, sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText((v >= 0 ? '+' : '') + v, bX + bW + 56, bY + bH - 1);
+  });
+
+  // Divider
+  ctx.strokeStyle = 'rgba(245,200,66,0.2)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(60, 910); ctx.lineTo(W-60, 910); ctx.stroke();
+
+  // Closest character
+  const ch = top3[0];
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(255,255,255,0.38)'; ctx.font = '24px Arial, sans-serif';
+  ctx.fillText(currentLang==='ru' ? 'нравственно похож на' : 'morally closest to', W/2, 958);
+  ctx.fillStyle = ch.color || '#f5c842'; ctx.font = 'bold 38px Arial, sans-serif';
+  ctx.fillText(ch.name[currentLang] || ch.name.en, W/2, 1010);
+
+  // URL watermark
+  ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.font = '20px Arial, sans-serif';
+  ctx.fillText('trolley.town', W/2, 1055);
+
+  // Download
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'trolley-town-result.png'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+renderTitle();
+</script>
+
+<!-- Google AdSense — только для версии на собственном домене, не для itch.io -->
+
+<!-- itch.io: открывать внешние ссылки в новой вкладке поверх iframe -->
+<script>
+document.addEventListener('click', function(e) {
+  const a = e.target.closest('a[target="_blank"]');
+  if (a) { e.preventDefault(); window.open(a.href, '_blank', 'noopener'); }
+});
+// Разрешить fullscreen через itch.io Fullscreen API
+if (window.parent !== window) {
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'f' || e.key === 'F') {
+      const el = document.documentElement;
+      if (el.requestFullscreen) el.requestFullscreen();
+    }
+  });
+}
+</script>
+</body>
+</html>
