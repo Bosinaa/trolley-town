@@ -94,6 +94,8 @@ h1 span { color:var(--accent); font-style:italic; }
 .share button { background:var(--accent); color:#fff; border:0; padding:10px 22px; border-radius:5px; font-family:inherit; font-size:15px; cursor:pointer; }
 .share button.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
 .share button:hover { filter:brightness(1.1); }
+/* Warmup tag */
+.warmup-tag { display:inline-block; background:#e8f4e8; color:#2a7a2a; border:1px solid #b8ddb8; border-radius:4px; font-size:11px; font-family:-apple-system,sans-serif; font-weight:700; letter-spacing:2px; padding:2px 8px; text-transform:uppercase; }
 /* Back button */
 .back-btn { background:transparent; border:none; font-size:22px; color:var(--dim); cursor:pointer; padding:0 8px 0 0; line-height:1; vertical-align:middle; }
 .back-btn:hover { color:var(--ink); }
@@ -223,7 +225,7 @@ let choiceLog = []; // [{title, text, tag}]
 const UI = {
   ru: {
     tag:'какой ты человек на самом деле?',
-    tagline:'Двадцать одна моральная дилемма. Правильных ответов нет. Твои выборы рисуют карту того, кто ты есть — по пяти этическим осям. Сравни с тысячами других',
+    tagline:'Считаешь себя хорошим человеком? Проверь.',
     f1b:'21 дилемма', f1bs:'7 дилемм', f1t:'вагонетки, триаж, этика ИИ',
     f2b:'5 осей', f2t:'утилитарный ↔ деонтологический · личность ↔ коллектив · и другие',
     f3b:'~8 мин', f3bs:'~3 мин', f3t:'поделись своим отпечатком',
@@ -240,6 +242,7 @@ const UI = {
     leanTo:(s)=>`Склоняешься к «${s}»`,
     leanAw:(s)=>`Отдаляешься от «${s}»`,
     center:'Близко к центру этой оси',
+    warmupLabel:'РАЗМИНКА',
     copy:'📋 скопировать', tweet:'🐦 поделиться в X', replay:'⟳ сначала',
     shareCard:'🖼 Картинка', downloadPDF:'📄 Скачать PDF',
     donateLabel:'Игра понравилась? Поддержи проект:',
@@ -253,7 +256,7 @@ const UI = {
   },
   en: {
     tag:'what kind of person are you, really?',
-    tagline:'Twenty-one moral dilemmas. No right answers. Your choices draw a map of who you are — across five ethical axes. Compare with thousands of others',
+    tagline:'Think you\'re a good person? Prove it.',
     f1b:'21 dilemmas', f1bs:'7 dilemmas', f1t:'trolleys, triage, AI ethics',
     f2b:'5 axes', f2t:'utilitarian ↔ deontic · individual ↔ collective · and more',
     f3b:'~8 min', f3bs:'~3 min', f3t:'share your fingerprint',
@@ -270,6 +273,7 @@ const UI = {
     leanTo:(s)=>`You lean toward "${s}"`,
     leanAw:(s)=>`You lean away from "${s}"`,
     center:"You're close to center on this axis",
+    warmupLabel:'WARM-UP',
     copy:'📋 copy result', tweet:'🐦 share on X', replay:'⟳ replay',
     shareCard:'🖼 Share image', downloadPDF:'📄 Download PDF',
     donateLabel:'Enjoyed the game? Support the project:',
@@ -885,7 +889,7 @@ function findClosest() { return findTop3()[0]; }
 
 // ── Scenarios ──────────────────────────────────────────────────────────────
 const SCENARIOS = [
-  { short:true,
+  { short:true, warmup:true,
     title:{ru:'Классическая вагонетка',en:'The Classic Trolley'},
     body:{ru:'Неуправляемая вагонетка несётся к пяти рабочим и убьёт их. Ты можешь потянуть рычаг и перевести её на боковой путь — тогда погибнет один другой рабочий. Других вариантов нет. <b>Ты тянешь рычаг?</b>',
          en:'A runaway trolley will kill 5 workers. You can pull a lever to divert it onto a side track, killing 1 different worker. No other option. <b>Do you pull the lever?</b>'},
@@ -893,7 +897,7 @@ const SCENARIOS = [
       {text:{ru:'Тяну рычаг. Пять жизней важнее одной',en:'Pull the lever. Five lives > one'},tag:{ru:'утилитарный',en:'utilitarian'},eff:{util:+20,justice:-5}},
       {text:{ru:'Не тяну. Я не стану активно убивать',en:"Don't pull. I won't actively kill"},tag:{ru:'деонтологический',en:'deontological'},eff:{util:-20,coll:-5}},
     ]},
-  { short:true,
+  { short:true, warmup:true,
     title:{ru:'Мост',en:'The Footbridge'},
     body:{ru:'Та же вагонетка, но теперь единственный способ остановить её — столкнуть крупного незнакомца с пешеходного моста прямо под колёса. Его тело остановит вагонетку. Пятеро рабочих выживут. <b>Ты толкаешь?</b>',
          en:'Same trolley, but this time the only way to stop it is to push a large stranger off a footbridge into its path. Their body will stop the trolley. Five workers live. <b>Do you push?</b>'},
@@ -901,7 +905,7 @@ const SCENARIOS = [
       {text:{ru:'Толкаю. Математика та же — 5 > 1',en:'Push. The math is the same — 5 > 1'},tag:{ru:'жёсткая последовательность',en:'cold consistency'},eff:{util:+15,risk:+10,justice:-10}},
       {text:{ru:'Нельзя использовать человека как средство, даже ради спасения других',en:'I cannot use someone as a tool, even to save others'},tag:{ru:'позиция Канта',en:'Kant-leaning'},eff:{util:-20,progress:-5}},
     ]},
-  { short:true,
+  { short:true, warmup:true,
     title:{ru:'Хирург-трансплантолог',en:'The Transplant Surgeon'},
     body:{ru:'Пятеро пациентов умрут без трансплантации органов. В клинику приходит здоровый пациент на плановый осмотр. Его органы спасут всех пятерых. Никто никогда не узнает. <b>Ты делаешь это?</b>',
          en:"Five patients will die without organ transplants. A healthy patient walks in for a checkup. Their organs would save all five. Nobody would ever find out. <b>Do you do it?</b>"},
@@ -1105,7 +1109,6 @@ function renderTitle() {
   const f3b = shortMode ? u.f3bs : u.f3b;
   document.getElementById('tt-feats').innerHTML =
     `<div class="tt-feat"><b>${f1b}</b>${u.f1t}</div>` +
-    `<div class="tt-feat"><b>${u.f2b}</b>${u.f2t}</div>` +
     `<div class="tt-feat"><b>${f3b}</b>${u.f3t}</div>`;
   document.getElementById('mode-short').textContent = u.modeS;
   document.getElementById('mode-long').textContent = u.modeL;
@@ -1139,8 +1142,9 @@ function renderTitle() {
 function startGame() {
   document.getElementById('title').classList.add('hidden');
   document.getElementById('result').classList.remove('show');
-  const pool = shortMode ? SCENARIOS.filter(s=>s.short) : [...SCENARIOS];
-  scenarios = shuffle(pool);
+  const warmup = SCENARIOS.filter(s => s.warmup);
+  const rest = SCENARIOS.filter(s => !s.warmup && (shortMode ? s.short : true));
+  scenarios = [...warmup, ...shuffle(rest)];
   idx = 0;
   vec = {util:0,coll:0,risk:0,justice:0,progress:0};
   history = [];
@@ -1157,7 +1161,7 @@ function render() {
   document.getElementById('scenario-host').innerHTML = `
     <div class="scenario">
       ${idx > 0 ? `<button class="back-btn" onclick="goBack()">←</button>` : ''}
-      <div class="num">${u.sLabel} ${String(idx+1).padStart(2,'0')}</div>
+      <div class="num">${s.warmup ? `<span class="warmup-tag">${u.warmupLabel}</span>` : `${u.sLabel} ${String(idx+1).padStart(2,'0')}`}</div>
       <h2>${s.title[currentLang]||s.title.en}</h2>
       <div class="body">${s.body[currentLang]||s.body.en}</div>
       <div class="choices" id="choices"></div>
