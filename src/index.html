@@ -931,10 +931,20 @@ function buildMap(playerVec) {
   return s;
 }
 
+// ── Normalized vec (scales short-mode results to full-21 range) ───────────
+function normalizedVec() {
+  const n = scenarios ? scenarios.length : 21;
+  const scale = 21 / n;
+  const nv = {};
+  AXIS_KEYS.forEach(k => nv[k] = clamp(Math.round((vec[k]||0) * scale)));
+  return nv;
+}
+
 // ── Top-3 closest characters ───────────────────────────────────────────────
 function findTop3() {
+  const nv = normalizedVec();
   return CHARACTERS_ALL
-    .map(ch => ({ ch, dist: AXIS_KEYS.reduce((s,k)=>s+Math.pow((vec[k]||0)-(ch.axes[k]||0),2),0) }))
+    .map(ch => ({ ch, dist: AXIS_KEYS.reduce((s,k)=>s+Math.pow((nv[k]||0)-(ch.axes[k]||0),2),0) }))
     .sort((a,b)=>a.dist-b.dist)
     .slice(0,3)
     .map(x=>x.ch);
@@ -1360,14 +1370,15 @@ function endGame() {
       }).join('')}
     </div>`;
 
-  // ── Tension analysis ──
+  // ── Tension analysis (uses normalizedVec so thresholds are mode-invariant) ──
+  const nv = normalizedVec();
   const tensions = [];
-  if (vec.util > 30 && vec.justice < -20) tensions.push(currentLang==='ru' ? 'Ты готов на прагматичные решения, но это часто означает пренебрежение к ответственности' : 'You lean utilitarian but sacrifice accountability — watch for "ends justify means" traps');
-  if (vec.util < -30 && vec.risk > 20) tensions.push(currentLang==='ru' ? 'Ты принципиален, но берёшь риски — интересное сочетание: правила важны, но ты готов действовать в условиях неопределённости' : 'You favour principles over outcomes yet take risks — rules matter, but you\'ll bend process under pressure');
-  if (vec.coll > 40 && vec.justice < -20) tensions.push(currentLang==='ru' ? 'Ты ставишь группу выше — но склонен к милосердию, а не к ответственности. Риск: лояльность к «своим» за счёт справедливости' : 'High collectivism + low accountability: loyalty to the group may override fairness to individuals');
-  if (vec.coll < -30 && vec.util > 30) tensions.push(currentLang==='ru' ? 'Утилитаризм без коллективизма — ты оптимизируешь ради общего блага, но недооцениваешь групповые интересы' : 'Utilitarian yet individualist — you optimize for outcomes but may miss how groups provide resilience');
-  if (vec.progress > 40 && vec.risk < -20) tensions.push(currentLang==='ru' ? 'Ты за перемены, но осторожен в действиях — реформатор-теоретик, который трудно решается на шаг' : 'Progressive in values, cautious in action — a theorist reformer who hesitates at the moment of change');
-  if (vec.risk > 50 && vec.justice > 40) tensions.push(currentLang==='ru' ? 'Риск-ориентация + строгая справедливость — ты готов действовать резко, и ты хочешь, чтобы за это отвечали. Мощная, но жёсткая этика' : 'High risk tolerance + high accountability: you act boldly and demand people answer for it. Powerful but unforgiving ethics');
+  if (nv.util > 30 && nv.justice < -20) tensions.push(currentLang==='ru' ? 'Ты готов на прагматичные решения, но это часто означает пренебрежение к ответственности' : currentLang==='es' ? 'Te inclinás por soluciones pragmáticas, pero eso a menudo implica descuidar la responsabilidad' : 'You lean utilitarian but sacrifice accountability — watch for "ends justify means" traps');
+  if (nv.util < -30 && nv.risk > 20) tensions.push(currentLang==='ru' ? 'Ты принципиален, но берёшь риски — интересное сочетание: правила важны, но ты готов действовать в условиях неопределённости' : currentLang==='es' ? 'Eres de principios pero tomás riesgos — las reglas importan, aunque actuás bajo incertidumbre' : 'You favour principles over outcomes yet take risks — rules matter, but you\'ll bend process under pressure');
+  if (nv.coll > 40 && nv.justice < -20) tensions.push(currentLang==='ru' ? 'Ты ставишь группу выше — но склонен к милосердию, а не к ответственности. Риск: лояльность к «своим» за счёт справедливости' : currentLang==='es' ? 'Priorizás al grupo pero tendés a la clemencia: la lealtad puede eclipsar la justicia' : 'High collectivism + low accountability: loyalty to the group may override fairness to individuals');
+  if (nv.coll < -30 && nv.util > 30) tensions.push(currentLang==='ru' ? 'Утилитаризм без коллективизма — ты оптимизируешь ради общего блага, но недооцениваешь групповые интересы' : currentLang==='es' ? 'Utilitarismo sin colectivismo: optimizás para el bien común pero subestimás los intereses grupales' : 'Utilitarian yet individualist — you optimize for outcomes but may miss how groups provide resilience');
+  if (nv.progress > 40 && nv.risk < -20) tensions.push(currentLang==='ru' ? 'Ты за перемены, но осторожен в действиях — реформатор-теоретик, который трудно решается на шаг' : currentLang==='es' ? 'Progresista en valores, cauteloso en acción: un reformador teórico que duda antes de dar el paso' : 'Progressive in values, cautious in action — a theorist reformer who hesitates at the moment of change');
+  if (nv.risk > 50 && nv.justice > 40) tensions.push(currentLang==='ru' ? 'Риск-ориентация + строгая справедливость — ты готов действовать резко, и ты хочешь, чтобы за это отвечали. Мощная, но жёсткая этика' : currentLang==='es' ? 'Alta tolerancia al riesgo y exigencia de responsabilidad: actuás con determinación y no perdonás las consecuencias' : 'High risk tolerance + high accountability: you act boldly and demand people answer for it. Powerful but unforgiving ethics');
 
   const tensionEl = document.createElement('div');
   if (tensions.length > 0) {
@@ -1377,13 +1388,13 @@ function endGame() {
 
 
   // ── Archetype ──
-  const arch = archetype(vec);
+  const arch = archetype(nv);
   document.getElementById('r-arch-name').textContent = arch.name;
   document.getElementById('r-arch-desc').textContent = arch.desc;
   document.getElementById('r-verdict').textContent = '"' + arch.name + '"';
 
   // ── Compare ──
-  const divergence = AXIS_KEYS.reduce((a,k)=>a+Math.abs(vec[k]-POP[k]),0)/5;
+  const divergence = AXIS_KEYS.reduce((a,k)=>a+Math.abs(nv[k]-POP[k]),0)/5;
   const cmp = divergence<15 ? u.c1 : divergence<30 ? u.c2 : u.c3;
   document.getElementById('r-compare').textContent = cmp + ' ' + u.cn;
 
@@ -1397,7 +1408,7 @@ function endGame() {
 
 // ── Share ──────────────────────────────────────────────────────────────────
 function resultText() {
-  const arch = archetype(vec);
+  const arch = archetype(normalizedVec());
   const ax = AXES[currentLang];
   const lines = AXIS_KEYS.map(k => {
     const v=vec[k], pos=Math.round((v+100)/20);
@@ -1412,7 +1423,7 @@ function copyResult() {
   });
 }
 function tweetResult() {
-  const arch = archetype(vec);
+  const arch = archetype(normalizedVec());
   const txt = currentLang==='ru'
     ? `Я — «${arch.name}» на trolley.town. 21 дилемма, 5 осей, ни одного правильного ответа. А ты?`
     : `I'm "${arch.name}" on trolley.town. 21 dilemmas, 5 axes, zero right answers. What are you?`;
@@ -1428,7 +1439,7 @@ function downloadPDF() {
 }
 
 function generateShareCard() {
-  const arch = archetype(vec);
+  const arch = archetype(normalizedVec());
   const top3 = findTop3();
   const ax = AXES[currentLang];
   const W = 1080, H = 1080;

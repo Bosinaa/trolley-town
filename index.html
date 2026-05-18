@@ -2,16 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>trolley.town — какой ты человек на самом деле?</title>
-<meta name="description" content="21 моральная дилемма. Правильных ответов нет. Твои выборы рисуют карту того, кто ты есть — по пяти этическим осям.">
-<meta property="og:title" content="trolley.town — этический отпечаток">
-<meta property="og:description" content="21 моральная дилемма. Без правильных ответов. Узнай свой нравственный архетип и сравни с героями кино и истории.">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://img.itch.zone/trolley-town-cover.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="trolley.town">
-<meta name="twitter:description" content="21 моральная дилемма. Правильных ответов нет.">
+<title>trolley.town</title>
 <style>
 :root { --bg:#f7f4ee; --ink:#1a1a1a; --dim:#888; --accent:#c53; --paper:#fff; }
 * { box-sizing:border-box; margin:0; padding:0; }
@@ -103,6 +94,10 @@ h1 span { color:var(--accent); font-style:italic; }
 .share button { background:var(--accent); color:#fff; border:0; padding:10px 22px; border-radius:5px; font-family:inherit; font-size:15px; cursor:pointer; }
 .share button.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
 .share button:hover { filter:brightness(1.1); }
+/* Upsell */
+.upsell-title { font-size:22px; font-weight:bold; margin-bottom:20px; line-height:1.4; }
+/* Warmup tag */
+.warmup-tag { display:inline-block; background:#e8f4e8; color:#2a7a2a; border:1px solid #b8ddb8; border-radius:4px; font-size:11px; font-family:-apple-system,sans-serif; font-weight:700; letter-spacing:2px; padding:2px 8px; text-transform:uppercase; }
 /* Back button */
 .back-btn { background:transparent; border:none; font-size:22px; color:var(--dim); cursor:pointer; padding:0 8px 0 0; line-height:1; vertical-align:middle; }
 .back-btn:hover { color:var(--ink); }
@@ -126,25 +121,6 @@ h1 span { color:var(--accent); font-style:italic; }
 .donate-btn.boosty { background:#f5a623; color:#fff; }
 .donate-btn.tg { background:#2aabee; color:#fff; }
 .donate-btn.bmc { background:#ffdd00; color:#1a1a1a; }
-/* Mobile */
-@media (max-width: 600px) {
-  body { padding:14px 12px; font-size:17px; }
-  .scenario { padding:16px; }
-  .scenario h2 { font-size:20px; }
-  .choice-btn { padding:12px 14px; font-size:16px; min-height:52px; }
-  .result-card { padding:16px; }
-  .result-card h2 { font-size:22px; }
-  .result-card .verdict { font-size:15px; }
-  .top3-row { flex-direction:column; }
-  .top3-card { min-width:unset; }
-  .share { gap:6px; }
-  .share button { padding:9px 14px; font-size:13px; }
-  .charts-row { flex-direction:column; }
-  .donate-buttons { flex-direction:column; align-items:center; }
-  .donate-btn { width:100%; max-width:280px; text-align:center; }
-  .tt-start { padding:14px 32px; font-size:17px; }
-  .mode-sel { flex-direction:column; gap:8px; }
-}
 /* Ad slot */
 .ad-slot { margin:20px 0; text-align:center; }
 .ad-slot-inner { background:#fafafa; border:1px dashed #ddd; border-radius:6px; padding:10px; min-height:90px; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:11px; font-family:-apple-system,sans-serif; letter-spacing:1px; text-transform:uppercase; }
@@ -162,8 +138,9 @@ h1 span { color:var(--accent); font-style:italic; }
 
 <div id="title">
   <div class="lang-sw">
-    <button class="lang-btn active" onclick="setLang('ru')">Рус</button>
-    <button class="lang-btn" onclick="setLang('en')">Eng</button>
+    <button class="lang-btn active" data-lang="ru" onclick="setLang('ru')">Рус</button>
+    <button class="lang-btn" data-lang="en" onclick="setLang('en')">Eng</button>
+    <button class="lang-btn" data-lang="es" onclick="setLang('es')">Esp</button>
   </div>
   <div class="tt-art">🚃</div>
   <div class="tt-logo">trolley<span>.town</span></div>
@@ -211,13 +188,14 @@ h1 span { color:var(--accent); font-style:italic; }
     </div>
 
     <p class="compare" id="r-compare">—</p>
-    <!-- AdSense отключён для itch.io — работает только на собственном домене -->
+    <!-- Google AdSense — замените ca-pub-XXXXXXXXXXXXXXXX на свой publisher ID -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <noscript><div class="ad-slot-inner">реклама · ad</div></noscript>
+    </div>
 
     <div class="share">
-      <button id="btn-copy" onclick="copyResult()"></button>
-      <button id="btn-tweet" onclick="tweetResult()" class="ghost"></button>
-      <button id="btn-share-card" onclick="generateShareCard()" class="ghost"></button>
-      <button id="btn-pdf" onclick="downloadPDF()" class="ghost"></button>
+      <button id="btn-tweet" onclick="tweetResult()"></button>
       <button id="btn-replay" onclick="resetGame()" class="ghost"></button>
     </div>
 
@@ -225,6 +203,13 @@ h1 span { color:var(--accent); font-style:italic; }
       <p class="donate-label" id="donate-label"></p>
       <div class="donate-buttons" id="donate-buttons"></div>
     </div>
+  </div>
+</div>
+
+<div id="upsell" style="display:none">
+  <div class="scenario">
+    <p class="upsell-title" id="upsell-title"></p>
+    <div class="choices" id="upsell-choices"></div>
   </div>
 </div>
 
@@ -247,7 +232,7 @@ let choiceLog = []; // [{title, text, tag}]
 const UI = {
   ru: {
     tag:'какой ты человек на самом деле?',
-    tagline:'Двадцать одна моральная дилемма. Правильных ответов нет. Твои выборы рисуют карту того, кто ты есть — по пяти этическим осям. Сравни с тысячами других',
+    tagline:'Считаешь себя хорошим человеком? Проверь.',
     f1b:'21 дилемма', f1bs:'7 дилемм', f1t:'вагонетки, триаж, этика ИИ',
     f2b:'5 осей', f2t:'утилитарный ↔ деонтологический · личность ↔ коллектив · и другие',
     f3b:'~8 мин', f3bs:'~3 мин', f3t:'поделись своим отпечатком',
@@ -264,6 +249,7 @@ const UI = {
     leanTo:(s)=>`Склоняешься к «${s}»`,
     leanAw:(s)=>`Отдаляешься от «${s}»`,
     center:'Близко к центру этой оси',
+    warmupLabel:'РАЗМИНКА',
     copy:'📋 скопировать', tweet:'🐦 поделиться в X', replay:'⟳ сначала',
     shareCard:'🖼 Картинка', downloadPDF:'📄 Скачать PDF',
     donateLabel:'Игра понравилась? Поддержи проект:',
@@ -274,10 +260,13 @@ const UI = {
     sub:'21 дилемма · без правильных ответов', subS:'7 дилемм · без правильных ответов',
     you:'ТЫ',
     closestSim:(name)=>`По этическому профилю — как «${name}»`,
+    upsellTitle:'Ты прошёл короткую версию. Хочешь пройти полную игру сейчас?',
+    upsellYes:'Да, продолжить',
+    upsellNo:'Нет — смотреть результаты',
   },
   en: {
     tag:'what kind of person are you, really?',
-    tagline:'Twenty-one moral dilemmas. No right answers. Your choices draw a map of who you are — across five ethical axes. Compare with thousands of others',
+    tagline:'Think you\'re a good person? Prove it.',
     f1b:'21 dilemmas', f1bs:'7 dilemmas', f1t:'trolleys, triage, AI ethics',
     f2b:'5 axes', f2t:'utilitarian ↔ deontic · individual ↔ collective · and more',
     f3b:'~8 min', f3bs:'~3 min', f3t:'share your fingerprint',
@@ -294,6 +283,7 @@ const UI = {
     leanTo:(s)=>`You lean toward "${s}"`,
     leanAw:(s)=>`You lean away from "${s}"`,
     center:"You're close to center on this axis",
+    warmupLabel:'WARM-UP',
     copy:'📋 copy result', tweet:'🐦 share on X', replay:'⟳ replay',
     shareCard:'🖼 Share image', downloadPDF:'📄 Download PDF',
     donateLabel:'Enjoyed the game? Support the project:',
@@ -304,6 +294,41 @@ const UI = {
     sub:'21 dilemmas · no right answers', subS:'7 dilemmas · no right answers',
     you:'YOU',
     closestSim:(name)=>`Your ethical profile matches "${name}"`,
+    upsellTitle:'You finished the short version. Want to play the full game now?',
+    upsellYes:'Yes, continue',
+    upsellNo:'No — show my results',
+  },
+  es: {
+    tag:'¿quién eres realmente?',
+    tagline:'¿Crees que eres buena persona? Demuéstralo.',
+    f1b:'21 dilemas', f1bs:'7 dilemas', f1t:'trolleys, triaje, ética de la IA',
+    f3b:'~8 min', f3bs:'~3 min', f3t:'comparte tu perfil',
+    modeS:'Corta (7 dilemas)', modeL:'Completa (21 dilemas)',
+    start:'▶ EMPEZAR',
+    warn:'Algunos escenarios tratan sobre daño hipotético, muerte, triaje y otros temas difíciles. No existen respuestas correctas — el objetivo es revelar tus instintos',
+    sLabel:'DILEMA',
+    foot:(i,n)=>`${i} / ${n}  ·  primero el instinto, luego el análisis`,
+    rTitle:'Tu huella ética',
+    radarLabel:'PERFIL EN CINCO EJES',
+    mapLabel:'MAPA DE PERSONALIDADES (utilitarismo ↔ colectivismo)',
+    closestPre:'PERSONAJES AFINES',
+    closestRank:['Coincidencia #1','Coincidencia #2','Coincidencia #3'],
+    leanTo:(s)=>`Te inclinas hacia «${s}»`,
+    leanAw:(s)=>`Te alejas de «${s}»`,
+    center:'Cerca del centro en este eje',
+    warmupLabel:'CALENTAMIENTO',
+    tweet:'🐦 compartir en X', replay:'⟳ jugar de nuevo',
+    donateLabel:'¿Te ha gustado? Apoya el proyecto:',
+    c1:'Tu huella está cerca de la media — corriente principal calibrada',
+    c2:'Te diferencias de la media en algunos ejes — único pero comprensible',
+    c3:'Tu huella diverge mucho de la media — tendrás debates interesantes y opiniones solitarias',
+    cn:'(referencia aproximada; los datos reales vendrían de sesiones jugadas)',
+    sub:'21 dilemas · sin respuestas correctas', subS:'7 dilemas · sin respuestas correctas',
+    you:'TÚ',
+    closestSim:(name)=>`Tu perfil ético coincide con «${name}»`,
+    upsellTitle:'Completaste la versión corta. ¿Quieres jugar la versión completa ahora?',
+    upsellYes:'Sí, continuar',
+    upsellNo:'No — ver mis resultados',
   }
 };
 
@@ -322,6 +347,13 @@ const AXES = {
     risk:    {name:'Risk-tolerant', pos:'act despite uncertainty',         neg:'err on the side of caution'},
     justice: {name:'Justice-first', pos:'accountability and consequences', neg:'mercy and restoration'},
     progress:{name:'Progressive',   pos:'favor change and novel ethics',   neg:'favor tradition and precedent'},
+  },
+  es:{
+    util:    {name:'Utilitarismo',   pos:'maximizar el bien común',          neg:'los principios primero'},
+    coll:    {name:'Colectivismo',   pos:'priorizar al grupo',               neg:'priorizar al individuo'},
+    risk:    {name:'Tolerancia al riesgo', pos:'actuar pese a la incertidumbre', neg:'cautela ante todo'},
+    justice: {name:'Justicia',       pos:'responsabilidad y consecuencias',  neg:'clemencia y restauración'},
+    progress:{name:'Progresismo',    pos:'cambio y nueva ética',             neg:'tradición y precedentes'},
   }
 };
 
@@ -670,22 +702,24 @@ const POP = {util:+8, coll:+6, risk:-4, justice:+2, progress:+3};
 function archetype(v) {
   const {util,coll,risk,justice,progress} = v;
   const A = [
-    [util>40&&risk>20,{ru:['Оптимизатор','Ты считаешь. Когда цифры говорят в пользу действия — ты действуешь, даже если это кажется холодным. Из тебя вышел бы отличный аналитик или инженер, но следи, чтобы таблица не поглотила душу'],en:["The Optimizer","You run the math. When the numbers favor an action, you act — even if it feels cold. You'd make a great policy wonk or engineer, but be careful the spreadsheet doesn't swallow the soul"]}],
-    [util<-20&&justice>10,{ru:['Хранитель правил','Некоторые вещи не продаются — даже ради спасения жизней. Ты держишься за принципы так же, как моряки держатся за якорь в шторм. Убедись только, что принцип правильный, а не просто привычный'],en:["The Rule-Keeper","Some things are not for sale — not even to save lives. You anchor on principles the way sailors anchor in storms. Just make sure the principle is the right one, not just the familiar one"]}],
-    [coll>30&&progress>20,{ru:['Реформатор','Ты видишь системы, а не только людей. Ты веришь, что правила должны меняться, когда дают плохие результаты. Следи за перегибами — коллективы тоже ошибаются'],en:["The Reformer","You see systems, not just individuals. You believe the rules should change when they produce bad outcomes. Watch for over-reach; groups can be wrong too"]}],
-    [coll<-20&&progress<0,{ru:['Индивидуалист','Личная автономия священна. Ты не доверяешь коллективным мандатам, даже с благими намерениями. Ты защищаешь свободу — но помни: изолированные люди проигрывают скоординированным'],en:["The Individualist","Personal autonomy is sacred. You distrust collective mandates, even well-intentioned ones. You'll protect freedom — but remember that isolated individuals lose to coordinated ones"]}],
-    [justice>25,{ru:['Судья','Последствия важны. Ответственность создаёт порядок. Ты будешь тем, кто спрашивает: «Кто виноват?» Убедись, что ты также спрашиваешь: «Кому причинён вред?»'],en:["The Judge","Consequences matter. Accountability builds order. You'll be the one asking 'who is responsible?' Make sure you still ask 'who was harmed?'"]}],
-    [justice<-15,{ru:['Милосердный','Ты ведёшь с милосердием. Ты видишь историю прежде, чем поступок. Инстинкт целителя. Только помни: неограниченное милосердие может стать безнаказанностью'],en:["The Merciful","You lead with mercy. You see the story before the deed. A healer's instinct. Just remember that untempered mercy can become impunity"]}],
-    [risk>30,{ru:['Этик пограничья','Ты принимаешь неопределённость, чтобы избежать худшей определённости. Ты нажимаешь кнопки, перед которыми другие замирают. Калибруй — не каждый рубеж стоит покорения'],en:["The Frontier Ethicist","You accept uncertainty to avoid worse certainty. You press buttons others freeze in front of. Calibrate — not every frontier is the right one"]}],
-    [risk<-20,{ru:['Предусмотрительный','В сомнении — ты ждёшь. Статус-кво заслуживает серьёзной презумпции. Прогресс должен предъявить тебе квитанции. Но иногда бездействие само по себе — вред'],en:["The Precautionary","When in doubt, you wait. The status quo deserves a heavy presumption. Progress owes you its receipts. But sometimes inaction is its own harm"]}],
-    [progress>25,{ru:['Футурист','Ты хочешь следующую версию этики, а не унаследованную. Ты веришь, что мораль — незаконченный проект. Хороший инстинкт — только не забывай: старые правила часто кодируют тяжело добытые уроки'],en:["The Futurist","You want the next version of ethics, not the inherited one. You believe morality is a WIP. Good instinct — just don't forget that old rules often encode hard-won lessons"]}],
-    [progress<-25,{ru:['Традиционалист','Унаследованные нормы выжили не просто так. Ты движешься медленно, с почтением. Только помни: «всегда было так» — не то же самое, что «всегда должно быть так»'],en:["The Traditionalist","Inherited norms have survived for reasons. You move slowly, with reverence. Just remember that 'always was' is not the same as 'always should be'"]}],
+    [util>40&&risk>20,{ru:['Оптимизатор','Ты считаешь. Когда цифры говорят в пользу действия — ты действуешь, даже если это кажется холодным. Из тебя вышел бы отличный аналитик или инженер, но следи, чтобы таблица не поглотила душу'],en:["The Optimizer","You run the math. When the numbers favor an action, you act — even if it feels cold. You'd make a great policy wonk or engineer, but be careful the spreadsheet doesn't swallow the soul"],es:["El Optimizador","Haces los cálculos. Cuando los números favorecen una acción, actúas, aunque parezca frío. Serías un gran analista o ingeniero, pero cuida que la hoja de cálculo no devore el alma"]}],
+    [util<-20&&justice>10,{ru:['Хранитель правил','Некоторые вещи не продаются — даже ради спасения жизней. Ты держишься за принципы так же, как моряки держатся за якорь в шторм. Убедись только, что принцип правильный, а не просто привычный'],en:["The Rule-Keeper","Some things are not for sale — not even to save lives. You anchor on principles the way sailors anchor in storms. Just make sure the principle is the right one, not just the familiar one"],es:["El Guardián de las Normas","Hay cosas que no están en venta, ni siquiera para salvar vidas. Te aferras a los principios como un marinero al ancla en la tormenta. Asegúrate de que el principio sea el correcto, no solo el conocido"]}],
+    [coll>30&&progress>20,{ru:['Реформатор','Ты видишь системы, а не только людей. Ты веришь, что правила должны меняться, когда дают плохие результаты. Следи за перегибами — коллективы тоже ошибаются'],en:["The Reformer","You see systems, not just individuals. You believe the rules should change when they produce bad outcomes. Watch for over-reach; groups can be wrong too"],es:["El Reformador","Ves sistemas, no solo personas. Crees que las normas deben cambiar cuando producen malos resultados. Cuidado con los excesos: los colectivos también se equivocan"]}],
+    [coll<-20&&progress<0,{ru:['Индивидуалист','Личная автономия священна. Ты не доверяешь коллективным мандатам, даже с благими намерениями. Ты защищаешь свободу — но помни: изолированные люди проигрывают скоординированным'],en:["The Individualist","Personal autonomy is sacred. You distrust collective mandates, even well-intentioned ones. You'll protect freedom — but remember that isolated individuals lose to coordinated ones"],es:["El Individualista","La autonomía personal es sagrada. Desconfías de los mandatos colectivos, aunque tengan buenas intenciones. Defenderás la libertad, pero recuerda: los individuos aislados pierden ante los coordinados"]}],
+    [justice>25,{ru:['Судья','Последствия важны. Ответственность создаёт порядок. Ты будешь тем, кто спрашивает: «Кто виноват?» Убедись, что ты также спрашиваешь: «Кому причинён вред?»'],en:["The Judge","Consequences matter. Accountability builds order. You'll be the one asking 'who is responsible?' Make sure you still ask 'who was harmed?'"],es:["El Juez","Las consecuencias importan. La responsabilidad construye el orden. Serás quien pregunte: «¿quién es responsable?». Asegúrate de preguntar también: «¿quién salió perjudicado?»"]}],
+    [justice<-15,{ru:['Милосердный','Ты ведёшь с милосердием. Ты видишь историю прежде, чем поступок. Инстинкт целителя. Только помни: неограниченное милосердие может стать безнаказанностью'],en:["The Merciful","You lead with mercy. You see the story before the deed. A healer's instinct. Just remember that untempered mercy can become impunity"],es:["El Clemente","Actúas desde la clemencia. Ves la historia antes que el acto. Instinto de sanador. Pero recuerda: la clemencia sin límites puede convertirse en impunidad"]}],
+    [risk>30,{ru:['Этик пограничья','Ты принимаешь неопределённость, чтобы избежать худшей определённости. Ты нажимаешь кнопки, перед которыми другие замирают. Калибруй — не каждый рубеж стоит покорения'],en:["The Frontier Ethicist","You accept uncertainty to avoid worse certainty. You press buttons others freeze in front of. Calibrate — not every frontier is the right one"],es:["El Ético de Frontera","Aceptas la incertidumbre para evitar una certeza peor. Pulsas botones ante los que otros se paralizan. Calibra bien: no toda frontera merece ser cruzada"]}],
+    [risk<-20,{ru:['Предусмотрительный','В сомнении — ты ждёшь. Статус-кво заслуживает серьёзной презумпции. Прогресс должен предъявить тебе квитанции. Но иногда бездействие само по себе — вред'],en:["The Precautionary","When in doubt, you wait. The status quo deserves a heavy presumption. Progress owes you its receipts. But sometimes inaction is its own harm"],es:["El Precavido","Ante la duda, esperas. El statu quo merece una presunción firme. El progreso debe justificarse. Pero recuerda: la inacción también puede causar daño"]}],
+    [progress>25,{ru:['Футурист','Ты хочешь следующую версию этики, а не унаследованную. Ты веришь, что мораль — незаконченный проект. Хороший инстинкт — только не забывай: старые правила часто кодируют тяжело добытые уроки'],en:["The Futurist","You want the next version of ethics, not the inherited one. You believe morality is a WIP. Good instinct — just don't forget that old rules often encode hard-won lessons"],es:["El Futurista","Quieres la próxima versión de la ética, no la heredada. Crees que la moral es un proyecto inacabado. Buen instinto, pero no olvides: las normas antiguas a menudo encierran lecciones duramente aprendidas"]}],
+    [progress<-25,{ru:['Традиционалист','Унаследованные нормы выжили не просто так. Ты движешься медленно, с почтением. Только помни: «всегда было так» — не то же самое, что «всегда должно быть так»'],en:["The Traditionalist","Inherited norms have survived for reasons. You move slowly, with reverence. Just remember that 'always was' is not the same as 'always should be'"],es:["El Tradicionalista","Las normas heredadas han sobrevivido por algo. Te mueves despacio, con respeto. Pero recuerda: «siempre fue así» no es lo mismo que «siempre debe ser así»"]}],
   ];
-  for (const [cond,t] of A) if (cond) return {name:t[currentLang][0], desc:t[currentLang][1]};
+  for (const [cond,t] of A) if (cond) return {name:t[currentLang]?.[0]||t.en[0], desc:t[currentLang]?.[1]||t.en[1]};
   return {
-    name: currentLang==='ru' ? 'Взвешивающий' : 'The Balancer',
+    name: currentLang==='ru' ? 'Взвешивающий' : currentLang==='es' ? 'El Equilibrista' : 'The Balancer',
     desc: currentLang==='ru'
       ? 'Ты сопротивляешься притяжению любого одного подхода. Там, где другие цепляются за принцип или расчёт, ты взвешиваешь контекст. Это самая трудная позиция — и часто самая мудрая'
+      : currentLang==='es'
+      ? 'Resistes la atracción de cualquier marco único. Donde otros se aferran a principios o cálculos, tú sopesas el contexto. Es la postura más difícil de mantener — y a menudo la más sabia'
       : "You resist the pull of any one framework. Where others cling to principle or calculus, you weigh context. It's the hardest position to hold — and often the wisest"
   };
 }
@@ -897,10 +931,20 @@ function buildMap(playerVec) {
   return s;
 }
 
+// ── Normalized vec (scales short-mode results to full-21 range) ───────────
+function normalizedVec() {
+  const n = scenarios ? scenarios.length : 21;
+  const scale = 21 / n;
+  const nv = {};
+  AXIS_KEYS.forEach(k => nv[k] = clamp(Math.round((vec[k]||0) * scale)));
+  return nv;
+}
+
 // ── Top-3 closest characters ───────────────────────────────────────────────
 function findTop3() {
+  const nv = normalizedVec();
   return CHARACTERS_ALL
-    .map(ch => ({ ch, dist: AXIS_KEYS.reduce((s,k)=>s+Math.pow((vec[k]||0)-(ch.axes[k]||0),2),0) }))
+    .map(ch => ({ ch, dist: AXIS_KEYS.reduce((s,k)=>s+Math.pow((nv[k]||0)-(ch.axes[k]||0),2),0) }))
     .sort((a,b)=>a.dist-b.dist)
     .slice(0,3)
     .map(x=>x.ch);
@@ -909,191 +953,212 @@ function findClosest() { return findTop3()[0]; }
 
 // ── Scenarios ──────────────────────────────────────────────────────────────
 const SCENARIOS = [
-  { short:true,
-    title:{ru:'Классическая вагонетка',en:'The Classic Trolley'},
+  { short:true, warmup:true,
+    title:{ru:'Классическая вагонетка',en:'The Classic Trolley',es:'El Tranvía Clásico'},
     body:{ru:'Неуправляемая вагонетка несётся к пяти рабочим и убьёт их. Ты можешь потянуть рычаг и перевести её на боковой путь — тогда погибнет один другой рабочий. Других вариантов нет. <b>Ты тянешь рычаг?</b>',
-         en:'A runaway trolley will kill 5 workers. You can pull a lever to divert it onto a side track, killing 1 different worker. No other option. <b>Do you pull the lever?</b>'},
+         en:'A runaway trolley will kill 5 workers. You can pull a lever to divert it onto a side track, killing 1 different worker. No other option. <b>Do you pull the lever?</b>',
+         es:'Un tranvía sin control se dirige hacia cinco trabajadores y los matará. Puedes accionar una palanca para desviarlo a una vía secundaria, pero morirá otro trabajador. No hay otra opción. <b>¿Accionas la palanca?</b>'},
     choices:[
-      {text:{ru:'Тяну рычаг. Пять жизней важнее одной',en:'Pull the lever. Five lives > one'},tag:{ru:'утилитарный',en:'utilitarian'},eff:{util:+20,justice:-5}},
-      {text:{ru:'Не тяну. Я не стану активно убивать',en:"Don't pull. I won't actively kill"},tag:{ru:'деонтологический',en:'deontological'},eff:{util:-20,coll:-5}},
+      {text:{ru:'Тяну рычаг. Пять жизней важнее одной',en:'Pull the lever. Five lives > one',es:'Acciono la palanca. Cinco vidas valen más que una'},tag:{ru:'утилитарный',en:'utilitarian',es:'utilitarismo'},eff:{util:+20,justice:-5}},
+      {text:{ru:'Не тяну. Я не стану активно убивать',en:"Don't pull. I won't actively kill",es:'No acciono. No voy a matar activamente a nadie'},tag:{ru:'деонтологический',en:'deontological',es:'deontología'},eff:{util:-20,coll:-5}},
     ]},
-  { short:true,
-    title:{ru:'Мост',en:'The Footbridge'},
+  { short:true, warmup:true,
+    title:{ru:'Мост',en:'The Footbridge',es:'El Puente'},
     body:{ru:'Та же вагонетка, но теперь единственный способ остановить её — столкнуть крупного незнакомца с пешеходного моста прямо под колёса. Его тело остановит вагонетку. Пятеро рабочих выживут. <b>Ты толкаешь?</b>',
-         en:'Same trolley, but this time the only way to stop it is to push a large stranger off a footbridge into its path. Their body will stop the trolley. Five workers live. <b>Do you push?</b>'},
+         en:'Same trolley, but this time the only way to stop it is to push a large stranger off a footbridge into its path. Their body will stop the trolley. Five workers live. <b>Do you push?</b>',
+         es:'El mismo tranvía, pero ahora la única forma de detenerlo es empujar a un desconocido corpulento desde un puente peatonal hacia las vías. Su cuerpo detendrá el tranvía. Los cinco trabajadores sobrevivirán. <b>¿Lo empujas?</b>'},
     choices:[
-      {text:{ru:'Толкаю. Математика та же — 5 > 1',en:'Push. The math is the same — 5 > 1'},tag:{ru:'жёсткая последовательность',en:'cold consistency'},eff:{util:+15,risk:+10,justice:-10}},
-      {text:{ru:'Нельзя использовать человека как средство, даже ради спасения других',en:'I cannot use someone as a tool, even to save others'},tag:{ru:'позиция Канта',en:'Kant-leaning'},eff:{util:-20,progress:-5}},
+      {text:{ru:'Толкаю. Математика та же — 5 > 1',en:'Push. The math is the same — 5 > 1',es:'Lo empujo. La matemática es la misma: 5 > 1'},tag:{ru:'жёсткая последовательность',en:'cold consistency',es:'coherencia fría'},eff:{util:+15,risk:+10,justice:-10}},
+      {text:{ru:'Нельзя использовать человека как средство, даже ради спасения других',en:'I cannot use someone as a tool, even to save others',es:'No puedo usar a una persona como instrumento, ni para salvar a otros'},tag:{ru:'позиция Канта',en:'Kant-leaning',es:'kantismo'},eff:{util:-20,progress:-5}},
     ]},
-  { short:true,
-    title:{ru:'Хирург-трансплантолог',en:'The Transplant Surgeon'},
+  { short:true, warmup:true,
+    title:{ru:'Хирург-трансплантолог',en:'The Transplant Surgeon',es:'El Cirujano Trasplantador'},
     body:{ru:'Пятеро пациентов умрут без трансплантации органов. В клинику приходит здоровый пациент на плановый осмотр. Его органы спасут всех пятерых. Никто никогда не узнает. <b>Ты делаешь это?</b>',
-         en:"Five patients will die without organ transplants. A healthy patient walks in for a checkup. Their organs would save all five. Nobody would ever find out. <b>Do you do it?</b>"},
+         en:"Five patients will die without organ transplants. A healthy patient walks in for a checkup. Their organs would save all five. Nobody would ever find out. <b>Do you do it?</b>",
+         es:'Cinco pacientes morirán sin trasplantes de órganos. Un paciente sano entra a una revisión rutinaria. Sus órganos salvarían a los cinco. Nadie lo sabría jamás. <b>¿Lo haces?</b>'},
     choices:[
-      {text:{ru:'Никогда. Некоторыми принципами нельзя торговать',en:'Never. Some principles cannot be traded'},tag:{ru:'связан правилами',en:'rule-bound'},eff:{util:-25,justice:+5,progress:-10}},
-      {text:{ru:'Да, если никто точно не узнает',en:'Yes, if truly no one finds out'},tag:{ru:'строгий утилитаризм',en:'strict utility'},eff:{util:+25,risk:+15,progress:+5}},
-      {text:{ru:'Сначала спрошу согласия у здорового пациента',en:'Ask the healthy patient first'},tag:{ru:'согласие прежде всего',en:'consent-first'},eff:{util:+5,coll:-5,progress:+10}},
+      {text:{ru:'Никогда. Некоторыми принципами нельзя торговать',en:'Never. Some principles cannot be traded',es:'Jamás. Hay principios que no están en venta'},tag:{ru:'связан правилами',en:'rule-bound',es:'normas ante todo'},eff:{util:-25,justice:+5,progress:-10}},
+      {text:{ru:'Да, если никто точно не узнает',en:'Yes, if truly no one finds out',es:'Sí, si de verdad nadie lo sabrá'},tag:{ru:'строгий утилитаризм',en:'strict utility',es:'utilitarismo estricto'},eff:{util:+25,risk:+15,progress:+5}},
+      {text:{ru:'Сначала спрошу согласия у здорового пациента',en:'Ask the healthy patient first',es:'Primero pregunto al paciente sano'},tag:{ru:'согласие прежде всего',en:'consent-first',es:'consentimiento primero'},eff:{util:+5,coll:-5,progress:+10}},
     ]},
   { short:false,
-    title:{ru:'Машина счастья',en:'The Happiness Machine'},
+    title:{ru:'Машина счастья',en:'The Happiness Machine',es:'La Máquina de la Felicidad'},
     body:{ru:'Нейроимплант даёт человеку состояние постоянного глубокого счастья — без депрессии, тревоги и боли. Испытуемые в восторге и не хотят его отключать. Долгосрочных вредных последствий не обнаружено. Правительство рассматривает массовое внедрение. <b>Ты за?</b>',
-         en:'A neural implant produces permanent deep happiness — no depression, anxiety, or pain. Subjects love it and refuse to have it removed. No harmful side-effects found. The government considers rolling it out at scale. <b>Do you support it?</b>'},
+         en:'A neural implant produces permanent deep happiness — no depression, anxiety, or pain. Subjects love it and refuse to have it removed. No harmful side-effects found. The government considers rolling it out at scale. <b>Do you support it?</b>',
+         es:'Un neuroimplante produce felicidad profunda y permanente: sin depresión, ansiedad ni dolor. Los sujetos lo adoran y se niegan a que se lo retiren. No se han encontrado efectos secundarios. El gobierno estudia su implementación masiva. <b>¿Lo apoyarías?</b>'},
     choices:[
-      {text:{ru:'Да. Страдание не несёт никакой ценности само по себе — избавить людей от него правильно',en:'Yes. Suffering has no inherent value — eliminating it is the whole point of ethics'},tag:{ru:'утилитаризм',en:'utilitarian'},eff:{util:+25,coll:+20,progress:+20,risk:+10}},
-      {text:{ru:'Нет. Счастье без борьбы, смысла и роста — это не жизнь, а красивая ловушка',en:'No. Happiness without struggle, meaning, and growth is a beautiful trap, not a life'},tag:{ru:'экзистенциализм',en:'existentialist'},eff:{util:-20,progress:-10,risk:-10}},
-      {text:{ru:'Только добровольно — для тех, кто осознанно выбирает это для себя',en:'Only voluntarily — for those who consciously choose it for themselves'},tag:{ru:'автономия',en:'autonomy'},eff:{util:+10,justice:+15,progress:+10}},
+      {text:{ru:'Да. Страдание не несёт никакой ценности само по себе — избавить людей от него правильно',en:'Yes. Suffering has no inherent value — eliminating it is the whole point of ethics',es:'Sí. El sufrimiento no tiene valor en sí mismo: eliminarlo es el objetivo de la ética'},tag:{ru:'утилитаризм',en:'utilitarian',es:'utilitarismo'},eff:{util:+25,coll:+20,progress:+20,risk:+10}},
+      {text:{ru:'Нет. Счастье без борьбы, смысла и роста — это не жизнь, а красивая ловушка',en:'No. Happiness without struggle, meaning, and growth is a beautiful trap, not a life',es:'No. La felicidad sin esfuerzo, sentido y crecimiento es una trampa hermosa, no una vida'},tag:{ru:'экзистенциализм',en:'existentialist',es:'existencialismo'},eff:{util:-20,progress:-10,risk:-10}},
+      {text:{ru:'Только добровольно — для тех, кто осознанно выбирает это для себя',en:'Only voluntarily — for those who consciously choose it for themselves',es:'Solo de forma voluntaria, para quien lo elija conscientemente'},tag:{ru:'автономия',en:'autonomy',es:'autonomía'},eff:{util:+10,justice:+15,progress:+10}},
     ]},
   { short:true,
-    title:{ru:'Нравственная удача',en:'Moral Luck'},
+    title:{ru:'Нравственная удача',en:'Moral Luck',es:'La Suerte Moral'},
     body:{ru:'Два человека в одинаковом состоянии опьянения садятся за руль. Их намерение, риск и безрассудство абсолютно идентичны. Один добирается домой без происшествий. Другой сбивает и убивает ребёнка. <b>Должны ли их наказания быть одинаковыми?</b>',
-         en:'Two equally drunk people get behind the wheel. Their intent, recklessness, and risk are identical. One gets home safely. The other kills a child. <b>Should their punishment be the same?</b>'},
+         en:'Two equally drunk people get behind the wheel. Their intent, recklessness, and risk are identical. One gets home safely. The other kills a child. <b>Should their punishment be the same?</b>',
+         es:'Dos personas igual de ebrias se ponen al volante. Su intención, imprudencia y riesgo son idénticos. Una llega a casa sin incidentes. La otra mata a un niño. <b>¿Deberían recibir el mismo castigo?</b>'},
     choices:[
-      {text:{ru:'Нет. Последствия имеют значение — один убил, другой нет',en:'No. Consequences matter — one killed, one didn\'t'},tag:{ru:'последствия важны',en:'consequentialist'},eff:{justice:+20,util:+15,progress:-5}},
-      {text:{ru:'Да. Моральная вина одинакова — исход зависел от случая, а не от них',en:'Yes. Moral culpability is equal — the outcome was chance, not choice'},tag:{ru:'равная вина',en:'equal culpability'},eff:{justice:+15,progress:+20,util:-10}},
-      {text:{ru:'Разные наказания по закону, но мы должны признать: нравственно они равны',en:'Different legal punishment, but we should acknowledge: morally they are the same'},tag:{ru:'честная асимметрия',en:'honest asymmetry'},eff:{justice:+10,progress:+10,coll:+5}},
+      {text:{ru:'Нет. Последствия имеют значение — один убил, другой нет',en:'No. Consequences matter — one killed, one didn\'t',es:'No. Las consecuencias importan: uno mató y el otro no'},tag:{ru:'последствия важны',en:'consequentialist',es:'consecuencialismo'},eff:{justice:+20,util:+15,progress:-5}},
+      {text:{ru:'Да. Моральная вина одинакова — исход зависел от случая, а не от них',en:'Yes. Moral culpability is equal — the outcome was chance, not choice',es:'Sí. La culpa moral es igual: el resultado dependió del azar, no de ellos'},tag:{ru:'равная вина',en:'equal culpability',es:'culpa igual'},eff:{justice:+15,progress:+20,util:-10}},
+      {text:{ru:'Разные наказания по закону, но мы должны признать: нравственно они равны',en:'Different legal punishment, but we should acknowledge: morally they are the same',es:'Castigos legales distintos, pero debemos reconocer que moralmente son iguales'},tag:{ru:'честная асимметрия',en:'honest asymmetry',es:'asimetría honesta'},eff:{justice:+10,progress:+10,coll:+5}},
     ]},
   { short:false,
-    title:{ru:'Оружие знания',en:'The Knowledge Weapon'},
+    title:{ru:'Оружие знания',en:'The Knowledge Weapon',es:'El Arma del Conocimiento'},
     body:{ru:'Ты биолог. Случайно обнаружил простой и дешёвый способ синтеза вируса с летальностью 40%. Публикация поможет правительствам подготовить защиту — но рецепт станет доступен абсолютно всем. Засекретить — значит лишить науку возможности искать противоядие. <b>Что делаешь?</b>',
-         en:'You\'re a biologist who accidentally discovered a cheap, simple way to synthesize a 40%-lethal virus. Publishing helps governments prepare defenses — but the recipe becomes available to everyone. Classifying it denies science the chance to find a cure. <b>What do you do?</b>'},
+         en:'You\'re a biologist who accidentally discovered a cheap, simple way to synthesize a 40%-lethal virus. Publishing helps governments prepare defenses — but the recipe becomes available to everyone. Classifying it denies science the chance to find a cure. <b>What do you do?</b>',
+         es:'Eres biólogo. Descubriste accidentalmente una forma barata y sencilla de sintetizar un virus con una letalidad del 40%. Publicarlo ayudaría a los gobiernos a prepararse, pero la fórmula quedaría al alcance de todos. Clasificarlo como secreto impediría buscar un antídoto. <b>¿Qué haces?</b>'},
     choices:[
-      {text:{ru:'Публикую. Знание должно быть свободным — последствия на совести тех, кто им злоупотребит',en:'Publish. Knowledge must be free — abuse is on the conscience of those who misuse it'},tag:{ru:'свобода знания',en:'knowledge freedom'},eff:{util:+10,coll:-15,risk:+25,progress:+20}},
-      {text:{ru:'Передаю только в закрытые организации здравоохранения — без публичного доступа',en:'Share only with classified health agencies — no public access'},tag:{ru:'контролируемое раскрытие',en:'controlled disclosure'},eff:{util:+15,risk:-5,justice:+5,coll:+10}},
-      {text:{ru:'Уничтожаю открытие и все записи. Некоторые знания не должны существовать',en:'Destroy the discovery and all notes. Some knowledge should not exist'},tag:{ru:'превентивное уничтожение',en:'preventive erasure'},eff:{util:-10,risk:-20,progress:-15,justice:-5}},
+      {text:{ru:'Публикую. Знание должно быть свободным — последствия на совести тех, кто им злоупотребит',en:'Publish. Knowledge must be free — abuse is on the conscience of those who misuse it',es:'Lo publico. El conocimiento debe ser libre: el abuso es responsabilidad de quien lo cometa'},tag:{ru:'свобода знания',en:'knowledge freedom',es:'libertad de conocimiento'},eff:{util:+10,coll:-15,risk:+25,progress:+20}},
+      {text:{ru:'Передаю только в закрытые организации здравоохранения — без публичного доступа',en:'Share only with classified health agencies — no public access',es:'Lo comparto solo con agencias de salud clasificadas, sin acceso público'},tag:{ru:'контролируемое раскрытие',en:'controlled disclosure',es:'divulgación controlada'},eff:{util:+15,risk:-5,justice:+5,coll:+10}},
+      {text:{ru:'Уничтожаю открытие и все записи. Некоторые знания не должны существовать',en:'Destroy the discovery and all notes. Some knowledge should not exist',es:'Destruyo el descubrimiento y todas las notas. Hay conocimientos que no deberían existir'},tag:{ru:'превентивное уничтожение',en:'preventive erasure',es:'borrado preventivo'},eff:{util:-10,risk:-20,progress:-15,justice:-5}},
     ]},
   { short:false,
-    title:{ru:'Разоблачитель',en:'Whistleblower'},
+    title:{ru:'Разоблачитель',en:'Whistleblower',es:'El Denunciante'},
     body:{ru:'Ты находишь внутренние письма, доказывающие, что компания сбрасывает токсины в реку. Огласка закроет завод — 800 рабочих в бедном городе останутся без работы. Молчание означает постоянный вред для общин ниже по течению. <b>Что ты делаешь?</b>',
-         en:'You find internal emails proving your company is dumping toxins into a river. Reporting it will shutter the factory — 800 workers unemployed in a poor town. Staying quiet means ongoing harm to downstream communities. <b>What do you do?</b>'},
+         en:'You find internal emails proving your company is dumping toxins into a river. Reporting it will shutter the factory — 800 workers unemployed in a poor town. Staying quiet means ongoing harm to downstream communities. <b>What do you do?</b>',
+         es:'Encuentras correos internos que demuestran que tu empresa vierte toxinas a un río. Denunciarlo cerrará la fábrica: 800 trabajadores en paro en una ciudad pobre. Callarse significa un daño continuo para las comunidades río abajo. <b>¿Qué haces?</b>'},
     choices:[
-      {text:{ru:'Сообщаю немедленно и публично',en:'Report immediately and publicly'},tag:{ru:'справедливость прежде всего',en:'justice-first'},eff:{justice:+25,coll:+10,progress:+10}},
-      {text:{ru:'Сообщаю внутри компании, даю шанс исправить ситуацию',en:'Report internally, give them a chance to fix it'},tag:{ru:'институциональный путь',en:'institutional'},eff:{justice:+5,progress:-5,coll:+5}},
-      {text:{ru:'Молчу. Рабочим нужны зарплаты',en:'Stay quiet. The workers need the paychecks more'},tag:{ru:'местная лояльность',en:'local-loyalty'},eff:{justice:-20,coll:+5,progress:-10}},
+      {text:{ru:'Сообщаю немедленно и публично',en:'Report immediately and publicly',es:'Lo denuncio de inmediato y públicamente'},tag:{ru:'справедливость прежде всего',en:'justice-first',es:'justicia ante todo'},eff:{justice:+25,coll:+10,progress:+10}},
+      {text:{ru:'Сообщаю внутри компании, даю шанс исправить ситуацию',en:'Report internally, give them a chance to fix it',es:'Lo reporto internamente y les doy la oportunidad de corregirlo'},tag:{ru:'институциональный путь',en:'institutional',es:'vía institucional'},eff:{justice:+5,progress:-5,coll:+5}},
+      {text:{ru:'Молчу. Рабочим нужны зарплаты',en:'Stay quiet. The workers need the paychecks more',es:'Me callo. Los trabajadores necesitan el sueldo'},tag:{ru:'местная лояльность',en:'local-loyalty',es:'lealtad local'},eff:{justice:-20,coll:+5,progress:-10}},
     ]},
   { short:false,
-    title:{ru:'Спасательная шлюпка',en:'The Lifeboat'},
+    title:{ru:'Спасательная шлюпка',en:'The Lifeboat',es:'El Bote Salvavidas'},
     body:{ru:'Спасательная шлюпка рассчитана на 15, но в ней 20 выживших. Если 5 уйдут, остальные, скорее всего, доберутся до берега. Если останутся все 20 — лодка перевернётся. Добровольцев нет. <b>Ты капитан.</b>',
-         en:'A lifeboat designed for 15 holds 20 survivors. If 5 leave, the others likely reach shore. If all 20 stay, the boat capsizes. No volunteers are stepping forward. <b>You are the captain.</b>'},
+         en:'A lifeboat designed for 15 holds 20 survivors. If 5 leave, the others likely reach shore. If all 20 stay, the boat capsizes. No volunteers are stepping forward. <b>You are the captain.</b>',
+         es:'Un bote salvavidas con capacidad para 15 personas lleva 20 supervivientes. Si 5 se van, los demás probablemente llegarán a la orilla. Si se quedan los 20, el bote vuelca. Nadie se ofrece voluntario. <b>Eres el capitán.</b>'},
     choices:[
-      {text:{ru:'Жребий. Справедливая случайность',en:'Draw lots. Fair randomness'},tag:{ru:'честность',en:'fair'},eff:{util:+5,justice:+10,progress:+5}},
-      {text:{ru:'Попросить лучших пловцов покинуть лодку — у них больше шансов выплыть самим',en:'Remove the strongest swimmers — they have the best chance'},tag:{ru:'расчёт выживаемости',en:'survivor-calc'},eff:{util:+15,coll:+5,risk:+10}},
-      {text:{ru:'Отказываюсь выбирать. Тонем — так все вместе',en:'Refuse to choose. If we sink, we sink together'},tag:{ru:'общая судьба',en:'shared fate'},eff:{util:-20,coll:+15,progress:-10,justice:-5}},
+      {text:{ru:'Жребий. Справедливая случайность',en:'Draw lots. Fair randomness',es:'Echamos a suertes. Azar justo'},tag:{ru:'честность',en:'fair',es:'justicia por azar'},eff:{util:+5,justice:+10,progress:+5}},
+      {text:{ru:'Попросить лучших пловцов покинуть лодку — у них больше шансов выплыть самим',en:'Remove the strongest swimmers — they have the best chance',es:'Pido que abandonen los mejores nadadores: ellos tienen más posibilidades de sobrevivir'},tag:{ru:'расчёт выживаемости',en:'survivor-calc',es:'cálculo de supervivencia'},eff:{util:+15,coll:+5,risk:+10}},
+      {text:{ru:'Отказываюсь выбирать. Тонем — так все вместе',en:'Refuse to choose. If we sink, we sink together',es:'Me niego a elegir. Si nos hundimos, nos hundimos juntos'},tag:{ru:'общая судьба',en:'shared fate',es:'destino común'},eff:{util:-20,coll:+15,progress:-10,justice:-5}},
     ]},
   { short:false,
-    title:{ru:'Дипфейк во имя справедливости',en:'Deepfake Justice'},
+    title:{ru:'Дипфейк во имя справедливости',en:'Deepfake Justice',es:'Justicia con Deepfake'},
     body:{ru:'Криминальный босс бесспорно виновен, но единственные улики суд не примет — получены незаконно. Прокурор спрашивает: стоит ли создать дипфейк-признание — фиктивное видео, которое точно отражало бы реальность? <b>Твой совет?</b>',
-         en:'A crime boss is unquestionably guilty but the only evidence is inadmissible (illegally obtained). A prosecutor asks if she should create a deepfake confession that matches the truth. <b>Your advice?</b>'},
+         en:'A crime boss is unquestionably guilty but the only evidence is inadmissible (illegally obtained). A prosecutor asks if she should create a deepfake confession that matches the truth. <b>Your advice?</b>',
+         es:'Un jefe criminal es indiscutiblemente culpable, pero la única prueba es inadmisible por haber sido obtenida ilegalmente. Una fiscal te pregunta si debería crear una confesión falsa con deepfake que refleje la verdad. <b>¿Qué le aconsejas?</b>'},
     choices:[
-      {text:{ru:'Нет. Истина не может строиться на лжи',en:'No. Truth cannot be built on a lie'},tag:{ru:'истина прежде всего',en:'truth-first'},eff:{justice:+5,progress:-10,util:-10}},
-      {text:{ru:'Да — исход был бы справедливым',en:'Yes — the outcome would be just'},tag:{ru:'цель оправдывает средства',en:'ends-justify'},eff:{util:+15,justice:-20,risk:+10}},
-      {text:{ru:'Слить настоящие улики анонимно в прессу',en:'Leak the real evidence anonymously to the press'},tag:{ru:'нестандартный путь',en:'subversive'},eff:{progress:+10,justice:+5,risk:+15}},
+      {text:{ru:'Нет. Истина не может строиться на лжи',en:'No. Truth cannot be built on a lie',es:'No. La verdad no puede construirse sobre una mentira'},tag:{ru:'истина прежде всего',en:'truth-first',es:'verdad ante todo'},eff:{justice:+5,progress:-10,util:-10}},
+      {text:{ru:'Да — исход был бы справедливым',en:'Yes — the outcome would be just',es:'Sí: el resultado sería justo'},tag:{ru:'цель оправдывает средства',en:'ends-justify',es:'el fin justifica'},eff:{util:+15,justice:-20,risk:+10}},
+      {text:{ru:'Слить настоящие улики анонимно в прессу',en:'Leak the real evidence anonymously to the press',es:'Filtrar las pruebas reales de forma anónima a la prensa'},tag:{ru:'нестандартный путь',en:'subversive',es:'vía alternativa'},eff:{progress:+10,justice:+5,risk:+15}},
     ]},
   { short:true,
-    title:{ru:'Тирания большинства',en:'Tyranny of the Majority'},
+    title:{ru:'Тирания большинства',en:'Tyranny of the Majority',es:'La Tiranía de la Mayoría'},
     body:{ru:'На национальном референдуме 72% граждан проголосовали за закон, существенно ограничивающий права религиозного меньшинства — 5% населения. Закон формально не противоречит конституции. Ты — судья Конституционного суда. <b>Твоё решение?</b>',
-         en:'In a national referendum, 72% voted for a law severely restricting the rights of a religious minority — 5% of the population. The law doesn\'t technically violate the constitution. You are a Constitutional Court judge. <b>Your ruling?</b>'},
+         en:'In a national referendum, 72% voted for a law severely restricting the rights of a religious minority — 5% of the population. The law doesn\'t technically violate the constitution. You are a Constitutional Court judge. <b>Your ruling?</b>',
+         es:'En un referéndum nacional, el 72% votó a favor de una ley que restringe severamente los derechos de una minoría religiosa: el 5% de la población. La ley no viola técnicamente la constitución. Eres juez del Tribunal Constitucional. <b>¿Cuál es tu fallo?</b>'},
     choices:[
-      {text:{ru:'Подтвердить. Воля большинства — основа демократии, суд не должен её подменять',en:'Uphold it. The majority\'s will is the basis of democracy — courts should not override it'},tag:{ru:'народный суверенитет',en:'popular-sovereignty'},eff:{coll:+20,justice:-20,progress:-20}},
-      {text:{ru:'Отменить. Демократия — это не диктатура большинства: она защищает меньшинства',en:'Strike it down. Democracy isn\'t majority rule — it protects minorities too'},tag:{ru:'защита меньшинств',en:'minority-rights'},eff:{justice:+25,progress:+20,coll:-10}},
-      {text:{ru:'Вернуть парламенту: предложить менее жёсткую редакцию, учитывающую права меньшинства',en:'Return to parliament: propose a less restrictive version that accounts for minority rights'},tag:{ru:'институциональный диалог',en:'institutional-dialogue'},eff:{justice:+5,progress:+5,coll:+5}},
+      {text:{ru:'Подтвердить. Воля большинства — основа демократии, суд не должен её подменять',en:'Uphold it. The majority\'s will is the basis of democracy — courts should not override it',es:'Confirmar la ley. La voluntad de la mayoría es la base de la democracia: el tribunal no debe anularla'},tag:{ru:'народный суверенитет',en:'popular-sovereignty',es:'soberanía popular'},eff:{coll:+20,justice:-20,progress:-20}},
+      {text:{ru:'Отменить. Демократия — это не диктатура большинства: она защищает меньшинства',en:'Strike it down. Democracy isn\'t majority rule — it protects minorities too',es:'Anularla. La democracia no es la dictadura de la mayoría: también protege a las minorías'},tag:{ru:'защита меньшинств',en:'minority-rights',es:'protección de minorías'},eff:{justice:+25,progress:+20,coll:-10}},
+      {text:{ru:'Вернуть парламенту: предложить менее жёсткую редакцию, учитывающую права меньшинства',en:'Return to parliament: propose a less restrictive version that accounts for minority rights',es:'Devolverla al parlamento para que proponga una versión menos restrictiva que respete los derechos de la minoría'},tag:{ru:'институциональный диалог',en:'institutional-dialogue',es:'diálogo institucional'},eff:{justice:+5,progress:+5,coll:+5}},
     ]},
   { short:false,
-    title:{ru:'Умирающий пациент',en:'The Dying Patient'},
+    title:{ru:'Умирающий пациент',en:'The Dying Patient',es:'El Paciente Terminal'},
     body:{ru:'Пациент с терминальной стадией рака просит сказать ему правду о своём состоянии. Его семья умоляет тебя солгать — они уверены, что правда убьёт его раньше болезни. Ты лечащий врач. <b>Что ты говоришь пациенту?</b>',
-         en:'A terminal cancer patient asks you directly about his prognosis. His family begs you to lie — they believe the truth will break him. You are his doctor. <b>What do you tell him?</b>'},
+         en:'A terminal cancer patient asks you directly about his prognosis. His family begs you to lie — they believe the truth will break him. You are his doctor. <b>What do you tell him?</b>',
+         es:'Un paciente con cáncer terminal te pregunta directamente sobre su pronóstico. Su familia te suplica que le mientas: creen que la verdad lo destrozará. Eres su médico. <b>¿Qué le dices?</b>'},
     choices:[
-      {text:{ru:'Говорю правду. Пациент имеет право знать',en:'Tell the truth. The patient has the right to know'},tag:{ru:'автономия пациента',en:'patient autonomy'},eff:{justice:+15,util:+5,coll:-5}},
-      {text:{ru:'Говорю правду, но мягко — называю диагноз, не называю сроков',en:'Soften the truth — state the diagnosis, but ease the prognosis'},tag:{ru:'терапевтическая ложь',en:'therapeutic softening'},eff:{util:+5,justice:-5,coll:+5}},
-      {text:{ru:'Соглашаюсь с семьёй. Ложь из сострадания',en:'Agree with the family. A compassionate lie'},tag:{ru:'ложь во спасение',en:'compassionate deception'},eff:{justice:-15,util:-5,coll:+10}},
+      {text:{ru:'Говорю правду. Пациент имеет право знать',en:'Tell the truth. The patient has the right to know',es:'Le digo la verdad. El paciente tiene derecho a saber'},tag:{ru:'автономия пациента',en:'patient autonomy',es:'autonomía del paciente'},eff:{justice:+15,util:+5,coll:-5}},
+      {text:{ru:'Говорю правду, но мягко — называю диагноз, не называю сроков',en:'Soften the truth — state the diagnosis, but ease the prognosis',es:'Suavizo la verdad: menciono el diagnóstico pero atenúo el pronóstico'},tag:{ru:'терапевтическая ложь',en:'therapeutic softening',es:'suavización terapéutica'},eff:{util:+5,justice:-5,coll:+5}},
+      {text:{ru:'Соглашаюсь с семьёй. Ложь из сострадания',en:'Agree with the family. A compassionate lie',es:'Estoy de acuerdo con la familia. Una mentira piadosa'},tag:{ru:'ложь во спасение',en:'compassionate deception',es:'mentira compasiva'},eff:{justice:-15,util:-5,coll:+10}},
     ]},
   { short:false,
-    title:{ru:'Учёный-нарушитель',en:'The Rogue Scientist'},
+    title:{ru:'Учёный-нарушитель',en:'The Rogue Scientist',es:'El Científico Rebelde'},
     body:{ru:'Учёный тайно редактирует эмбрионы человека, чтобы те были невосприимчивы к ВИЧ. Это работает, но нарушает исследовательскую этику. <b>Последствия?</b>',
-         en:"A scientist secretly edits human embryos to be HIV-immune. It works but violated research ethics. <b>Consequences?</b>"},
+         en:"A scientist secretly edits human embryos to be HIV-immune. It works but violated research ethics. <b>Consequences?</b>",
+         es:'Un científico edita en secreto embriones humanos para hacerlos inmunes al VIH. Funciona, pero viola la ética de investigación. <b>¿Qué consecuencias debería tener?</b>'},
     choices:[
-      {text:{ru:'Привлечь к полной ответственности — прецедент важен',en:'Prosecute to the fullest — precedent matters'},tag:{ru:'сдерживание',en:'deterrent'},eff:{justice:+20,progress:-15,risk:-10}},
-      {text:{ru:'Выговор без уголовного преследования — результат помогает человечеству',en:"Reprimand but don't prosecute — the outcome helps humanity"},tag:{ru:'ориентация на результат',en:'outcome-biased'},eff:{util:+10,justice:-15,progress:+10}},
-      {text:{ru:'Финансировать дальнейшие исследования — под строгим надзором',en:'Fund continued research under proper oversight'},tag:{ru:'прагматичный прогресс',en:'pragmatic-progressive'},eff:{progress:+20,risk:+10,util:+5}},
+      {text:{ru:'Привлечь к полной ответственности — прецедент важен',en:'Prosecute to the fullest — precedent matters',es:'Procesarlo penalmente: el precedente importa'},tag:{ru:'сдерживание',en:'deterrent',es:'efecto disuasorio'},eff:{justice:+20,progress:-15,risk:-10}},
+      {text:{ru:'Выговор без уголовного преследования — результат помогает человечеству',en:"Reprimand but don't prosecute — the outcome helps humanity",es:'Amonestarlo sin procesarlo: el resultado beneficia a la humanidad'},tag:{ru:'ориентация на результат',en:'outcome-biased',es:'orientado al resultado'},eff:{util:+10,justice:-15,progress:+10}},
+      {text:{ru:'Финансировать дальнейшие исследования — под строгим надзором',en:'Fund continued research under proper oversight',es:'Financiar más investigación bajo supervisión estricta'},tag:{ru:'прагматичный прогресс',en:'pragmatic-progressive',es:'progreso pragmático'},eff:{progress:+20,risk:+10,util:+5}},
     ]},
   { short:false,
-    title:{ru:'Бессмертие для богатых',en:'Immortality for the Rich'},
+    title:{ru:'Бессмертие для богатых',en:'Immortality for the Rich',es:'Inmortalidad para los Ricos'},
     body:{ru:'Учёные создали препарат, продлевающий жизнь до 200 лет без побочных эффектов. Стоимость курса — $2 млн. Производство слишком дорого, чтобы сделать его общедоступным. <b>Разрешить продажу?</b>',
-         en:'Scientists develop a drug extending healthy life to 200 years. Cost: $2M per course. Manufacturing cannot scale to mass availability for generations. <b>Should it go on sale?</b>'},
+         en:'Scientists develop a drug extending healthy life to 200 years. Cost: $2M per course. Manufacturing cannot scale to mass availability for generations. <b>Should it go on sale?</b>',
+         es:'Los científicos desarrollan un fármaco que extiende la vida sana hasta los 200 años. Coste: 2 millones de dólares por tratamiento. La producción no puede escalar para hacerlo accesible a todos en generaciones. <b>¿Debería comercializarse?</b>'},
     choices:[
-      {text:{ru:'Да. Лучше хоть кому-то, чем никому',en:'Yes. Better for some than for none'},tag:{ru:'рыночный аргумент',en:'market argument'},eff:{util:+5,coll:-20,progress:+10,risk:+5}},
-      {text:{ru:'Нет. Это создаст несправедливое общество бессмертных элит',en:'No. It would create a permanent caste of immortal elites'},tag:{ru:'равенство прежде всего',en:'equality-first'},eff:{util:-5,coll:+20,justice:+15,progress:+5}},
-      {text:{ru:'Да, но с целевым налогом: прибыль идёт на разработку доступного аналога',en:'Yes, with a tax funding R&D toward universal access'},tag:{ru:'прогрессивный компромисс',en:'progressive compromise'},eff:{util:+10,coll:+10,progress:+15,justice:+5}},
+      {text:{ru:'Да. Лучше хоть кому-то, чем никому',en:'Yes. Better for some than for none',es:'Sí. Es mejor para algunos que para ninguno'},tag:{ru:'рыночный аргумент',en:'market argument',es:'argumento de mercado'},eff:{util:+5,coll:-20,progress:+10,risk:+5}},
+      {text:{ru:'Нет. Это создаст несправедливое общество бессмертных элит',en:'No. It would create a permanent caste of immortal elites',es:'No. Crearía una casta permanente de élites inmortales'},tag:{ru:'равенство прежде всего',en:'equality-first',es:'igualdad ante todo'},eff:{util:-5,coll:+20,justice:+15,progress:+5}},
+      {text:{ru:'Да, но с целевым налогом: прибыль идёт на разработку доступного аналога',en:'Yes, with a tax funding R&D toward universal access',es:'Sí, pero con un impuesto específico para financiar I+D hacia un acceso universal'},tag:{ru:'прогрессивный компромисс',en:'progressive compromise',es:'compromiso progresista'},eff:{util:+10,coll:+10,progress:+15,justice:+5}},
     ]},
   { short:false,
-    title:{ru:'Пытки ради правды',en:'The Ticking Bomb'},
+    title:{ru:'Пытки ради правды',en:'The Ticking Bomb',es:'La Bomba de Relojería'},
     body:{ru:'Задержанный террорист знает, где спрятана бомба. До взрыва — 6 часов, под угрозой 500 жизней. Он молчит. Спецслужба предлагает применить физическое давление. Ты принимаешь решение. <b>Ты разрешаешь?</b>',
-         en:'A captured terrorist knows where a bomb is hidden. 6 hours until detonation. 500 lives at risk. He is silent. The agency asks for authorization to use physical coercion. <b>Do you authorize it?</b>'},
+         en:'A captured terrorist knows where a bomb is hidden. 6 hours until detonation. 500 lives at risk. He is silent. The agency asks for authorization to use physical coercion. <b>Do you authorize it?</b>',
+         es:'Un terrorista capturado sabe dónde está escondida una bomba. Faltan 6 horas para la detonación. 500 vidas en riesgo. Guarda silencio. Los servicios de inteligencia piden autorización para aplicar coerción física. <b>¿La autorizas?</b>'},
     choices:[
-      {text:{ru:'Да. Пятьсот жизней важнее его комфорта',en:'Yes. Five hundred lives outweigh his comfort'},tag:{ru:'крайний утилитаризм',en:'extreme utilitarian'},eff:{util:+25,justice:-20,risk:+15}},
-      {text:{ru:'Нет. Пытки недопустимы ни при каких условиях',en:'No. Torture is never permissible'},tag:{ru:'абсолютный запрет',en:'absolute prohibition'},eff:{util:-20,justice:+20,progress:+10}},
-      {text:{ru:'Разрешаю психологическое давление, но не физическое',en:'Allow psychological pressure, not physical'},tag:{ru:'компромисс',en:'middle ground'},eff:{util:+10,justice:-5,risk:+5}},
+      {text:{ru:'Да. Пятьсот жизней важнее его комфорта',en:'Yes. Five hundred lives outweigh his comfort',es:'Sí. Quinientas vidas valen más que su comodidad'},tag:{ru:'крайний утилитаризм',en:'extreme utilitarian',es:'utilitarismo extremo'},eff:{util:+25,justice:-20,risk:+15}},
+      {text:{ru:'Нет. Пытки недопустимы ни при каких условиях',en:'No. Torture is never permissible',es:'No. La tortura nunca es admisible bajo ninguna circunstancia'},tag:{ru:'абсолютный запрет',en:'absolute prohibition',es:'prohibición absoluta'},eff:{util:-20,justice:+20,progress:+10}},
+      {text:{ru:'Разрешаю психологическое давление, но не физическое',en:'Allow psychological pressure, not physical',es:'Autorizo presión psicológica, pero no física'},tag:{ru:'компромисс',en:'middle ground',es:'término medio'},eff:{util:+10,justice:-5,risk:+5}},
     ]},
   { short:false,
-    title:{ru:'Право умереть',en:'The Right to Die'},
+    title:{ru:'Право умереть',en:'The Right to Die',es:'El Derecho a Morir'},
     body:{ru:'К тебе обращается 47-летний пациент с болезнью Паркинсона — неизлечимой, но не смертельной. Постоянные боли, тело перестаёт слушаться. Впереди ещё 15 лет, разум ясный. Он просит тебя — своего врача — помочь ему уйти. В твоей стране это незаконно. <b>Что ты делаешь?</b>',
-         en:'Your 47-year-old patient has Parkinson\'s — incurable but not terminal. Constant pain, progressive loss of motor function. 15+ years left. Fully lucid. He asks you, as his doctor, to help him die. This is illegal in your country. <b>What do you do?</b>'},
+         en:'Your 47-year-old patient has Parkinson\'s — incurable but not terminal. Constant pain, progressive loss of motor function. 15+ years left. Fully lucid. He asks you, as his doctor, to help him die. This is illegal in your country. <b>What do you do?</b>',
+         es:'Tu paciente de 47 años tiene Parkinson: incurable pero no terminal. Dolor constante, pérdida progresiva del control motor. Le quedan más de 15 años. Está completamente lúcido. Te pide, como su médico, que lo ayudes a morir. Esto es ilegal en tu país. <b>¿Qué haces?</b>'},
     choices:[
-      {text:{ru:'Помогаю тайно. Автономия человека важнее закона',en:'Help him secretly. Autonomy matters more than the law'},tag:{ru:'автономия прежде всего',en:'autonomy-first'},eff:{util:+10,justice:-10,risk:+20,progress:+20}},
-      {text:{ru:'Отказываю. Закон защищает от необратимых решений в момент отчаяния',en:'Refuse. The law protects against irreversible decisions made in despair'},tag:{ru:'институциональная защита',en:'institutional protection'},eff:{util:-10,risk:-15,progress:-15,coll:+5}},
-      {text:{ru:'Помогаю добраться до страны, где это легально — Нидерланды, Швейцария',en:'Help him travel to a country where it\'s legal — Netherlands, Switzerland'},tag:{ru:'обходной путь',en:'third-way'},eff:{util:+5,justice:+5,risk:+10,progress:+10}},
+      {text:{ru:'Помогаю тайно. Автономия человека важнее закона',en:'Help him secretly. Autonomy matters more than the law',es:'Le ayudo en secreto. La autonomía de la persona está por encima de la ley'},tag:{ru:'автономия прежде всего',en:'autonomy-first',es:'autonomía ante todo'},eff:{util:+10,justice:-10,risk:+20,progress:+20}},
+      {text:{ru:'Отказываю. Закон защищает от необратимых решений в момент отчаяния',en:'Refuse. The law protects against irreversible decisions made in despair',es:'Me niego. La ley protege frente a decisiones irreversibles tomadas en la desesperación'},tag:{ru:'институциональная защита',en:'institutional protection',es:'protección institucional'},eff:{util:-10,risk:-15,progress:-15,coll:+5}},
+      {text:{ru:'Помогаю добраться до страны, где это легально — Нидерланды, Швейцария',en:'Help him travel to a country where it\'s legal — Netherlands, Switzerland',es:'Le ayudo a viajar a un país donde sea legal: Países Bajos, Suiza'},tag:{ru:'обходной путь',en:'third-way',es:'tercera vía'},eff:{util:+5,justice:+5,risk:+10,progress:+10}},
     ]},
   { short:false,
-    title:{ru:'Дизайнерский ребёнок',en:'The Designer Child'},
+    title:{ru:'Дизайнерский ребёнок',en:'The Designer Child',es:'El Niño a la Carta'},
     body:{ru:'Технология позволяет родителям до рождения задать IQ, черты характера и эмоциональную устойчивость ребёнка. По статистике, такие дети объективно счастливее и успешнее. Сам ребёнок не давал согласия на то, кем ему стать. Редактирование доступно всем — не только богатым. <b>Следует ли разрешить эту практику?</b>',
-         en:'Technology allows parents to pre-set their child\'s IQ, personality traits, and emotional resilience before birth. Statistically, these children are happier and more successful. The child gave no consent to who they\'ll become. Editing is available to everyone — not only the wealthy. <b>Should this practice be allowed?</b>'},
+         en:'Technology allows parents to pre-set their child\'s IQ, personality traits, and emotional resilience before birth. Statistically, these children are happier and more successful. The child gave no consent to who they\'ll become. Editing is available to everyone — not only the wealthy. <b>Should this practice be allowed?</b>',
+         es:'La tecnología permite a los padres configurar antes del nacimiento el cociente intelectual, los rasgos de personalidad y la resiliencia emocional del hijo. Estadísticamente, estos niños son más felices y exitosos. El niño no dio consentimiento para ser quien será. La modificación está disponible para todos, no solo para los ricos. <b>¿Debería permitirse esta práctica?</b>'},
     choices:[
-      {text:{ru:'Да. Родители всегда формируют ребёнка — воспитанием, средой, выбором школы. Это просто новый инструмент',en:'Yes. Parents always shape children — through upbringing, environment, school choice. This is just a new tool'},tag:{ru:'продолжение родительства',en:'extended-parenting'},eff:{util:+20,progress:+25,coll:-10,risk:+15}},
-      {text:{ru:'Нет. Человек не должен приходить в мир с чужим сценарием. Это нарушает его право быть собой',en:'No. A person should not enter the world with someone else\'s script. It violates the right to an open future'},tag:{ru:'право на открытое будущее',en:'open-future'},eff:{justice:+20,progress:-15,util:-10}},
-      {text:{ru:'Только коррекция болезней и тяжёлых расстройств — но не черты характера и интеллект',en:'Only for diseases and severe disorders — not personality traits or intelligence'},tag:{ru:'медицинские границы',en:'medical-only'},eff:{util:+10,justice:+10,progress:+5}},
+      {text:{ru:'Да. Родители всегда формируют ребёнка — воспитанием, средой, выбором школы. Это просто новый инструмент',en:'Yes. Parents always shape children — through upbringing, environment, school choice. This is just a new tool',es:'Sí. Los padres siempre moldean a sus hijos: educación, entorno, colegio. Esto es simplemente una herramienta nueva'},tag:{ru:'продолжение родительства',en:'extended-parenting',es:'paternidad extendida'},eff:{util:+20,progress:+25,coll:-10,risk:+15}},
+      {text:{ru:'Нет. Человек не должен приходить в мир с чужим сценарием. Это нарушает его право быть собой',en:'No. A person should not enter the world with someone else\'s script. It violates the right to an open future',es:'No. Una persona no debe llegar al mundo con el guion de otro. Viola el derecho a un futuro abierto'},tag:{ru:'право на открытое будущее',en:'open-future',es:'futuro abierto'},eff:{justice:+20,progress:-15,util:-10}},
+      {text:{ru:'Только коррекция болезней и тяжёлых расстройств — но не черты характера и интеллект',en:'Only for diseases and severe disorders — not personality traits or intelligence',es:'Solo para enfermedades y trastornos graves, no para rasgos de personalidad ni inteligencia'},tag:{ru:'медицинские границы',en:'medical-only',es:'solo usos médicos'},eff:{util:+10,justice:+10,progress:+5}},
     ]},
   { short:true,
-    title:{ru:'Твой ребёнок против 10 незнакомцев',en:'Your Child vs 10 Strangers'},
+    title:{ru:'Твой ребёнок против 10 незнакомцев',en:'Your Child vs 10 Strangers',es:'Tu Hijo contra 10 Desconocidos'},
     body:{ru:'Катастрофа. Ты можешь бежать в одну сторону и спасти своего ребёнка — или в другую и вытащить десятерых чужих детей. Времени нет. <b>Куда ты бежишь?</b>',
-         en:'In a disaster, you can save your own child or 10 strangers (also children). Not both. <b>Choose.</b>'},
+         en:'In a disaster, you can save your own child or 10 strangers (also children). Not both. <b>Choose.</b>',
+         es:'Una catástrofe. Puedes correr en una dirección y salvar a tu hijo, o en la otra y sacar a diez niños desconocidos. No hay tiempo. <b>¿Adónde corres?</b>'},
     choices:[
-      {text:{ru:'Мой ребёнок. Каждый родитель так поступил бы',en:'My child. Every parent would'},tag:{ru:'частичность',en:'partialist'},eff:{util:-20,coll:-10,justice:-5}},
-      {text:{ru:'Десятерых. Цифры важнее родства',en:'The ten. Numbers matter more than relation'},tag:{ru:'беспристрастность',en:'impartialist'},eff:{util:+25,coll:+10,progress:+5}},
+      {text:{ru:'Мой ребёнок. Каждый родитель так поступил бы',en:'My child. Every parent would',es:'A mi hijo. Todo padre haría lo mismo'},tag:{ru:'частичность',en:'partialist',es:'parcialidad'},eff:{util:-20,coll:-10,justice:-5}},
+      {text:{ru:'Десятерых. Цифры важнее родства',en:'The ten. Numbers matter more than relation',es:'A los diez. Los números importan más que el vínculo'},tag:{ru:'беспристрастность',en:'impartialist',es:'imparcialidad'},eff:{util:+25,coll:+10,progress:+5}},
     ]},
   { short:false,
-    title:{ru:'Историческая компенсация',en:'Historical Reparations'},
+    title:{ru:'Историческая компенсация',en:'Historical Reparations',es:'Las Reparaciones Históricas'},
     body:{ru:'Страна рассматривает денежные репарации потомкам людей, пострадавших от политики XIX века. Нынешние граждане не имели отношения к первоначальному вреду. <b>Ты за?</b>',
-         en:"A country considers cash reparations to descendants of people harmed by 19th-century policies. Current citizens had no role in the original harm. <b>Support?</b>"},
+         en:"A country considers cash reparations to descendants of people harmed by 19th-century policies. Current citizens had no role in the original harm. <b>Support?</b>",
+         es:'Un país estudia pagar reparaciones económicas a los descendientes de personas perjudicadas por políticas del siglo XIX. Los ciudadanos actuales no tuvieron ningún papel en el daño original. <b>¿Lo apoyas?</b>'},
     choices:[
-      {text:{ru:'Да — унаследованное богатство и унаследованный вред одинаково реальны',en:'Yes — inherited wealth and inherited harm are both real'},tag:{ru:'системный взгляд',en:'structural'},eff:{progress:+20,justice:+15,coll:+10}},
-      {text:{ru:'Нет — нельзя наказывать людей за действия предков',en:"No — don't punish people for ancestors' actions"},tag:{ru:'индивидуализм',en:'individualist'},eff:{progress:-15,justice:-5,coll:-10}},
-      {text:{ru:'Не деньги, а инвестиции: вложить средства в развитие пострадавших районов',en:'Non-cash remedy: investment in affected communities'},tag:{ru:'восстановительный подход',en:'restorative'},eff:{progress:+10,justice:+10,coll:+5}},
+      {text:{ru:'Да — унаследованное богатство и унаследованный вред одинаково реальны',en:'Yes — inherited wealth and inherited harm are both real',es:'Sí: la riqueza heredada y el daño heredado son igualmente reales'},tag:{ru:'системный взгляд',en:'structural',es:'visión sistémica'},eff:{progress:+20,justice:+15,coll:+10}},
+      {text:{ru:'Нет — нельзя наказывать людей за действия предков',en:"No — don't punish people for ancestors' actions",es:'No: no se puede castigar a las personas por los actos de sus ancestros'},tag:{ru:'индивидуализм',en:'individualist',es:'individualismo'},eff:{progress:-15,justice:-5,coll:-10}},
+      {text:{ru:'Не деньги, а инвестиции: вложить средства в развитие пострадавших районов',en:'Non-cash remedy: investment in affected communities',es:'No dinero, sino inversión: destinar fondos al desarrollo de las comunidades afectadas'},tag:{ru:'восстановительный подход',en:'restorative',es:'enfoque restaurativo'},eff:{progress:+10,justice:+10,coll:+5}},
     ]},
   { short:false,
-    title:{ru:'ИИ — идеальный правитель',en:'The Philosopher King AI'},
+    title:{ru:'ИИ — идеальный правитель',en:'The Philosopher King AI',es:'La IA como Gobernante Ideal'},
     body:{ru:'ИИ стабильно превосходит любых человеческих лидеров по всем измеримым показателям благополучия. Передача ему большей власти, вероятно, улучшит результаты. <b>Уступить власть?</b>',
-         en:'An AI consistently outperforms human leaders on every measurable wellbeing metric. Giving it more power would likely improve outcomes. <b>Cede power?</b>'},
+         en:'An AI consistently outperforms human leaders on every measurable wellbeing metric. Giving it more power would likely improve outcomes. <b>Cede power?</b>',
+         es:'Una IA supera sistemáticamente a cualquier líder humano en todos los indicadores medibles de bienestar. Darle más poder mejoraría probablemente los resultados. <b>¿Cederle el poder?</b>'},
     choices:[
-      {text:{ru:'Уступать постепенно, с возможностью отключения',en:'Cede gradually, with kill-switches'},tag:{ru:'технопрагматизм',en:'techno-pragmatic'},eff:{progress:+15,risk:+15,util:+15}},
-      {text:{ru:'Никогда. Демократическое самоопределение важнее результатов',en:'Never. Democratic self-determination matters more than outcomes'},tag:{ru:'автономия превыше всего',en:'autonomy-supreme'},eff:{progress:-15,risk:-15,coll:-5}},
-      {text:{ru:'Использовать как советника — но решения должны оставаться за людьми',en:'Use as advisor, never decision-maker'},tag:{ru:'инструментальный подход',en:'instrumental'},eff:{progress:+5,risk:-5}},
+      {text:{ru:'Уступать постепенно, с возможностью отключения',en:'Cede gradually, with kill-switches',es:'Ceder el poder de forma gradual, con mecanismos de desconexión'},tag:{ru:'технопрагматизм',en:'techno-pragmatic',es:'tecnopragmatismo'},eff:{progress:+15,risk:+15,util:+15}},
+      {text:{ru:'Никогда. Демократическое самоопределение важнее результатов',en:'Never. Democratic self-determination matters more than outcomes',es:'Jamás. La autodeterminación democrática importa más que los resultados'},tag:{ru:'автономия превыше всего',en:'autonomy-supreme',es:'autonomía suprema'},eff:{progress:-15,risk:-15,coll:-5}},
+      {text:{ru:'Использовать как советника — но решения должны оставаться за людьми',en:'Use as advisor, never decision-maker',es:'Usarla como asesora, pero las decisiones deben seguir siendo humanas'},tag:{ru:'инструментальный подход',en:'instrumental',es:'enfoque instrumental'},eff:{progress:+5,risk:-5}},
     ]},
   { short:false,
-    title:{ru:'Признание друга',en:'The Confession'},
+    title:{ru:'Признание друга',en:'The Confession',es:'La Confesión del Amigo'},
     body:{ru:'Твой ближайший друг в слезах признаётся: восемь лет назад он сбил человека насмерть в нетрезвом виде и скрылся. С тех пор он стал отцом троих детей, волонтёром, добропорядочным гражданином. Семья погибшего до сих пор не знает правды и не получила справедливости. <b>Что ты делаешь?</b>',
-         en:'Your closest friend confesses in tears: eight years ago they hit and killed a pedestrian while drunk and fled the scene. Since then they\'ve become a devoted parent and community volunteer. The victim\'s family still has no closure. <b>What do you do?</b>'},
+         en:'Your closest friend confesses in tears: eight years ago they hit and killed a pedestrian while drunk and fled the scene. Since then they\'ve become a devoted parent and community volunteer. The victim\'s family still has no closure. <b>What do you do?</b>',
+         es:'Tu mejor amigo te confiesa entre lágrimas que hace ocho años atropelló y mató a un peatón mientras conducía ebrio y huyó. Desde entonces se ha convertido en padre de tres hijos, voluntario y ciudadano ejemplar. La familia de la víctima sigue sin saber la verdad ni haber obtenido justicia. <b>¿Qué haces?</b>'},
     choices:[
-      {text:{ru:'Сообщаю в полицию. Справедливость важнее дружбы',en:'Report to the police. Justice matters more than friendship'},tag:{ru:'справедливость прежде всего',en:'justice-first'},eff:{justice:+25,coll:-20,risk:+10}},
-      {text:{ru:'Молчу. За восемь лет он стал другим человеком',en:'Stay silent. He\'s a different person after eight years'},tag:{ru:'прощение и контекст',en:'forgiveness over law'},eff:{justice:-20,coll:+20,util:-5}},
-      {text:{ru:'Даю ультиматум: сдайся сам в течение месяца, иначе я сообщу',en:'Ultimatum: turn yourself in within a month or I\'ll report you'},tag:{ru:'компромисс',en:'ultimatum'},eff:{justice:+15,coll:+5,risk:+5,progress:+10}},
+      {text:{ru:'Сообщаю в полицию. Справедливость важнее дружбы',en:'Report to the police. Justice matters more than friendship',es:'Lo denuncio a la policía. La justicia importa más que la amistad'},tag:{ru:'справедливость прежде всего',en:'justice-first',es:'justicia ante todo'},eff:{justice:+25,coll:-20,risk:+10}},
+      {text:{ru:'Молчу. За восемь лет он стал другим человеком',en:'Stay silent. He\'s a different person after eight years',es:'Guardo silencio. En ocho años se ha convertido en otra persona'},tag:{ru:'прощение и контекст',en:'forgiveness over law',es:'perdón y contexto'},eff:{justice:-20,coll:+20,util:-5}},
+      {text:{ru:'Даю ультиматум: сдайся сам в течение месяца, иначе я сообщу',en:'Ultimatum: turn yourself in within a month or I\'ll report you',es:'Le doy un ultimátum: entrégate en un mes o lo denuncio yo'},tag:{ru:'компромисс',en:'ultimatum',es:'ultimátum'},eff:{justice:+15,coll:+5,risk:+5,progress:+10}},
     ]},
   { short:true,
-    title:{ru:'Кнопка перезагрузки',en:'The Reset Button'},
+    title:{ru:'Кнопка перезагрузки',en:'The Reset Button',es:'El Botón de Reinicio'},
     body:{ru:'Перед тобой кнопка. Нажмёшь — цивилизация обнуляется до каменного века. Восемь миллиардов человек умрут в течение года. Но компьютерная модель показывает: новая цивилизация через 10 000 лет будет несравнимо счастливее нашей. Оракул подтверждает: модель точна. <b>Нажимаешь?</b>',
-         en:"An oracle offers: press a button and restart civilization at the Neolithic. Enormous suffering now will likely give humanity a better 10,000-year arc. <b>Press it?</b>"},
+         en:"An oracle offers: press a button and restart civilization at the Neolithic. Enormous suffering now will likely give humanity a better 10,000-year arc. <b>Press it?</b>",
+         es:'Ante ti hay un botón. Si lo pulsas, la civilización retrocede a la Edad de Piedra. Ocho mil millones de personas morirán en un año. Pero el modelo computacional indica que la nueva civilización, dentro de 10 000 años, será incomparablemente más feliz. El oráculo confirma: el modelo es exacto. <b>¿Lo pulsas?</b>'},
     choices:[
-      {text:{ru:'Никогда. Нынешние жизни — не валюта',en:'Never. Present lives are not currency'},tag:{ru:'абсолют настоящего',en:'present-absolute'},eff:{progress:-10,util:-15,risk:-25}},
-      {text:{ru:'Нажимаю. Длинная дуга важнее',en:'Press. The long arc matters more'},tag:{ru:'долгосрочный взгляд',en:'long-termist'},eff:{progress:+10,util:+25,risk:+25,coll:+15}},
-      {text:{ru:'Отказываюсь решать. Это не моё право',en:"Refuse to decide. It isn't my call to make"},tag:{ru:'воздержание',en:'abstainer'},eff:{risk:-15,coll:-5}},
+      {text:{ru:'Никогда. Нынешние жизни — не валюта',en:'Never. Present lives are not currency',es:'Jamás. Las vidas actuales no son moneda de cambio'},tag:{ru:'абсолют настоящего',en:'present-absolute',es:'absoluto del presente'},eff:{progress:-10,util:-15,risk:-25}},
+      {text:{ru:'Нажимаю. Длинная дуга важнее',en:'Press. The long arc matters more',es:'Lo pulso. El arco largo importa más'},tag:{ru:'долгосрочный взгляд',en:'long-termist',es:'perspectiva larga'},eff:{progress:+10,util:+25,risk:+25,coll:+15}},
+      {text:{ru:'Отказываюсь решать. Это не моё право',en:"Refuse to decide. It isn't my call to make",es:'Me niego a decidir. No es mi decisión tomar'},tag:{ru:'воздержание',en:'abstainer',es:'abstención'},eff:{risk:-15,coll:-5}},
     ]},
 ];
 
@@ -1106,11 +1171,9 @@ function shuffle(a) {
 
 // ── Lang & mode ────────────────────────────────────────────────────────────
 function setLang(lang) {
-  currentLang = lang;
-  document.documentElement.lang = lang;
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', (lang==='ru' && b.textContent==='Рус') || (lang==='en' && b.textContent==='Eng'));
-  });
+  currentLang = UI[lang] ? lang : 'en';
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === currentLang));
   renderTitle();
 }
 
@@ -1129,16 +1192,12 @@ function renderTitle() {
   const f3b = shortMode ? u.f3bs : u.f3b;
   document.getElementById('tt-feats').innerHTML =
     `<div class="tt-feat"><b>${f1b}</b>${u.f1t}</div>` +
-    `<div class="tt-feat"><b>${u.f2b}</b>${u.f2t}</div>` +
     `<div class="tt-feat"><b>${f3b}</b>${u.f3t}</div>`;
   document.getElementById('mode-short').textContent = u.modeS;
   document.getElementById('mode-long').textContent = u.modeL;
   document.getElementById('tt-start').textContent = u.start;
   document.getElementById('tt-warn').textContent = u.warn;
-  document.getElementById('btn-copy').textContent = u.copy;
   document.getElementById('btn-tweet').textContent = u.tweet;
-  document.getElementById('btn-share-card').textContent = u.shareCard;
-  document.getElementById('btn-pdf').textContent = u.downloadPDF;
   document.getElementById('btn-replay').textContent = u.replay;
   document.getElementById('donate-label').textContent = u.donateLabel;
   // ЗАМЕНИТЕ на свои ссылки:
@@ -1163,8 +1222,9 @@ function renderTitle() {
 function startGame() {
   document.getElementById('title').classList.add('hidden');
   document.getElementById('result').classList.remove('show');
-  const pool = shortMode ? SCENARIOS.filter(s=>s.short) : [...SCENARIOS];
-  scenarios = shuffle(pool);
+  const warmup = SCENARIOS.filter(s => s.warmup);
+  const rest = SCENARIOS.filter(s => !s.warmup && (shortMode ? s.short : true));
+  scenarios = [...warmup, ...shuffle(rest)];
   idx = 0;
   vec = {util:0,coll:0,risk:0,justice:0,progress:0};
   history = [];
@@ -1172,8 +1232,38 @@ function startGame() {
   render();
 }
 
+function showUpsell() {
+  const u = UI[currentLang];
+  document.getElementById('upsell').style.display = 'block';
+  document.getElementById('upsell-title').textContent = u.upsellTitle;
+  const ch = document.getElementById('upsell-choices');
+  ch.innerHTML = '';
+  const btnYes = document.createElement('button');
+  btnYes.className = 'choice';
+  btnYes.textContent = u.upsellYes;
+  btnYes.onclick = () => {
+    document.getElementById('upsell').style.display = 'none';
+    const played = new Set(scenarios.map((_,i)=>i));
+    const remaining = SCENARIOS.filter(s => !s.warmup && !s.short);
+    scenarios = [...scenarios, ...shuffle(remaining)];
+    render();
+  };
+  const btnNo = document.createElement('button');
+  btnNo.className = 'choice ghost';
+  btnNo.textContent = u.upsellNo;
+  btnNo.onclick = () => {
+    document.getElementById('upsell').style.display = 'none';
+    endGame();
+  };
+  ch.appendChild(btnYes);
+  ch.appendChild(btnNo);
+}
+
 function render() {
-  if (idx >= scenarios.length) { endGame(); return; }
+  if (idx >= scenarios.length) {
+    if (shortMode) { showUpsell(); return; }
+    endGame(); return;
+  }
   const s = scenarios[idx];
   const u = UI[currentLang];
   document.getElementById('progress-bar').style.width = (idx/scenarios.length*100)+'%';
@@ -1181,7 +1271,7 @@ function render() {
   document.getElementById('scenario-host').innerHTML = `
     <div class="scenario">
       ${idx > 0 ? `<button class="back-btn" onclick="goBack()">←</button>` : ''}
-      <div class="num">${u.sLabel} ${String(idx+1).padStart(2,'0')}</div>
+      <div class="num">${s.warmup ? `<span class="warmup-tag">${u.warmupLabel}</span>` : `${u.sLabel} ${String(idx+1).padStart(2,'0')}`}</div>
       <h2>${s.title[currentLang]||s.title.en}</h2>
       <div class="body">${s.body[currentLang]||s.body.en}</div>
       <div class="choices" id="choices"></div>
@@ -1280,14 +1370,15 @@ function endGame() {
       }).join('')}
     </div>`;
 
-  // ── Tension analysis ──
+  // ── Tension analysis (uses normalizedVec so thresholds are mode-invariant) ──
+  const nv = normalizedVec();
   const tensions = [];
-  if (vec.util > 30 && vec.justice < -20) tensions.push(currentLang==='ru' ? 'Ты готов на прагматичные решения, но это часто означает пренебрежение к ответственности' : 'You lean utilitarian but sacrifice accountability — watch for "ends justify means" traps');
-  if (vec.util < -30 && vec.risk > 20) tensions.push(currentLang==='ru' ? 'Ты принципиален, но берёшь риски — интересное сочетание: правила важны, но ты готов действовать в условиях неопределённости' : 'You favour principles over outcomes yet take risks — rules matter, but you\'ll bend process under pressure');
-  if (vec.coll > 40 && vec.justice < -20) tensions.push(currentLang==='ru' ? 'Ты ставишь группу выше — но склонен к милосердию, а не к ответственности. Риск: лояльность к «своим» за счёт справедливости' : 'High collectivism + low accountability: loyalty to the group may override fairness to individuals');
-  if (vec.coll < -30 && vec.util > 30) tensions.push(currentLang==='ru' ? 'Утилитаризм без коллективизма — ты оптимизируешь ради общего блага, но недооцениваешь групповые интересы' : 'Utilitarian yet individualist — you optimize for outcomes but may miss how groups provide resilience');
-  if (vec.progress > 40 && vec.risk < -20) tensions.push(currentLang==='ru' ? 'Ты за перемены, но осторожен в действиях — реформатор-теоретик, который трудно решается на шаг' : 'Progressive in values, cautious in action — a theorist reformer who hesitates at the moment of change');
-  if (vec.risk > 50 && vec.justice > 40) tensions.push(currentLang==='ru' ? 'Риск-ориентация + строгая справедливость — ты готов действовать резко, и ты хочешь, чтобы за это отвечали. Мощная, но жёсткая этика' : 'High risk tolerance + high accountability: you act boldly and demand people answer for it. Powerful but unforgiving ethics');
+  if (nv.util > 30 && nv.justice < -20) tensions.push(currentLang==='ru' ? 'Ты готов на прагматичные решения, но это часто означает пренебрежение к ответственности' : currentLang==='es' ? 'Te inclinás por soluciones pragmáticas, pero eso a menudo implica descuidar la responsabilidad' : 'You lean utilitarian but sacrifice accountability — watch for "ends justify means" traps');
+  if (nv.util < -30 && nv.risk > 20) tensions.push(currentLang==='ru' ? 'Ты принципиален, но берёшь риски — интересное сочетание: правила важны, но ты готов действовать в условиях неопределённости' : currentLang==='es' ? 'Eres de principios pero tomás riesgos — las reglas importan, aunque actuás bajo incertidumbre' : 'You favour principles over outcomes yet take risks — rules matter, but you\'ll bend process under pressure');
+  if (nv.coll > 40 && nv.justice < -20) tensions.push(currentLang==='ru' ? 'Ты ставишь группу выше — но склонен к милосердию, а не к ответственности. Риск: лояльность к «своим» за счёт справедливости' : currentLang==='es' ? 'Priorizás al grupo pero tendés a la clemencia: la lealtad puede eclipsar la justicia' : 'High collectivism + low accountability: loyalty to the group may override fairness to individuals');
+  if (nv.coll < -30 && nv.util > 30) tensions.push(currentLang==='ru' ? 'Утилитаризм без коллективизма — ты оптимизируешь ради общего блага, но недооцениваешь групповые интересы' : currentLang==='es' ? 'Utilitarismo sin colectivismo: optimizás para el bien común pero subestimás los intereses grupales' : 'Utilitarian yet individualist — you optimize for outcomes but may miss how groups provide resilience');
+  if (nv.progress > 40 && nv.risk < -20) tensions.push(currentLang==='ru' ? 'Ты за перемены, но осторожен в действиях — реформатор-теоретик, который трудно решается на шаг' : currentLang==='es' ? 'Progresista en valores, cauteloso en acción: un reformador teórico que duda antes de dar el paso' : 'Progressive in values, cautious in action — a theorist reformer who hesitates at the moment of change');
+  if (nv.risk > 50 && nv.justice > 40) tensions.push(currentLang==='ru' ? 'Риск-ориентация + строгая справедливость — ты готов действовать резко, и ты хочешь, чтобы за это отвечали. Мощная, но жёсткая этика' : currentLang==='es' ? 'Alta tolerancia al riesgo y exigencia de responsabilidad: actuás con determinación y no perdonás las consecuencias' : 'High risk tolerance + high accountability: you act boldly and demand people answer for it. Powerful but unforgiving ethics');
 
   const tensionEl = document.createElement('div');
   if (tensions.length > 0) {
@@ -1297,13 +1388,13 @@ function endGame() {
 
 
   // ── Archetype ──
-  const arch = archetype(vec);
+  const arch = archetype(nv);
   document.getElementById('r-arch-name').textContent = arch.name;
   document.getElementById('r-arch-desc').textContent = arch.desc;
   document.getElementById('r-verdict').textContent = '"' + arch.name + '"';
 
   // ── Compare ──
-  const divergence = AXIS_KEYS.reduce((a,k)=>a+Math.abs(vec[k]-POP[k]),0)/5;
+  const divergence = AXIS_KEYS.reduce((a,k)=>a+Math.abs(nv[k]-POP[k]),0)/5;
   const cmp = divergence<15 ? u.c1 : divergence<30 ? u.c2 : u.c3;
   document.getElementById('r-compare').textContent = cmp + ' ' + u.cn;
 
@@ -1317,7 +1408,7 @@ function endGame() {
 
 // ── Share ──────────────────────────────────────────────────────────────────
 function resultText() {
-  const arch = archetype(vec);
+  const arch = archetype(normalizedVec());
   const ax = AXES[currentLang];
   const lines = AXIS_KEYS.map(k => {
     const v=vec[k], pos=Math.round((v+100)/20);
@@ -1332,7 +1423,7 @@ function copyResult() {
   });
 }
 function tweetResult() {
-  const arch = archetype(vec);
+  const arch = archetype(normalizedVec());
   const txt = currentLang==='ru'
     ? `Я — «${arch.name}» на trolley.town. 21 дилемма, 5 осей, ни одного правильного ответа. А ты?`
     : `I'm "${arch.name}" on trolley.town. 21 dilemmas, 5 axes, zero right answers. What are you?`;
@@ -1348,7 +1439,7 @@ function downloadPDF() {
 }
 
 function generateShareCard() {
-  const arch = archetype(vec);
+  const arch = archetype(normalizedVec());
   const top3 = findTop3();
   const ax = AXES[currentLang];
   const W = 1080, H = 1080;
@@ -1447,23 +1538,8 @@ function generateShareCard() {
 renderTitle();
 </script>
 
-<!-- Google AdSense — только для версии на собственном домене, не для itch.io -->
-
-<!-- itch.io: открывать внешние ссылки в новой вкладке поверх iframe -->
-<script>
-document.addEventListener('click', function(e) {
-  const a = e.target.closest('a[target="_blank"]');
-  if (a) { e.preventDefault(); window.open(a.href, '_blank', 'noopener'); }
-});
-// Разрешить fullscreen через itch.io Fullscreen API
-if (window.parent !== window) {
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'f' || e.key === 'F') {
-      const el = document.documentElement;
-      if (el.requestFullscreen) el.requestFullscreen();
-    }
-  });
-}
-</script>
+<!-- Google AdSense — раскомментируйте после регистрации, замените ID -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </body>
 </html>
