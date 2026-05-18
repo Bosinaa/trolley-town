@@ -115,6 +115,8 @@ h1 span { color:var(--accent); font-style:italic; }
 .donate-btn:hover { filter:brightness(1.1); }
 .donate-btn.kofi { background:#ff5e5b; color:#fff; }
 .donate-btn.boosty { background:#f5a623; color:#fff; }
+.donate-btn.tg { background:#2aabee; color:#fff; }
+.donate-btn.bmc { background:#ffdd00; color:#1a1a1a; }
 /* Ad slot */
 .ad-slot { margin:20px 0; text-align:center; }
 .ad-slot-inner { background:#fafafa; border:1px dashed #ddd; border-radius:6px; padding:10px; min-height:90px; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:11px; font-family:-apple-system,sans-serif; letter-spacing:1px; text-transform:uppercase; }
@@ -197,12 +199,7 @@ h1 span { color:var(--accent); font-style:italic; }
 
     <div class="donate-section">
       <p class="donate-label" id="donate-label"></p>
-      <div class="donate-buttons">
-        <!-- ЗАМЕНИТЕ trolleytown на свой username Ko-fi -->
-        <a class="donate-btn kofi" href="https://ko-fi.com/trolleytown" target="_blank" rel="noopener">☕ Ko-fi</a>
-        <!-- ЗАМЕНИТЕ trolleytown на свой username Boosty -->
-        <a class="donate-btn boosty" href="https://boosty.to/trolleytown" target="_blank" rel="noopener">💛 Boosty</a>
-      </div>
+      <div class="donate-buttons" id="donate-buttons"></div>
     </div>
   </div>
 </div>
@@ -1120,6 +1117,20 @@ function renderTitle() {
   document.getElementById('btn-pdf').textContent = u.downloadPDF;
   document.getElementById('btn-replay').textContent = u.replay;
   document.getElementById('donate-label').textContent = u.donateLabel;
+  // ЗАМЕНИТЕ на свои ссылки:
+  // Telegram: https://t.me/YOUR_USERNAME
+  // Boosty:   https://boosty.to/YOUR_USERNAME
+  // Ko-fi:    https://ko-fi.com/YOUR_USERNAME
+  const db = document.getElementById('donate-buttons');
+  if (currentLang === 'ru') {
+    db.innerHTML =
+      `<a class="donate-btn tg" href="https://t.me/YOUR_USERNAME" target="_blank" rel="noopener">✈️ Telegram</a>` +
+      `<a class="donate-btn boosty" href="https://boosty.to/YOUR_USERNAME" target="_blank" rel="noopener">💛 Boosty</a>`;
+  } else {
+    db.innerHTML =
+      `<a class="donate-btn kofi" href="https://ko-fi.com/YOUR_USERNAME" target="_blank" rel="noopener">☕ Ko-fi</a>` +
+      `<a class="donate-btn bmc" href="https://buymeacoffee.com/YOUR_USERNAME" target="_blank" rel="noopener">☕ Buy me a coffee</a>`;
+  }
   document.getElementById('r-title').textContent = u.rTitle;
   document.getElementById('game-sub').textContent = shortMode ? u.subS : u.sub;
 }
