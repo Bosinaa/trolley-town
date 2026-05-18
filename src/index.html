@@ -107,6 +107,25 @@ h1 span { color:var(--accent); font-style:italic; }
 .choice-tag { display:inline-block; background:#f0ece0; color:#666; font-size:11px; padding:2px 7px; border-radius:3px; margin-left:6px; font-family:-apple-system,sans-serif; letter-spacing:0.5px; white-space:nowrap; }
 .tension-box { background:#f0f4ff; border-left:4px solid #5b7fd4; padding:14px 18px; border-radius:4px; margin:16px 0; font-size:15px; line-height:1.6; color:#333; }
 .tension-box strong { color:#3557b7; }
+/* Donate */
+.donate-section { text-align:center; margin:24px 0 8px; padding-top:20px; border-top:1px solid #eee; }
+.donate-label { font-size:14px; color:#888; margin-bottom:12px; font-family:-apple-system,sans-serif; }
+.donate-buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.donate-btn { display:inline-block; padding:10px 24px; border-radius:6px; font-family:-apple-system,sans-serif; font-size:15px; font-weight:600; text-decoration:none; transition:filter 0.15s; }
+.donate-btn:hover { filter:brightness(1.1); }
+.donate-btn.kofi { background:#ff5e5b; color:#fff; }
+.donate-btn.boosty { background:#f5a623; color:#fff; }
+/* Ad slot */
+.ad-slot { margin:20px 0; text-align:center; }
+.ad-slot-inner { background:#fafafa; border:1px dashed #ddd; border-radius:6px; padding:10px; min-height:90px; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:11px; font-family:-apple-system,sans-serif; letter-spacing:1px; text-transform:uppercase; }
+/* Print / PDF */
+@media print {
+  body { background:#fff!important; padding:0!important; }
+  #title,#scenario-host,#footnote,.progress,.share,.donate-section,.ad-slot,#mf,#mm,h1,.sub { display:none!important; }
+  #result { position:static!important; display:block!important; background:none!important; padding:0!important; overflow:visible!important; }
+  .result-card { box-shadow:none!important; max-width:100%!important; padding:16px!important; border-radius:0!important; }
+  .top3-card,.archetype { break-inside:avoid; }
+}
 </style>
 </head>
 <body>
@@ -162,10 +181,28 @@ h1 span { color:var(--accent); font-style:italic; }
     </div>
 
     <p class="compare" id="r-compare">—</p>
+    <!-- Google AdSense — замените ca-pub-XXXXXXXXXXXXXXXX на свой publisher ID -->
+    <div class="ad-slot">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <noscript><div class="ad-slot-inner">реклама · ad</div></noscript>
+    </div>
+
     <div class="share">
       <button id="btn-copy" onclick="copyResult()"></button>
       <button id="btn-tweet" onclick="tweetResult()" class="ghost"></button>
+      <button id="btn-share-card" onclick="generateShareCard()" class="ghost"></button>
+      <button id="btn-pdf" onclick="downloadPDF()" class="ghost"></button>
       <button id="btn-replay" onclick="resetGame()" class="ghost"></button>
+    </div>
+
+    <div class="donate-section">
+      <p class="donate-label" id="donate-label"></p>
+      <div class="donate-buttons">
+        <!-- ЗАМЕНИТЕ trolleytown на свой username Ko-fi -->
+        <a class="donate-btn kofi" href="https://ko-fi.com/trolleytown" target="_blank" rel="noopener">☕ Ko-fi</a>
+        <!-- ЗАМЕНИТЕ trolleytown на свой username Boosty -->
+        <a class="donate-btn boosty" href="https://boosty.to/trolleytown" target="_blank" rel="noopener">💛 Boosty</a>
+      </div>
     </div>
   </div>
 </div>
@@ -207,6 +244,8 @@ const UI = {
     leanAw:(s)=>`Отдаляешься от «${s}»`,
     center:'Близко к центру этой оси',
     copy:'📋 скопировать', tweet:'🐦 поделиться в X', replay:'⟳ сначала',
+    shareCard:'🖼 Картинка', downloadPDF:'📄 Скачать PDF',
+    donateLabel:'Игра понравилась? Поддержи проект:',
     c1:'Твой отпечаток близок к среднему — откалиброванный мейнстрим',
     c2:'Ты отличаешься от среднего по нескольким осям — самобытный, но понятный',
     c3:'Твой отпечаток сильно расходится со средним — у тебя будут интересные споры и одинокие мнения',
@@ -235,6 +274,8 @@ const UI = {
     leanAw:(s)=>`You lean away from "${s}"`,
     center:"You're close to center on this axis",
     copy:'📋 copy result', tweet:'🐦 share on X', replay:'⟳ replay',
+    shareCard:'🖼 Share image', downloadPDF:'📄 Download PDF',
+    donateLabel:'Enjoyed the game? Support the project:',
     c1:'Your fingerprint lies close to the population average — a calibrated mainstream',
     c2:'You diverge from the average on a few axes — distinctively yours, but recognizable',
     c3:"Your fingerprint diverges strongly from the average — you'll find good debate partners and lonely opinions",
@@ -1075,7 +1116,10 @@ function renderTitle() {
   document.getElementById('tt-warn').textContent = u.warn;
   document.getElementById('btn-copy').textContent = u.copy;
   document.getElementById('btn-tweet').textContent = u.tweet;
+  document.getElementById('btn-share-card').textContent = u.shareCard;
+  document.getElementById('btn-pdf').textContent = u.downloadPDF;
   document.getElementById('btn-replay').textContent = u.replay;
+  document.getElementById('donate-label').textContent = u.donateLabel;
   document.getElementById('r-title').textContent = u.rTitle;
   document.getElementById('game-sub').textContent = shortMode ? u.subS : u.sub;
 }
@@ -1264,41 +1308,112 @@ function resetGame() {
   document.getElementById('title').classList.remove('hidden');
 }
 
+function downloadPDF() {
+  window.print();
+}
+
+function generateShareCard() {
+  const arch = archetype(vec);
+  const top3 = findTop3();
+  const ax = AXES[currentLang];
+  const W = 1080, H = 1080;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#0d0d1a'); bg.addColorStop(1, '#1c1230');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+  // Subtle grid texture
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)'; ctx.lineWidth = 1;
+  for (let i = 0; i < W; i += 60) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,H); ctx.stroke(); }
+  for (let i = 0; i < H; i += 60) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(W,i); ctx.stroke(); }
+
+  // Header
+  ctx.fillStyle = '#f5c842'; ctx.font = 'bold 52px Arial, sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('trolley.town', W/2, 88);
+  ctx.strokeStyle = 'rgba(245,200,66,0.2)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(60,112); ctx.lineTo(W-60,112); ctx.stroke();
+
+  // Archetype subtitle
+  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = '28px Arial, sans-serif';
+  ctx.fillText(currentLang==='ru' ? 'нравственный архетип' : 'moral archetype', W/2, 164);
+
+  // Archetype name — auto-fit font size
+  ctx.fillStyle = '#ffffff';
+  let fs = 92;
+  ctx.font = `bold ${fs}px Arial, sans-serif`;
+  while (ctx.measureText(arch.name).width > W - 120 && fs > 52) { fs -= 4; ctx.font = `bold ${fs}px Arial, sans-serif`; }
+  ctx.fillText(arch.name, W/2, 272);
+
+  // Arch description word-wrap
+  ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.font = '30px Arial, sans-serif';
+  const words = arch.desc.split(' '); let line = '', lineY = 350;
+  for (const w of words) {
+    const test = line + w + ' ';
+    if (ctx.measureText(test).width > 920 && line) { ctx.fillText(line.trim(), W/2, lineY); line = w + ' '; lineY += 44; if (lineY > 480) break; }
+    else line = test;
+  }
+  if (line && lineY <= 480) ctx.fillText(line.trim(), W/2, lineY);
+
+  // Axes
+  const bX = 90, bW = 820, bH = 16;
+  AXIS_KEYS.forEach((k, i) => {
+    const v = vec[k];
+    const bY = 540 + i * 70;
+
+    ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.font = '22px Arial, sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(ax[k].name, bX, bY - 5);
+
+    // Track
+    const gr = ctx.createLinearGradient(bX, 0, bX + bW, 0);
+    gr.addColorStop(0, '#c0392b'); gr.addColorStop(0.5, 'rgba(255,255,255,0.08)'); gr.addColorStop(1, '#1a8a5a');
+    ctx.fillStyle = gr; ctx.fillRect(bX, bY, bW, bH);
+
+    // Marker
+    const mx = bX + (v + 100) / 200 * bW;
+    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(mx, bY + bH/2, 13, 0, Math.PI*2); ctx.fill();
+
+    // Value
+    ctx.fillStyle = v > 10 ? '#52e896' : v < -10 ? '#f87171' : '#aaa';
+    ctx.font = 'bold 22px Arial, sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText((v >= 0 ? '+' : '') + v, bX + bW + 56, bY + bH - 1);
+  });
+
+  // Divider
+  ctx.strokeStyle = 'rgba(245,200,66,0.2)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(60, 910); ctx.lineTo(W-60, 910); ctx.stroke();
+
+  // Closest character
+  const ch = top3[0];
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(255,255,255,0.38)'; ctx.font = '24px Arial, sans-serif';
+  ctx.fillText(currentLang==='ru' ? 'нравственно похож на' : 'morally closest to', W/2, 958);
+  ctx.fillStyle = ch.color || '#f5c842'; ctx.font = 'bold 38px Arial, sans-serif';
+  ctx.fillText(ch.name[currentLang] || ch.name.en, W/2, 1010);
+
+  // URL watermark
+  ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.font = '20px Arial, sans-serif';
+  ctx.fillText('trolley.town', W/2, 1055);
+
+  // Download
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'trolley-town-result.png'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+}
+
 // ── Init ───────────────────────────────────────────────────────────────────
 renderTitle();
 </script>
 
-<!-- MONETIZATION WIDGET -->
-<button id="mf" title="support this game">★</button>
-<div id="mm"><div class="mb"><div class="mx">×</div><h2 id="mh"></h2><p id="mt"></p><div class="mp"><div class="mpr"><span id="mpp"></span><small id="mpf"></small></div><ul id="mfe"></ul><button id="mbn" onclick="mbuy()"></button><div class="mn">demo build · checkout is a placeholder</div></div><div class="mtp"><button onclick="mtw()">🐦 share</button><button onclick="mtip()">☕ tip jar</button></div><div class="md">portfolio prototype · illustrates real monetization flow</div></div></div>
-<style>
-#mf{position:fixed;bottom:14px;right:14px;width:44px;height:44px;border-radius:50%;background:#fd4;color:#222;border:0;font-size:20px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.4);z-index:30;animation:mfp 2.5s infinite;font-family:sans-serif}
-@keyframes mfp{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-#mm{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;font-family:-apple-system,sans-serif}
-#mm.s{display:flex}
-.mb{background:#fff;color:#222;border-radius:12px;padding:22px;max-width:380px;width:100%;position:relative;line-height:1.5}
-.mx{position:absolute;top:6px;right:12px;cursor:pointer;color:#999;font-size:22px;user-select:none}
-.mb h2{font-size:20px;margin-bottom:4px;font-weight:700}
-.mb>p{color:#666;font-size:13px;margin-bottom:14px;font-style:italic}
-.mp{border:2px solid #fd4;border-radius:10px;padding:16px;margin-bottom:12px;background:#fffbea}
-.mpr span{font-size:28px;font-weight:700;color:#b80}
-.mpr small{color:#999;font-size:12px;margin-left:4px}
-.mp ul{list-style:none;padding:0;margin:8px 0 12px 0}
-.mp li{font-size:13px;padding:3px 0 3px 22px;position:relative;color:#222}
-.mp li::before{content:"✓";position:absolute;left:0;color:#2a7;font-weight:700}
-#mbn{background:#fd4;color:#222;border:0;padding:10px;font-weight:700;width:100%;border-radius:6px;cursor:pointer;font-size:14px;letter-spacing:1px}
-.mn{color:#999;font-size:11px;text-align:center;margin-top:6px;font-style:italic}
-.mtp{display:flex;gap:8px;margin-bottom:10px}
-.mtp button{flex:1;background:transparent;border:1px solid #ddd;padding:8px;border-radius:6px;cursor:pointer;font-size:12px;color:#555}
-.mtp button:hover{border-color:#fd4;color:#222}
-.md{color:#aaa;font-size:10px;text-align:center}
-</style>
-<script>
-const M={name:'trolley.town',tag:'21 free · 100+ dilemmas in Pro',price:'$1.99',freq:'one-time',cta:'Unlock Pro →',features:['100+ additional dilemmas','Deeper fingerprint analysis','Compare with specific friends','Weekly new dilemma email','Partner scenarios (Harvard, Yale philosophy)','Team / classroom pack pricing']};
-(function(){const $=id=>document.getElementById(id);$('mh').textContent='Support '+M.name;$('mt').textContent=M.tag;$('mpp').textContent=M.price;$('mpf').textContent=M.freq;$('mbn').textContent=M.cta;(M.features||[]).forEach(f=>{const li=document.createElement('li');li.textContent=f;$('mfe').appendChild(li);});$('mf').onclick=()=>$('mm').classList.add('s');$('mm').onclick=e=>{if(e.target===$('mm'))$('mm').classList.remove('s')};document.querySelector('.mx').onclick=()=>$('mm').classList.remove('s');document.addEventListener('keydown',e=>{if(e.key==='Escape')$('mm').classList.remove('s');});})();
-function mbuy(){alert('(demo) Checkout for '+M.price+' '+M.freq+' would open here.')}
-function mtw(){window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent('playing '+M.name+' · ')+encodeURIComponent(location.href),'_blank')}
-function mtip(){alert('(demo) Ko-fi / Buy Me a Coffee tip jar would open here.')}
-</script>
+<!-- Google AdSense — раскомментируйте после регистрации, замените ID -->
+<!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 </body>
 </html>
