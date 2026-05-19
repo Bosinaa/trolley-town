@@ -1387,17 +1387,6 @@ function endGame() {
       }).join('')}
     </div>`;
 
-  // ── Choice log ──
-  const choiceHost = document.getElementById('r-choices');
-  const logLabel = currentLang==='ru' ? 'ТВОИ ВЫБОРЫ' : currentLang==='es' ? 'TUS ELECCIONES' : 'YOUR CHOICES';
-  choiceHost.innerHTML = `<div class="choices-log">
-    <div class="choices-log-label">${logLabel}</div>
-    ${choiceLog.map(c=>`<div class="choice-entry">
-      <span class="choice-q">${c.title}</span>
-      <span class="choice-a">${c.text}<span class="choice-tag">${c.tag}</span></span>
-    </div>`).join('')}
-  </div>`;
-
   // ── Tension analysis (uses normalizedVec so thresholds are mode-invariant) ──
   const nv = normalizedVec();
   const tensions = [];
