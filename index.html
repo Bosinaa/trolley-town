@@ -256,7 +256,6 @@ const UI = {
     c1:'Твой отпечаток близок к среднему — откалиброванный мейнстрим',
     c2:'Ты отличаешься от среднего по нескольким осям — самобытный, но понятный',
     c3:'Твой отпечаток сильно расходится со средним — у тебя будут интересные споры и одинокие мнения',
-    cn:'(приблизительный ориентир; реальные данные пришли бы из сыгранных сессий)',
     sub:'21 дилемма · без правильных ответов', subS:'7 дилемм · без правильных ответов',
     you:'ТЫ',
     closestSim:(name)=>`По этическому профилю — как «${name}»`,
@@ -290,7 +289,6 @@ const UI = {
     c1:'Your fingerprint lies close to the population average — a calibrated mainstream',
     c2:'You diverge from the average on a few axes — distinctively yours, but recognizable',
     c3:"Your fingerprint diverges strongly from the average — you'll find good debate partners and lonely opinions",
-    cn:'(approximate baseline; real data would come from played sessions)',
     sub:'21 dilemmas · no right answers', subS:'7 dilemmas · no right answers',
     you:'YOU',
     closestSim:(name)=>`Your ethical profile matches "${name}"`,
@@ -322,7 +320,6 @@ const UI = {
     c1:'Tu huella está cerca de la media — corriente principal calibrada',
     c2:'Te diferencias de la media en algunos ejes — único pero comprensible',
     c3:'Tu huella diverge mucho de la media — tendrás debates interesantes y opiniones solitarias',
-    cn:'(referencia aproximada; los datos reales vendrían de sesiones jugadas)',
     sub:'21 dilemas · sin respuestas correctas', subS:'7 dilemas · sin respuestas correctas',
     you:'TÚ',
     closestSim:(name)=>`Tu perfil ético coincide con «${name}»`,
@@ -959,8 +956,8 @@ const SCENARIOS = [
          en:'You\'re alone at the control booth. A runaway trolley is bearing down on five workers on the main track — they can\'t hear it coming. There\'s a lever: pull it and the trolley diverts to a side track, where one worker stands equally unaware. A few seconds. <b>Do you pull?</b>',
          es:'Estás solo en el puesto de control. Un tranvía sin frenos se lanza hacia cinco trabajadores en la vía principal — no lo oyen venir. Hay una palanca: si la accionas, el tranvía se desviará a una vía secundaria donde trabaja una persona, igual de desprevenida. Unos segundos. <b>¿Accionas la palanca?</b>'},
     choices:[
-      {text:{ru:'Тяну — пятеро жизней важнее моего дискомфорта',en:'I pull — five lives outweigh my discomfort',es:'La acciono — cinco vidas pesan más que mi incomodidad'},tag:{ru:'утилитарный',en:'utilitarian',es:'utilitarismo'},eff:{util:+20,justice:-5}},
-      {text:{ru:'Не тяну. Направить смерть на человека — не то же самое, что не остановить её',en:'I don\'t pull. Directing death at someone is not the same as failing to stop it',es:'No la acciono. Dirigir la muerte hacia alguien no es lo mismo que no impedirla'},tag:{ru:'деонтологический',en:'deontological',es:'deontología'},eff:{util:-20,coll:-5}},
+      {text:{ru:'Тяну рычаг',en:'I pull the lever',es:'Acciono la palanca'},tag:{ru:'утилитарный',en:'utilitarian',es:'utilitarismo'},eff:{util:+20,justice:-5}},
+      {text:{ru:'Не тяну',en:'I don\'t pull',es:'No la acciono'},tag:{ru:'деонтологический',en:'deontological',es:'deontología'},eff:{util:-20,coll:-5}},
     ]},
   { short:true, warmup:true,
     title:{ru:'Мост',en:'The Footbridge',es:'El Puente'},
@@ -968,8 +965,8 @@ const SCENARIOS = [
          en:'Same trolley. You\'re on a footbridge over the tracks. Standing right beside you — a large stranger, leaning on the railing, looking down. The only way to stop the trolley is to push him onto the tracks. His body will stop it. Five workers live. He dies. You\'re standing inches apart. <b>Do you push?</b>',
          es:'El mismo tranvía. Estás en un puente peatonal sobre las vías. A tu lado hay un desconocido corpulento, apoyado en la barandilla, mirando hacia abajo. La única forma de detener el tranvía es empujarlo a las vías. Su cuerpo lo detendrá. Cinco trabajadores vivirán. Él morirá. Estáis a centímetros. <b>¿Lo empujas?</b>'},
     choices:[
-      {text:{ru:'Толкаю. Математика та же — способ не меняет счёт',en:'I push. The math is the same — the method doesn\'t change the count',es:'Lo empujo. La matemática es la misma: el método no cambia el resultado'},tag:{ru:'жёсткая последовательность',en:'cold consistency',es:'coherencia fría'},eff:{util:+15,risk:+10,justice:-10}},
-      {text:{ru:'Не толкаю. Использовать человека как орудие — это другое, даже если цифры те же',en:'I don\'t push. Using a person as a tool is different, even if the numbers are the same',es:'No lo empujo. Usar a una persona como instrumento es otra cosa, aunque los números sean los mismos'},tag:{ru:'позиция Канта',en:'Kant-leaning',es:'kantismo'},eff:{util:-20,progress:-5}},
+      {text:{ru:'Толкаю',en:'I push',es:'Lo empujo'},tag:{ru:'жёсткая последовательность',en:'cold consistency',es:'coherencia fría'},eff:{util:+15,risk:+10,justice:-10}},
+      {text:{ru:'Не толкаю',en:'I don\'t push',es:'No lo empujo'},tag:{ru:'позиция Канта',en:'Kant-leaning',es:'kantismo'},eff:{util:-20,progress:-5}},
     ]},
   { short:true, warmup:true,
     title:{ru:'Хирург-трансплантолог',en:'The Transplant Surgeon',es:'El Cirujano Trasplantador'},
@@ -977,9 +974,9 @@ const SCENARIOS = [
          en:'Five of your patients will die within days without organ transplants. Waiting lists are empty. This morning a healthy man came in for a routine checkup. While you examined him he talked about his vacation next week. His organs are a perfect match for all five. No one would ever find out. <b>Do you do it?</b>',
          es:'Cinco de tus pacientes morirán en pocos días sin trasplantes de órganos. Las listas de espera están vacías. Esta mañana llegó un hombre sano para una revisión rutinaria. Mientras lo examinabas te habló de sus vacaciones la semana que viene. Sus órganos son una coincidencia perfecta para los cinco. Nadie lo sabría jamás. <b>¿Lo haces?</b>'},
     choices:[
-      {text:{ru:'Никогда. Врач не решает, кому жить',en:'Never. A doctor doesn\'t get to decide who lives',es:'Jamás. Un médico no decide quién vive'},tag:{ru:'связан правилами',en:'rule-bound',es:'normas ante todo'},eff:{util:-25,justice:+5,progress:-10}},
-      {text:{ru:'Да. Пятеро жизней против одной — и я не буду прятаться за принципы',en:'Yes. Five lives against one — I won\'t hide behind principles',es:'Sí. Cinco vidas frente a una: no me esconderé tras los principios'},tag:{ru:'строгий утилитаризм',en:'strict utility',es:'utilitarismo estricto'},eff:{util:+25,risk:+15,progress:+5}},
-      {text:{ru:'Говорю ему правду и даю выбрать самому',en:'I tell him the truth and let him choose',es:'Le digo la verdad y le dejo elegir'},tag:{ru:'согласие прежде всего',en:'consent-first',es:'consentimiento primero'},eff:{util:+5,coll:-5,progress:+10}},
+      {text:{ru:'Нет. Я не стану этого делать',en:'No. I won\'t do it',es:'No. No lo haré'},tag:{ru:'связан правилами',en:'rule-bound',es:'normas ante todo'},eff:{util:-25,justice:+5,progress:-10}},
+      {text:{ru:'Да',en:'Yes',es:'Sí'},tag:{ru:'строгий утилитаризм',en:'strict utility',es:'utilitarismo estricto'},eff:{util:+25,risk:+15,progress:+5}},
+      {text:{ru:'Объясняю ему ситуацию и даю выбрать самому',en:'I explain the situation and let him choose',es:'Le explico la situación y le dejo elegir'},tag:{ru:'согласие прежде всего',en:'consent-first',es:'consentimiento primero'},eff:{util:+5,coll:-5,progress:+10}},
     ]},
   { short:false,
     title:{ru:'Машина счастья',en:'The Happiness Machine',es:'La Máquina de la Felicidad'},
@@ -987,9 +984,9 @@ const SCENARIOS = [
          en:'A pill-sized neural implant permanently eliminates depression, anxiety, and chronic pain. Test subjects describe it as "finally feeling normal." Not one wants it removed. No harmful side effects found. But critics note: people with the implant stop pushing to change their lives — they\'re already content. The government proposes offering it free to anyone who asks. <b>Do you support it?</b>',
          es:'Un neuroimplante del tamaño de una pastilla elimina de forma permanente la depresión, la ansiedad y el dolor crónico. Los sujetos lo describen como "por fin sentirse normal". Ninguno quiere que se lo retiren. No se han detectado efectos perjudiciales. Pero los críticos señalan que las personas con implante dejan de luchar por cambiar su vida: ya están bien. El gobierno propone ofrecerlo gratis a quien lo solicite. <b>¿Lo apoyas?</b>'},
     choices:[
-      {text:{ru:'Да. Страдание не делает нас лучше — оно просто причиняет боль',en:'Yes. Suffering doesn\'t make us better — it just hurts',es:'Sí. El sufrimiento no nos hace mejores: solo duele'},tag:{ru:'утилитаризм',en:'utilitarian',es:'utilitarismo'},eff:{util:+25,coll:+20,progress:+20,risk:+10}},
-      {text:{ru:'Нет. Счастье без борьбы и боли — это уже не совсем жизнь',en:'No. Happiness without struggle and pain is no longer quite life',es:'No. La felicidad sin lucha ni dolor ya no es del todo vida'},tag:{ru:'экзистенциализм',en:'existentialist',es:'existencialismo'},eff:{util:-20,progress:-10,risk:-10}},
-      {text:{ru:'Только добровольно — каждый сам решает, что для него «нормально»',en:'Only voluntarily — each person decides what "normal" means for them',es:'Solo de forma voluntaria: cada persona decide qué significa "normal" para ella'},tag:{ru:'автономия',en:'autonomy',es:'autonomía'},eff:{util:+10,justice:+15,progress:+10}},
+      {text:{ru:'За. Страдание — не ценность, это просто боль',en:'Yes. Suffering is not a value — it\'s just pain',es:'Sí. El sufrimiento no es un valor, solo es dolor'},tag:{ru:'утилитаризм',en:'utilitarian',es:'utilitarismo'},eff:{util:+25,coll:+20,progress:+20,risk:+10}},
+      {text:{ru:'Против. Это не счастье — это анестезия',en:'No. This isn\'t happiness — it\'s anaesthesia',es:'No. Esto no es felicidad: es anestesia'},tag:{ru:'экзистенциализм',en:'existentialist',es:'existencialismo'},eff:{util:-20,progress:-10,risk:-10}},
+      {text:{ru:'Только добровольно',en:'Voluntarily only',es:'Solo de forma voluntaria'},tag:{ru:'автономия',en:'autonomy',es:'autonomía'},eff:{util:+10,justice:+15,progress:+10}},
     ]},
   { short:true,
     title:{ru:'Нравственная удача',en:'Moral Luck',es:'La Suerte Moral'},
@@ -997,9 +994,9 @@ const SCENARIOS = [
          en:'Two people you know drank equally and got behind the wheel after the same party. Their recklessness, intent, and risk are identical. One got home. The other killed a child at a crosswalk. One random second. Now you\'re the judge, and both cases are in front of you. <b>Equal punishment?</b>',
          es:'Dos conocidos bebieron igual y se pusieron al volante después de la misma fiesta. Su imprudencia, intención y riesgo son idénticos. Uno llegó a casa. El otro mató a un niño en un paso de cebra. Un segundo aleatorio. Ahora eres el juez y tienes los dos casos ante ti. <b>¿El mismo castigo?</b>'},
     choices:[
-      {text:{ru:'Нет — один убил, другой нет. Последствия имеют значение',en:'No — one killed, one didn\'t. Consequences matter',es:'No: uno mató y el otro no. Las consecuencias importan'},tag:{ru:'последствия важны',en:'consequentialist',es:'consecuencialismo'},eff:{justice:+20,util:+15,progress:-5}},
-      {text:{ru:'Да — вина одинакова, исход решил случай. Наказывать за слепую удачу — не правосудие',en:'Yes — the fault is equal, chance decided the outcome. Punishing blind luck isn\'t justice',es:'Sí: la culpa es igual, el azar decidió el resultado. Castigar la mala suerte no es justicia'},tag:{ru:'равная вина',en:'equal culpability',es:'culpa igual'},eff:{justice:+15,progress:+20,util:-10}},
-      {text:{ru:'Разные сроки по закону — но нравственно они равны, и это важно признать',en:'Different sentences by law — but morally they\'re equal, and that matters to acknowledge',es:'Penas distintas por ley, pero moralmente son iguales, y eso hay que reconocerlo'},tag:{ru:'честная асимметрия',en:'honest asymmetry',es:'asimetría honesta'},eff:{justice:+10,progress:+10,coll:+5}},
+      {text:{ru:'Нет — один убил, другой нет',en:'No — one killed, one didn\'t',es:'No: uno mató y el otro no'},tag:{ru:'последствия важны',en:'consequentialist',es:'consecuencialismo'},eff:{justice:+20,util:+15,progress:-5}},
+      {text:{ru:'Да — вина одинакова, исход решил случай',en:'Yes — the fault is equal, chance decided the outcome',es:'Sí: la culpa es igual, el azar decidió el resultado'},tag:{ru:'равная вина',en:'equal culpability',es:'culpa igual'},eff:{justice:+15,progress:+20,util:-10}},
+      {text:{ru:'Разные сроки по закону, одинаковые — нравственно',en:'Different sentences by law, equal in moral terms',es:'Penas distintas por ley, iguales moralmente'},tag:{ru:'честная асимметрия',en:'honest asymmetry',es:'asimetría honesta'},eff:{justice:+10,progress:+10,coll:+5}},
     ]},
   { short:false,
     title:{ru:'Оружие знания',en:'The Knowledge Weapon',es:'El Arma del Conocimiento'},
@@ -1007,9 +1004,9 @@ const SCENARIOS = [
          en:'You\'re a biologist. During a routine experiment you accidentally found that an existing harmless virus can be modified in three steps — cheaply, in any lab in the world — into something 40% lethal. Publishing lets scientists work on defenses. But everyone sees the recipe — including lone actors with grievances. Classifying it means no one searches for a cure. You can\'t unknow this. <b>What do you do?</b>',
          es:'Eres biólogo. En un experimento rutinario descubriste accidentalmente que un virus inofensivo existente puede modificarse en tres pasos —barato, en cualquier laboratorio del mundo— y volverse letal al 40%. Publicarlo permite trabajar en defensas. Pero todos verán la fórmula, incluidos individuos con agravios personales. Clasificarlo significa que nadie busca un antídoto. No puedes desaprenderlo. <b>¿Qué haces?</b>'},
     choices:[
-      {text:{ru:'Публикую. Это знание уже существует — лучше у всех, чем только у опасных',en:'I publish. This knowledge already exists — better with everyone than only with the dangerous',es:'Lo publico. Este conocimiento ya existe: mejor con todos que solo con los peligrosos'},tag:{ru:'свобода знания',en:'knowledge freedom',es:'libertad de conocimiento'},eff:{util:+10,coll:-15,risk:+25,progress:+20}},
-      {text:{ru:'Передаю только в закрытые структуры — несовершенно, но лучше двух крайних вариантов',en:'Share only with classified agencies — imperfect, but better than either extreme',es:'Lo comparto solo con organismos clasificados: imperfecto, pero mejor que los dos extremos'},tag:{ru:'контролируемое раскрытие',en:'controlled disclosure',es:'divulgación controlada'},eff:{util:+15,risk:-5,justice:+5,coll:+10}},
-      {text:{ru:'Уничтожаю всё. Некоторые знания не должны существовать',en:'I destroy everything. Some knowledge should not exist',es:'Destruyo todo. Hay conocimientos que no deberían existir'},tag:{ru:'превентивное уничтожение',en:'preventive erasure',es:'borrado preventivo'},eff:{util:-10,risk:-20,progress:-15,justice:-5}},
+      {text:{ru:'Публикую',en:'I publish it',es:'Lo publico'},tag:{ru:'свобода знания',en:'knowledge freedom',es:'libertad de conocimiento'},eff:{util:+10,coll:-15,risk:+25,progress:+20}},
+      {text:{ru:'Передаю только в закрытые структуры здравоохранения',en:'Share only with classified health agencies',es:'Lo comparto solo con organismos de salud clasificados'},tag:{ru:'контролируемое раскрытие',en:'controlled disclosure',es:'divulgación controlada'},eff:{util:+15,risk:-5,justice:+5,coll:+10}},
+      {text:{ru:'Уничтожаю всё',en:'I destroy everything',es:'Destruyo todo'},tag:{ru:'превентивное уничтожение',en:'preventive erasure',es:'borrado preventivo'},eff:{util:-10,risk:-20,progress:-15,justice:-5}},
     ]},
   { short:false,
     title:{ru:'Разоблачитель',en:'Whistleblower',es:'El Denunciante'},
@@ -1017,9 +1014,9 @@ const SCENARIOS = [
          en:'You find internal emails: the company has been dumping toxins into a river for years. Cancer rates in downstream villages are four times the normal level. You keep reading — and find your own signature on the "compliance" reports. You didn\'t know. But it\'s there. Going public will shut the factory — 800 families unemployed in a town with nothing else. Silence means it continues. <b>What do you do?</b>',
          es:'Encuentras correos internos: la empresa lleva años vertiendo toxinas a un río. Las tasas de cáncer en los pueblos de aguas abajo cuadruplican lo normal. Sigues leyendo y encuentras tu propia firma en los informes de "cumplimiento normativo". No lo sabías. Pero está ahí. Hacerlo público cerrará la fábrica: 800 familias sin trabajo en una ciudad donde no hay nada más. El silencio significa que continúa. <b>¿Qué haces?</b>'},
     choices:[
-      {text:{ru:'Иду в прессу открыто — моя подпись там стоит, я должен это исправить',en:'I go to the press openly — my signature is on those reports, I have to fix this',es:'Voy a la prensa abiertamente: mi firma está ahí, tengo que arreglarlo'},tag:{ru:'справедливость прежде всего',en:'justice-first',es:'justicia ante todo'},eff:{justice:+25,coll:+10,progress:+10}},
-      {text:{ru:'Сообщаю анонимно в регулятор — мне нужно время разобраться в своей роли',en:'I report anonymously to the regulator — I need time to understand my own role',es:'Lo denuncio anónimamente al regulador: necesito tiempo para entender mi propio papel'},tag:{ru:'институциональный путь',en:'institutional',es:'vía institucional'},eff:{justice:+5,progress:-5,coll:+5}},
-      {text:{ru:'Молчу. Восемьсот семей. Я не знал. Никто не докажет обратное',en:'I stay quiet. Eight hundred families. I didn\'t know. No one can prove otherwise',es:'Me callo. Ochocientas familias. No lo sabía. Nadie podrá demostrar lo contrario'},tag:{ru:'самосохранение',en:'self-preservation',es:'autoprotección'},eff:{justice:-20,coll:+5,progress:-10}},
+      {text:{ru:'Иду в прессу открыто, со своим именем',en:'I go to the press openly, with my name on it',es:'Voy a la prensa abiertamente, con mi nombre'},tag:{ru:'справедливость прежде всего',en:'justice-first',es:'justicia ante todo'},eff:{justice:+25,coll:+10,progress:+10}},
+      {text:{ru:'Сообщаю анонимно в регулятор',en:'I report anonymously to the regulator',es:'Lo denuncio anónimamente al regulador'},tag:{ru:'институциональный путь',en:'institutional',es:'vía institucional'},eff:{justice:+5,progress:-5,coll:+5}},
+      {text:{ru:'Молчу',en:'I stay quiet',es:'Me callo'},tag:{ru:'самосохранение',en:'self-preservation',es:'autoprotección'},eff:{justice:-20,coll:+5,progress:-10}},
     ]},
   { short:false,
     title:{ru:'Спасательная шлюпка',en:'The Lifeboat',es:'El Bote Salvavidas'},
@@ -1027,9 +1024,9 @@ const SCENARIOS = [
          en:'The ship is sinking. The lifeboat holds 15, carries 20. Water near freezing. The boat is slowly going under. If five go overboard, the rest reach shore in 40 minutes. In water this cold, survival is under 10 minutes. No volunteers. Everyone is looking at you. <b>You\'re the captain. What do you do?</b>',
          es:'El barco se hunde. El bote tiene capacidad para 15, lleva 20. Agua a punto de congelarse. El bote se hunde lentamente. Si cinco saltan, los demás llegarán a la orilla en 40 minutos. En agua así, la supervivencia no supera los 10 minutos. No hay voluntarios. Todos te miran. <b>Eres el capitán. ¿Qué haces?</b>'},
     choices:[
-      {text:{ru:'Жребий — прямо сейчас, вслух. Это единственное, что я смогу оправдать перед собой',en:'Draw lots — right now, out loud. It\'s the only thing I can justify to myself',es:'Echamos a suertes, ahora mismo, en voz alta. Es lo único que podré justificarme'},tag:{ru:'честность',en:'fair',es:'justicia por azar'},eff:{util:+5,justice:+10,progress:+5}},
-      {text:{ru:'Прошу лучших пловцов выйти добровольно — у них больше шансов в воде',en:'I ask the strongest swimmers to volunteer — they have the best chance in the water',es:'Pido que los mejores nadadores se ofrezcan voluntarios: tienen más posibilidades en el agua'},tag:{ru:'расчёт выживаемости',en:'survivor-calc',es:'cálculo de supervivencia'},eff:{util:+15,coll:+5,risk:+10}},
-      {text:{ru:'Отказываюсь выбирать. Тонем — так вместе',en:'I refuse to choose. If we sink, we sink together',es:'Me niego a elegir. Si nos hundimos, nos hundimos juntos'},tag:{ru:'общая судьба',en:'shared fate',es:'destino común'},eff:{util:-20,coll:+15,progress:-10,justice:-5}},
+      {text:{ru:'Провожу жеребьёвку',en:'We draw lots',es:'Hacemos un sorteo'},tag:{ru:'честность',en:'fair',es:'justicia por azar'},eff:{util:+5,justice:+10,progress:+5}},
+      {text:{ru:'Прошу лучших пловцов выйти добровольно',en:'I ask the strongest swimmers to volunteer',es:'Pido que los mejores nadadores se ofrezcan voluntarios'},tag:{ru:'расчёт выживаемости',en:'survivor-calc',es:'cálculo de supervivencia'},eff:{util:+15,coll:+5,risk:+10}},
+      {text:{ru:'Отказываюсь выбирать. Тонем — так вместе',en:'I refuse to choose. We sink together',es:'Me niego a elegir. Nos hundimos juntos'},tag:{ru:'общая судьба',en:'shared fate',es:'destino común'},eff:{util:-20,coll:+15,progress:-10,justice:-5}},
     ]},
   { short:false,
     title:{ru:'Дипфейк во имя справедливости',en:'Deepfake Justice',es:'Justicia con Deepfake'},
@@ -1037,9 +1034,9 @@ const SCENARIOS = [
          en:'The organizer of a child trafficking network is unquestionably guilty — investigators have operational data, financial trails, testimony. But all obtained improperly: the court will exclude it. He walks free in a week. A prosecutor proposes creating a deepfake — a "confession" video, technically indistinguishable from real. The content will be true. The method won\'t be. <b>Your advice?</b>',
          es:'El organizador de una red de tráfico infantil es indiscutiblemente culpable: los investigadores tienen datos operativos, rastros financieros y testimonios. Pero todo se obtuvo irregularmente: el tribunal lo excluirá. Quedará libre en una semana. Una fiscal propone crear un deepfake, un vídeo de "confesión" técnicamente indistinguible del real. El contenido será verdad. El método, no. <b>¿Qué le aconsejas?</b>'},
     choices:[
-      {text:{ru:'Нет. Сфабрикованные улики — конец системы правосудия, каким бы ни был приговор',en:'No. Fabricated evidence is the end of the justice system, whatever the verdict',es:'No. Las pruebas fabricadas son el fin del sistema de justicia, sea cual sea el veredicto'},tag:{ru:'истина прежде всего',en:'truth-first',es:'verdad ante todo'},eff:{justice:+5,progress:-10,util:-10}},
-      {text:{ru:'Да — он виновен, дети пострадали. Единственная ложь здесь — это видео',en:'Yes — he\'s guilty, children were harmed. The only lie here is the video',es:'Sí: es culpable, niños resultaron dañados. La única mentira aquí es el vídeo'},tag:{ru:'цель оправдывает средства',en:'ends-justify',es:'el fin justifica'},eff:{util:+15,justice:-20,risk:+10}},
-      {text:{ru:'Слить реальные материалы журналистам. Пусть общественное давление сделает то, что не смог суд',en:'Leak the real materials to journalists. Let public pressure do what the courts couldn\'t',es:'Filtrar los materiales reales a periodistas. Que la presión pública haga lo que los tribunales no pudieron'},tag:{ru:'нестандартный путь',en:'subversive',es:'vía alternativa'},eff:{progress:+10,justice:+5,risk:+15}},
+      {text:{ru:'Нет. Сфабрикованные улики — это конец правосудия',en:'No. Fabricated evidence is the end of justice',es:'No. Las pruebas fabricadas son el fin de la justicia'},tag:{ru:'истина прежде всего',en:'truth-first',es:'verdad ante todo'},eff:{justice:+5,progress:-10,util:-10}},
+      {text:{ru:'Да. Единственная ложь здесь — это видео',en:'Yes. The only lie here is the video',es:'Sí. La única mentira aquí es el vídeo'},tag:{ru:'цель оправдывает средства',en:'ends-justify',es:'el fin justifica'},eff:{util:+15,justice:-20,risk:+10}},
+      {text:{ru:'Сливаю реальные материалы журналистам',en:'I leak the real materials to journalists',es:'Filtro los materiales reales a periodistas'},tag:{ru:'нестандартный путь',en:'subversive',es:'vía alternativa'},eff:{progress:+10,justice:+5,risk:+15}},
     ]},
   { short:true,
     title:{ru:'Тирания большинства',en:'Tyranny of the Majority',es:'La Tiranía de la Mayoría'},
@@ -1047,9 +1044,9 @@ const SCENARIOS = [
          en:'In a national referendum, 72% voted for a law severely restricting the rights of a religious minority — 5% of the population. The law doesn\'t technically violate the constitution. You are a Constitutional Court judge. <b>Your ruling?</b>',
          es:'En un referéndum nacional, el 72% votó a favor de una ley que restringe severamente los derechos de una minoría religiosa: el 5% de la población. La ley no viola técnicamente la constitución. Eres juez del Tribunal Constitucional. <b>¿Cuál es tu fallo?</b>'},
     choices:[
-      {text:{ru:'Подтвердить. Воля большинства — основа демократии, суд не должен её подменять',en:'Uphold it. The majority\'s will is the basis of democracy — courts should not override it',es:'Confirmar la ley. La voluntad de la mayoría es la base de la democracia: el tribunal no debe anularla'},tag:{ru:'народный суверенитет',en:'popular-sovereignty',es:'soberanía popular'},eff:{coll:+20,justice:-20,progress:-20}},
-      {text:{ru:'Отменить. Демократия — это не диктатура большинства: она защищает меньшинства',en:'Strike it down. Democracy isn\'t majority rule — it protects minorities too',es:'Anularla. La democracia no es la dictadura de la mayoría: también protege a las minorías'},tag:{ru:'защита меньшинств',en:'minority-rights',es:'protección de minorías'},eff:{justice:+25,progress:+20,coll:-10}},
-      {text:{ru:'Вернуть парламенту: предложить менее жёсткую редакцию, учитывающую права меньшинства',en:'Return to parliament: propose a less restrictive version that accounts for minority rights',es:'Devolverla al parlamento para que proponga una versión menos restrictiva que respete los derechos de la minoría'},tag:{ru:'институциональный диалог',en:'institutional-dialogue',es:'diálogo institucional'},eff:{justice:+5,progress:+5,coll:+5}},
+      {text:{ru:'Подтверждаю закон',en:'Uphold it',es:'Confirmar la ley'},tag:{ru:'народный суверенитет',en:'popular-sovereignty',es:'soberanía popular'},eff:{coll:+20,justice:-20,progress:-20}},
+      {text:{ru:'Отменяю закон',en:'Strike it down',es:'Anularla'},tag:{ru:'защита меньшинств',en:'minority-rights',es:'protección de minorías'},eff:{justice:+25,progress:+20,coll:-10}},
+      {text:{ru:'Возвращаю в парламент на доработку',en:'Return to parliament',es:'Devolverla al parlamento'},tag:{ru:'институциональный диалог',en:'institutional-dialogue',es:'diálogo institucional'},eff:{justice:+5,progress:+5,coll:+5}},
     ]},
   { short:false,
     title:{ru:'Умирающий пациент',en:'The Dying Patient',es:'El Paciente Terminal'},
@@ -1058,7 +1055,7 @@ const SCENARIOS = [
          es:'Tu paciente: cáncer de páncreas, estadio cuatro. Tres meses como máximo. Te mira directamente a los ojos y pregunta: "¿Me estoy muriendo?" Su esposa acaba de salir a por café; antes te rogó que no le dijeras la verdad. Está convencida de que se hundirá. En años de práctica has visto los dos casos: los que se hundieron y los que aprovecharon el tiempo que les quedaba. <b>¿Qué le dices?</b>'},
     choices:[
       {text:{ru:'Говорю правду. Он спросил — это его жизнь',en:'I tell the truth. He asked — it\'s his life',es:'Le digo la verdad. Preguntó: es su vida'},tag:{ru:'автономия пациента',en:'patient autonomy',es:'autonomía del paciente'},eff:{justice:+15,util:+5,coll:-5}},
-      {text:{ru:'Называю диагноз, но не сроки. Полуправда — но пусть они встретят это вместе',en:'I name the diagnosis, not the timeline. A half-truth — but let them face it together',es:'Nombro el diagnóstico, no el plazo. Media verdad, pero que lo afronten juntos'},tag:{ru:'терапевтическая ложь',en:'therapeutic softening',es:'suavización terapéutica'},eff:{util:+5,justice:-5,coll:+5}},
+      {text:{ru:'Называю диагноз, но не сроки',en:'I name the diagnosis, not the timeline',es:'Nombro el diagnóstico, no el plazo'},tag:{ru:'терапевтическая ложь',en:'therapeutic softening',es:'suavización terapéutica'},eff:{util:+5,justice:-5,coll:+5}},
       {text:{ru:'Говорю «нет» — его жена знает его лучше меня. Может, она права',en:'I say "no" — his wife knows him better than I do. Maybe she\'s right',es:'Digo "no": su esposa lo conoce mejor que yo. Quizás tiene razón'},tag:{ru:'ложь во спасение',en:'compassionate deception',es:'mentira compasiva'},eff:{justice:-15,util:-5,coll:+10}},
     ]},
   { short:false,
@@ -1079,7 +1076,7 @@ const SCENARIOS = [
     choices:[
       {text:{ru:'Да. Лучше хоть кому-то, чем никому',en:'Yes. Better for some than for none',es:'Sí. Es mejor para algunos que para ninguno'},tag:{ru:'рыночный аргумент',en:'market argument',es:'argumento de mercado'},eff:{util:+5,coll:-20,progress:+10,risk:+5}},
       {text:{ru:'Нет. Это создаст несправедливое общество бессмертных элит',en:'No. It would create a permanent caste of immortal elites',es:'No. Crearía una casta permanente de élites inmortales'},tag:{ru:'равенство прежде всего',en:'equality-first',es:'igualdad ante todo'},eff:{util:-5,coll:+20,justice:+15,progress:+5}},
-      {text:{ru:'Да, но с целевым налогом: прибыль идёт на разработку доступного аналога',en:'Yes, with a tax funding R&D toward universal access',es:'Sí, pero con un impuesto específico para financiar I+D hacia un acceso universal'},tag:{ru:'прогрессивный компромисс',en:'progressive compromise',es:'compromiso progresista'},eff:{util:+10,coll:+10,progress:+15,justice:+5}},
+      {text:{ru:'Да, но с условием: часть прибыли — на доступный аналог',en:'Yes, with a condition: part of profits fund an accessible alternative',es:'Sí, con condición: parte de los beneficios financian un análogo accesible'},tag:{ru:'прогрессивный компромисс',en:'progressive compromise',es:'compromiso progresista'},eff:{util:+10,coll:+10,progress:+15,justice:+5}},
     ]},
   { short:false,
     title:{ru:'Пытки ради правды',en:'The Ticking Bomb',es:'La Bomba de Relojería'},
@@ -1088,7 +1085,7 @@ const SCENARIOS = [
          es:'Han detenido a un sospechoso. Los analistas dan un 70% de probabilidad de que sepa dónde está la bomba. Seis horas para la detonación. Un hospital con quinientos pacientes en riesgo. Guarda silencio. Su abogado insiste en que fue detenido por error. El 30% no es cero. Los servicios de inteligencia esperan tu autorización para aplicar coerción física. <b>¿La autorizas?</b>'},
     choices:[
       {text:{ru:'Да. Пятьсот жизней, шесть часов, семьдесят процентов — не время для принципов',en:'Yes. Five hundred lives, six hours, seventy percent — this is not the time for principles',es:'Sí. Quinientas vidas, seis horas, setenta por ciento: no es el momento para los principios'},tag:{ru:'крайний утилитаризм',en:'extreme utilitarian',es:'utilitarismo extremo'},eff:{util:+25,justice:-20,risk:+15}},
-      {text:{ru:'Нет. 30% невиновности — это уже слишком. Мы станем тем, с чем воюем',en:'No. 30% chance of innocence is already too much. We\'d become what we\'re fighting',es:'No. Un 30% de posibilidad de inocencia ya es demasiado. Nos convertiríamos en aquello contra lo que luchamos'},tag:{ru:'абсолютный запрет',en:'absolute prohibition',es:'prohibición absoluta'},eff:{util:-20,justice:+20,progress:+10}},
+      {text:{ru:'Нет. 30% — это уже слишком',en:'No. 30% is already too much',es:'No. Un 30% ya es demasiado'},tag:{ru:'абсолютный запрет',en:'absolute prohibition',es:'prohibición absoluta'},eff:{util:-20,justice:+20,progress:+10}},
       {text:{ru:'Разрешаю психологическое давление — но не физическое насилие',en:'I authorize psychological pressure — but not physical violence',es:'Autorizo presión psicológica, pero no violencia física'},tag:{ru:'компромисс',en:'middle ground',es:'término medio'},eff:{util:+10,justice:-5,risk:+5}},
     ]},
   { short:false,
@@ -1107,8 +1104,8 @@ const SCENARIOS = [
          en:'Technology allows parents to pre-set their child\'s IQ, personality traits, and emotional resilience before birth. Statistically, these children are happier and more successful. The child gave no consent to who they\'ll become. Editing is available to everyone — not only the wealthy. <b>Should this practice be allowed?</b>',
          es:'La tecnología permite a los padres configurar antes del nacimiento el cociente intelectual, los rasgos de personalidad y la resiliencia emocional del hijo. Estadísticamente, estos niños son más felices y exitosos. El niño no dio consentimiento para ser quien será. La modificación está disponible para todos, no solo para los ricos. <b>¿Debería permitirse esta práctica?</b>'},
     choices:[
-      {text:{ru:'Да. Родители всегда формируют ребёнка — воспитанием, средой, выбором школы. Это просто новый инструмент',en:'Yes. Parents always shape children — through upbringing, environment, school choice. This is just a new tool',es:'Sí. Los padres siempre moldean a sus hijos: educación, entorno, colegio. Esto es simplemente una herramienta nueva'},tag:{ru:'продолжение родительства',en:'extended-parenting',es:'paternidad extendida'},eff:{util:+20,progress:+25,coll:-10,risk:+15}},
-      {text:{ru:'Нет. Человек не должен приходить в мир с чужим сценарием. Это нарушает его право быть собой',en:'No. A person should not enter the world with someone else\'s script. It violates the right to an open future',es:'No. Una persona no debe llegar al mundo con el guion de otro. Viola el derecho a un futuro abierto'},tag:{ru:'право на открытое будущее',en:'open-future',es:'futuro abierto'},eff:{justice:+20,progress:-15,util:-10}},
+      {text:{ru:'Разрешаю. Это просто новый инструмент',en:'Yes. This is just a new tool',es:'Sí. Es simplemente una herramienta nueva'},tag:{ru:'продолжение родительства',en:'extended-parenting',es:'paternidad extendida'},eff:{util:+20,progress:+25,coll:-10,risk:+15}},
+      {text:{ru:'Нет. Человек не должен приходить в мир с чужим сценарием',en:'No. A person shouldn\'t enter the world with someone else\'s script',es:'No. Una persona no debe llegar al mundo con el guion de otro'},tag:{ru:'право на открытое будущее',en:'open-future',es:'futuro abierto'},eff:{justice:+20,progress:-15,util:-10}},
       {text:{ru:'Только коррекция болезней и тяжёлых расстройств — но не черты характера и интеллект',en:'Only for diseases and severe disorders — not personality traits or intelligence',es:'Solo para enfermedades y trastornos graves, no para rasgos de personalidad ni inteligencia'},tag:{ru:'медицинские границы',en:'medical-only',es:'solo usos médicos'},eff:{util:+10,justice:+10,progress:+5}},
     ]},
   { short:true,
@@ -1117,7 +1114,7 @@ const SCENARIOS = [
          en:'A fire in a building. You can hear your child\'s voice — calling your name, alive, in the left wing. In the right wing — ten other people\'s children, you can see their silhouettes. You can save only one group. You know what any parent would do. You know what any philosopher would say. Those are different answers. <b>Where do you run?</b>',
          es:'Un incendio en un edificio. Oyes la voz de tu hijo, te llama por tu nombre, está vivo, en el ala izquierda. En el ala derecha hay diez niños ajenos; puedes ver sus siluetas. Solo puedes salvar a unos. Sabes lo que haría cualquier padre. Sabes lo que diría cualquier filósofo. Son respuestas distintas. <b>¿Adónde corres?</b>'},
     choices:[
-      {text:{ru:'К своему. Я не могу иначе — и не буду делать вид, что это рационально',en:'To my child. I can\'t do otherwise — and I won\'t pretend it\'s rational',es:'A mi hijo. No puedo hacer otra cosa, y no fingiré que es racional'},tag:{ru:'частичность',en:'partialist',es:'parcialidad'},eff:{util:-20,coll:-10,justice:-5}},
+      {text:{ru:'К своему. Я не могу иначе',en:'To my child. I can\'t do otherwise',es:'A mi hijo. No puedo hacer otra cosa'},tag:{ru:'частичность',en:'partialist',es:'parcialidad'},eff:{util:-20,coll:-10,justice:-5}},
       {text:{ru:'К десятерым. Слышу своего — и всё равно бегу в другую сторону',en:'To the ten. I can hear mine — and I run the other way anyway',es:'A los diez. Oigo al mío y corro hacia el otro lado de todos modos'},tag:{ru:'беспристрастность',en:'impartialist',es:'imparcialidad'},eff:{util:+25,coll:+10,progress:+5}},
     ]},
   { short:false,
@@ -1391,7 +1388,7 @@ function endGame() {
   // ── Compare ──
   const divergence = AXIS_KEYS.reduce((a,k)=>a+Math.abs(nv[k]-POP[k]),0)/5;
   const cmp = divergence<15 ? u.c1 : divergence<30 ? u.c2 : u.c3;
-  document.getElementById('r-compare').textContent = cmp + ' ' + u.cn;
+  document.getElementById('r-compare').textContent = cmp;
 
   document.getElementById('result').classList.add('show');
   document.getElementById('result').scrollTop = 0;
