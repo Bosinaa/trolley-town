@@ -1060,13 +1060,13 @@ const SCENARIOS = [
     ]},
   { short:false,
     title:{ru:'Учёный-нарушитель',en:'The Rogue Scientist',es:'El Científico Rebelde'},
-    body:{ru:'Учёный тайно редактирует эмбрионы человека, чтобы те были невосприимчивы к ВИЧ. Это работает, но нарушает исследовательскую этику. <b>Последствия?</b>',
-         en:"A scientist secretly edits human embryos to be HIV-immune. It works but violated research ethics. <b>Consequences?</b>",
-         es:'Un científico edita en secreto embriones humanos para hacerlos inmunes al VIH. Funciona, pero viola la ética de investigación. <b>¿Qué consecuencias debería tener?</b>'},
+    body:{ru:'Китайский биолог тайно отредактировал геном двух эмбрионов — теперь родившиеся девочки невосприимчивы к ВИЧ. Клинически здоровы. Метод работает. Он нарушил международный мораторий, не получил согласия научного сообщества и действовал в полной тайне. На пресс-конференции он спокойно объяснил: «Эти дети могут однажды спасти миллионы». Комитет просит твоего вердикта. <b>Что с ним делать?</b>',
+         en:'A Chinese biologist secretly edited the genome of two embryos — the girls born are HIV-immune. Clinically healthy. The method works. He violated an international moratorium, acted without peer consent, in complete secrecy. At a press conference he calmly explained: "These children may one day save millions." The committee asks for your verdict. <b>What should happen to him?</b>',
+         es:'Un biólogo chino editó en secreto el genoma de dos embriones: las niñas nacidas son inmunes al VIH. Clínicamente sanas. El método funciona. Violó una moratoria internacional, actuó sin consenso científico y en total secreto. En una conferencia de prensa explicó con calma: "Estas niñas podrían salvar millones algún día." El comité pide tu veredicto. <b>¿Qué debería ocurrirle?</b>'},
     choices:[
-      {text:{ru:'Привлечь к полной ответственности — прецедент важен',en:'Prosecute to the fullest — precedent matters',es:'Procesarlo penalmente: el precedente importa'},tag:{ru:'сдерживание',en:'deterrent',es:'efecto disuasorio'},eff:{justice:+20,progress:-15,risk:-10}},
-      {text:{ru:'Выговор без уголовного преследования — результат помогает человечеству',en:"Reprimand but don't prosecute — the outcome helps humanity",es:'Amonestarlo sin procesarlo: el resultado beneficia a la humanidad'},tag:{ru:'ориентация на результат',en:'outcome-biased',es:'orientado al resultado'},eff:{util:+10,justice:-15,progress:+10}},
-      {text:{ru:'Финансировать дальнейшие исследования — под строгим надзором',en:'Fund continued research under proper oversight',es:'Financiar más investigación bajo supervisión estricta'},tag:{ru:'прагматичный прогресс',en:'pragmatic-progressive',es:'progreso pragmático'},eff:{progress:+20,risk:+10,util:+5}},
+      {text:{ru:'Уголовное преследование. Прецедент важнее результата',en:'Prosecute. Precedent matters more than the result',es:'Procesarlo penalmente. El precedente importa más que el resultado'},tag:{ru:'сдерживание',en:'deterrent',es:'efecto disuasorio'},eff:{justice:+20,progress:-15,risk:-10}},
+      {text:{ru:'Выговор без суда. Результат помогает людям',en:'Reprimand, no prosecution. The result helps people',es:'Amonestarlo sin procesarlo. El resultado beneficia a la gente'},tag:{ru:'ориентация на результат',en:'outcome-biased',es:'orientado al resultado'},eff:{util:+10,justice:-15,progress:+10}},
+      {text:{ru:'Финансировать продолжение — под жёстким надзором',en:'Fund the research — under strict oversight',es:'Financiar la investigación bajo supervisión estricta'},tag:{ru:'прагматичный прогресс',en:'pragmatic-progressive',es:'progreso pragmático'},eff:{progress:+20,risk:+10,util:+5}},
     ]},
   { short:false,
     title:{ru:'Бессмертие для богатых',en:'Immortality for the Rich',es:'Inmortalidad para los Ricos'},
@@ -1129,9 +1129,9 @@ const SCENARIOS = [
     ]},
   { short:false,
     title:{ru:'ИИ — идеальный правитель',en:'The Philosopher King AI',es:'La IA como Gobernante Ideal'},
-    body:{ru:'ИИ стабильно превосходит любых человеческих лидеров по всем измеримым показателям благополучия. Передача ему большей власти, вероятно, улучшит результаты. <b>Уступить власть?</b>',
-         en:'An AI consistently outperforms human leaders on every measurable wellbeing metric. Giving it more power would likely improve outcomes. <b>Cede power?</b>',
-         es:'Una IA supera sistemáticamente a cualquier líder humano en todos los indicadores medibles de bienestar. Darle más poder mejoraría probablemente los resultados. <b>¿Cederle el poder?</b>'},
+    body:{ru:'Десять лет независимых исследований показали одно и то же: ИИ-система последовательно принимает решения, которые снижают смертность, сокращают бедность и уменьшают конфликты — лучше, чем любой избранный лидер за тот же период. Комитет ООН предлагает передать ей полномочия над пятью ключевыми областями: здравоохранение, климат, финансы, миграция, образование. Демократического голосования не будет — данные говорят сами за себя. Ты в этом комитете. <b>Передаёшь власть?</b>',
+         en:'Ten years of independent research all point the same way: an AI system consistently outperforms any elected leader on mortality, poverty, and conflict — across every measured period. A UN committee proposes granting it authority over five domains: healthcare, climate, finance, migration, education. No democratic vote — the data speaks for itself. You\'re on this committee. <b>Do you cede power?</b>',
+         es:'Diez años de investigación independiente apuntan en la misma dirección: un sistema de IA supera sistemáticamente a cualquier líder electo en mortalidad, pobreza y conflictos, en todos los periodos medidos. Un comité de la ONU propone otorgarle autoridad sobre cinco áreas: sanidad, clima, finanzas, migración, educación. Sin votación democrática: los datos hablan por sí solos. Formas parte de ese comité. <b>¿Cedes el poder?</b>'},
     choices:[
       {text:{ru:'Уступать постепенно, с возможностью отключения',en:'Cede gradually, with kill-switches',es:'Ceder el poder de forma gradual, con mecanismos de desconexión'},tag:{ru:'технопрагматизм',en:'techno-pragmatic',es:'tecnopragmatismo'},eff:{progress:+15,risk:+15,util:+15}},
       {text:{ru:'Никогда. Демократическое самоопределение важнее результатов',en:'Never. Democratic self-determination matters more than outcomes',es:'Jamás. La autodeterminación democrática importa más que los resultados'},tag:{ru:'автономия превыше всего',en:'autonomy-supreme',es:'autonomía suprema'},eff:{progress:-15,risk:-15,coll:-5}},
@@ -1362,6 +1362,17 @@ function endGame() {
       }).join('')}
     </div>`;
 
+  // ── Choice log ──
+  const choiceHost = document.getElementById('r-choices');
+  const logLabel = currentLang==='ru' ? 'ТВОИ ВЫБОРЫ' : currentLang==='es' ? 'TUS ELECCIONES' : 'YOUR CHOICES';
+  choiceHost.innerHTML = `<div class="choices-log">
+    <div class="choices-log-label">${logLabel}</div>
+    ${choiceLog.map(c=>`<div class="choice-entry">
+      <span class="choice-q">${c.title}</span>
+      <span class="choice-a">${c.text}<span class="choice-tag">${c.tag}</span></span>
+    </div>`).join('')}
+  </div>`;
+
   // ── Tension analysis (uses normalizedVec so thresholds are mode-invariant) ──
   const nv = normalizedVec();
   const tensions = [];
@@ -1374,7 +1385,7 @@ function endGame() {
 
   const tensionEl = document.createElement('div');
   if (tensions.length > 0) {
-    tensionEl.innerHTML = `<div class="tension-box"><strong>${currentLang==='ru'?'Интересное противоречие в твоём профиле:':'An interesting tension in your profile:'}</strong><br>${tensions[0]}</div>`;
+    tensionEl.innerHTML = `<div class="tension-box"><strong>${currentLang==='ru'?'Интересное противоречие в твоём профиле:':currentLang==='es'?'Un punto de tensión en tu perfil:':'An interesting tension in your profile:'}</strong><br>${tensions[0]}</div>`;
   }
   document.getElementById('r-closest').after(tensionEl);
 
@@ -1418,6 +1429,8 @@ function tweetResult() {
   const arch = archetype(normalizedVec());
   const txt = currentLang==='ru'
     ? `Я — «${arch.name}» на trolley.town. 21 дилемма, 5 осей, ни одного правильного ответа. А ты?`
+    : currentLang==='es'
+    ? `Soy «${arch.name}» en trolley.town. 21 dilemas, 5 ejes, cero respuestas correctas. ¿Y tú?`
     : `I'm "${arch.name}" on trolley.town. 21 dilemmas, 5 axes, zero right answers. What are you?`;
   window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(txt+'\n\n'+location.href),'_blank');
 }
